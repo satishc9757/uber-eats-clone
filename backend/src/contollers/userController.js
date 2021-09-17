@@ -42,7 +42,10 @@ isCustEmailAlreadyRegistered = (cust_email) => {
 }
 
 exports.login_user = function (req, res) {
+    console.log("Here ");
     const data = req.body;
+    
+    
     if(!isCustEmailAlreadyRegistered(data.username)){
         res.status(400).send(JSON.stringify({message: "Customer account does not exist."}));
     } else {

@@ -4,7 +4,6 @@ const port = 8000;
 const indexRouter = require('./routes/index');
 const userRouter = require('./routes/userRouter');
 const resRouter = require('./routes/resRouter');
-
 //listening
 app.listen(port, () => console.info("Listening on port " + port));
 
