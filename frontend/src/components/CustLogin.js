@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Login = () => {
+const CustLogin = () => {
     return (
         <div class="container">
             <div class="row justify-content-center">
@@ -37,4 +37,4 @@ const Login = () => {
     )
 }
 
-export default Login
+export default CustLogin;

@@ -42,3 +42,20 @@
   padding: 50px;
   border-bottom: #282c34;
 }
+
+
+.invalid {
+  display: block;
+  width: 100%;
+  margin-top: .25rem;
+  font-size: .875em;
+  color: #dc3545;
+}
+
+.invalid-input { 
+  border-color: #dc3545;
+  padding-right: calc(1.5em + .75rem);
+  background-repeat: no-repeat;
+  background-position: right calc(.375em + .1875rem) center;
+  background-size: calc(.75em + .375rem) calc(.75em + .375rem);
+} 
