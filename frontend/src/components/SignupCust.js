@@ -5,6 +5,11 @@ const axios = require('axios');
 
  class SignupCust extends Component {
 
+    constructor(props){
+        super(props);
+        console.log("props"+ this.props);
+    }
+
     state = {
         custFirstName: "",
         custLastName: "",
@@ -16,6 +21,10 @@ const axios = require('axios');
         custEmailError: "",
         custPasswordError: "",
         custPasswordConfirmError: ""
+    }
+
+    redirectToSuccesPage(){
+        this.props.history.push('/login');
     }
 
     onChangeCustFirstName = (event) => {
@@ -44,21 +53,23 @@ const axios = require('axios');
 
     onSignUpSubmit = (event) => {
         event.preventDefault();
+        console.log("props"+ JSON.stringify(this.props));
         console.log("Here in the on submit "+ event);
         const isValid = this.validateInputs();
         console.log("isValid : "+ isValid);
         if(isValid){
-            const url = "http://localhost:8000/customer/register";
-            axios
-                .post(url, this.state)
-                .then(response => {
-                    console.log(response);
-                    const history = useHistory();
-                    history.push("/login");
-                })
-                .catch(err => {
-                    console.log(err);
-                });
+            this.props.history.push("/login");
+            // const url = "http://localhost:8000/customer/register";
+            // axios
+            //     .post(url, this.state)
+            //     .then(response => {
+            //         console.log(response);
+            //         //this.props.history.push("/login");
+            //         //history.push("/login");
+            //     })
+            //     .catch(err => {
+            //         console.log(err);
+            //     });
                 
         }
     }
