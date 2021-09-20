@@ -59,17 +59,17 @@ const axios = require('axios');
         console.log("isValid : "+ isValid);
         if(isValid){
             this.props.history.push("/login");
-            // const url = "http://localhost:8000/customer/register";
-            // axios
-            //     .post(url, this.state)
-            //     .then(response => {
-            //         console.log(response);
-            //         //this.props.history.push("/login");
-            //         //history.push("/login");
-            //     })
-            //     .catch(err => {
-            //         console.log(err);
-            //     });
+            const url = "http://localhost:8000/customer/register";
+            axios
+                .post(url, this.state)
+                .then(response => {
+                    console.log(response);
+                    //this.props.history.push("/login");
+                    //history.push("/login");
+                })
+                .catch(err => {
+                    console.log(err);
+                });
                 
         }
     }
