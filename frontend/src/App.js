@@ -3,12 +3,11 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import Header from './components/Header';
-import Login from './components/CustLogin';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import Home from './components/Home';
-import SignupCust from './components/SignupCust';
-import CustLogin from './components/CustLogin';
-import { useHistory } from "react-router-dom";
+import SignupCust from './components/Customer/SignupCust';
+import CustLogin from './components/Customer/CustLogin';
+
 
 function App() {
   return (

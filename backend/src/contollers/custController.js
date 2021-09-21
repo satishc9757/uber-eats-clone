@@ -34,7 +34,7 @@ exports.login_customer = function (req, res) {
   console.log(data);
   let sql =
     "SELECT COUNT(*) as count FROM customers WHERE cust_email = ? and cust_password = SHA1(?)";
-  con.query(sql, [data.username, data.password], (err, result) => {
+  con.query(sql, [data.custUserName, data.custPassword], (err, result) => {
     if (err) {
       console.error("login_user : " + err);
       res
