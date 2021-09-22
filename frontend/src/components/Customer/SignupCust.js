@@ -58,12 +58,13 @@ const axios = require('axios');
         const isValid = this.validateInputs();
         console.log("isValid : "+ isValid);
         if(isValid){
-            this.props.history.push("/login");
+            
             const url = "http://localhost:8000/customer/register";
             axios
                 .post(url, this.state)
                 .then(response => {
                     console.log(response);
+                    this.props.history.push("/login");
                     //this.props.history.push("/login");
                     //history.push("/login");
                 })

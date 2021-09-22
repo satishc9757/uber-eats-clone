@@ -1,8 +1,8 @@
 const {check, validationResult} = require('express-validator');
 var con = require('../database/mysqlConnection');
 
-exports.validateCustLogin = [
-  check('custUsername')
+exports.validateResLogin = [
+  check('resUsername')
     .not()
     .isEmpty()
     .trim()
@@ -16,7 +16,7 @@ exports.validateCustLogin = [
     })
     .withMessage('Username does not exist.')
     .bail(),
-  check('custPassword')
+  check('resPassword')
     .not()
     .isEmpty()
     .withMessage('Password cannot be empty')
@@ -29,24 +29,56 @@ exports.validateCustLogin = [
   },
 ];
 
-exports.validateCustRegistration = [
-  check('custFirstName')
+exports.validateResRegistration = [
+  check('resStreet')
     .not()
     .isEmpty()
-    .withMessage('First name cannot be empty.')
+    .withMessage('Street name cannot be empty.')
     .trim()
-    .matches(/^[a-zA-Z ,.'-]+$/)
-    .withMessage('Invalid first name.')
+    .matches(/^[a-zA-Z0-9 ,.'-]+$/)
+    .withMessage('Invalid street name.')
     .bail(),
-  check('custLastName')
+  check('resCity')
     .not()
     .isEmpty()
-    .withMessage('Last name cannot be empty.')
+    .withMessage('City name cannot be empty.')
     .trim()
     .matches(/^[a-zA-Z ,.'-]+$/)
-    .withMessage('Invalid last name.')
-    .bail(),  
-  check('custEmail')
+    .withMessage('Invalid City name.')
+    .bail(),
+  check('resState')
+    .not()
+    .isEmpty()
+    .withMessage('State name cannot be empty.')
+    .trim()
+    .matches(/^[a-zA-Z ,.'-]+$/)
+    .withMessage('Invalid State name.')
+    .bail(),
+  check('resZipcode')
+    .not()
+    .isEmpty()
+    .withMessage('Zipcode name cannot be empty.')
+    .trim()
+    .matches(/^[0-9]+$/)
+    .withMessage('Invalid Zipcode name.')
+    .bail(),
+  check('resCountry')
+    .not()
+    .isEmpty()
+    .withMessage('Country name cannot be empty.')
+    .trim()
+    .matches(/^[a-zA-Z ,.'-]+$/)
+    .withMessage('Invalid country name.')
+    .bail(),
+  check('resName')
+    .not()
+    .isEmpty()
+    .withMessage('Restaurant name cannot be empty.')
+    .trim()
+    .matches(/^[a-zA-Z ,.'-]+$/)
+    .withMessage('Invalid restaurant name.')
+    .bail(),
+  check('resEmail')
     .not()
     .isEmpty()
     .withMessage('Email cannot be empty.')
@@ -63,7 +95,7 @@ exports.validateCustRegistration = [
     })
     .withMessage('Email already exists.')
     .bail(),
-  check('custPassword')
+  check('resPassword')
     .not()
     .isEmpty()
     .withMessage('Password cannot be empty')
@@ -79,7 +111,7 @@ exports.validateCustRegistration = [
 function isUsernamePresent(username){
   
   return new Promise((resolve, reject) => {
-      con.query('SELECT COUNT(*) AS count FROM customers WHERE cust_email = ?', [username], function (error, results, fields) {
+      con.query('SELECT COUNT(*) AS count FROM restaurants WHERE res_email = ?', [username], function (error, results, fields) {
           if(!error){
               console.log("Username count : "+results[0].count);
               return resolve(results[0].count > 0);

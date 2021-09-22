@@ -2,21 +2,16 @@ import React, { Component } from 'react'
 import axios from 'axios';
 import { custLogin } from '../../redux/reduxActions/loginRedux';
 
-class CustLogin extends Component {
+class ResLogin extends Component {
 
     state = {
-        custUsername: "",
-        custPassword: ""
+        resUsername: "",
+        resPassword: ""
     }
 
-    onChangecustUsername = (event) => {
-        this.setState({custUsername: event.target.value});
+    onChangeField = (event) => {
+        this.setState({[event.target.name]: event.target.value});
     }
-
-    onChangeCustPassword = (event) => {
-        this.setState({custPassword: event.target.value});
-    }
-
 
     login = (event) => {
         event.preventDefault();
@@ -26,19 +21,19 @@ class CustLogin extends Component {
             body: JSON.stringify(this.state)
         };
     
-
-        custLogin(this.state);
-        // const url = "http://localhost:8000/customer/login";
-        // axios
-        //     .post(url, this.state)
-        //     .then(response => {
-        //         console.log(response);
-        //             //this.props.history.push("/login");
-        //             //history.push("/login");
-        //     })
-        //     .catch(err => {
-        //         console.log(err);
-        // });
+        //console.log("State inside login: "+this.state);
+        //custLogin(this.state);
+        const url = "http://localhost:8000/res/login";
+        axios
+            .post(url, this.state)
+            .then(response => {
+                console.log(response);
+                    //this.props.history.push("/login");
+                    //history.push("/login");
+            })
+            .catch(err => {
+                console.log(err);
+        });
 
         // return fetch(`${config.apiUrl}/users/authenticate`, requestOptions)
         //     .then(handleResponse)
@@ -56,21 +51,23 @@ class CustLogin extends Component {
                 <div className="row justify-content-center">
                     <div className="col-lg-5">
                         <div className="card shadow-lg border-0 rounded-lg mt-5">
-                            <div className="card-header"><h3 className="text-center font-weight-light my-4">Login</h3></div>
+                            <div className="card-header"><h3 className="text-center font-weight-light my-4">Res Login</h3></div>
                             <div className="card-body">
                                 <form onSubmit={this.login}>
                                     <div className="form-floating mb-3">
-                                        <input className="form-control" id="inputEmail" type="email" 
+                                        <input className="form-control" id="resUsername" type="email" 
+                                        name = "resUsername"
                                         placeholder="name@example.com" 
-                                        value = {this.state.custUsername}
-                                        onChange = {this.onChangecustUsername}/>
+                                        value = {this.state.resUsername}
+                                        onChange = {this.onChangeField}/>
                                         <label for="inputEmail">Email address</label>
                                     </div>
                                     <div className="form-floating mb-3">
-                                        <input className="form-control" id="inputPassword" type="password" 
+                                        <input className="form-control" id="resPassword" type="password" 
                                         placeholder="Password" 
-                                        value = {this.state.custPassword}
-                                        onChange = {this.onChangeCustPassword}/>
+                                        name = "resPassword"
+                                        value = {this.state.resPassword}
+                                        onChange = {this.onChangeField}/>
                                         <label for="inputPassword">Password</label>
                                     </div>
                                     <div className="form-check mb-3">
@@ -94,4 +91,4 @@ class CustLogin extends Component {
     }    
 }
 
-export default CustLogin;
+export default ResLogin;

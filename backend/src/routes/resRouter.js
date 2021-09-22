@@ -1,10 +1,11 @@
 var resController = require('../contollers/resController');
 
 var express = require('express');
+const { validateResRegistration, validateResLogin } = require('../validators/resValidations');
 var router = express.Router();
 
-router.post("/register", resController.register_res);
+router.post("/register", validateResRegistration, resController.register_res);
 
-router.post("/login", resController.login_res);
+router.post("/login", validateResLogin, resController.res_login);
 
 module.exports = router;
