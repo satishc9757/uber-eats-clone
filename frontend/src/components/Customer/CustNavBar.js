@@ -1,9 +1,6 @@
 import React from 'react'
-import logo from '../../images/uber_eats_logo.png'
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const Dashboard = () => {
+const CustNavBar = () => {
     return (
         <div>
             <nav className="sb-topnav navbar navbar-expand">
@@ -17,8 +14,8 @@ const Dashboard = () => {
             
             <form className="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
                 <div className="input-group">
-                    <input className="form-control" type="text" placeholder="What are you craving for?" aria-label="Search for..." aria-describedby="btnNavbarSearch" />
-                    <button className="btn btn-primary" id="btnNavbarSearch" type="button"><FontAwesomeIcon icon={faSearch} /></button>
+                    <input className="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
+                    <button className="btn btn-primary" id="btnNavbarSearch" type="button"><i className="fas fa-search"></i></button>
                 </div>
             </form>
             
@@ -38,4 +35,4 @@ const Dashboard = () => {
     )
 }
 
-export default Dashboard
+export default CustNavBar
