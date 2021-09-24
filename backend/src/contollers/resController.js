@@ -74,3 +74,38 @@ exports.res_login = function (req, res) {
     }
   });
 };
+
+
+exports.add_dish = function (req, res) {
+  const data = req.body;
+  console.log("add_dish "+ req.body);
+  let addressSql = "INSERT INTO dishes (dish_res_id, dish_name, dish_main_ingredients, dish_image_link, dish_price, dish_desc, dish_category, dish_type, dish_create_timestamp, dish_update_timestamp) " 
+                   + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, now(), now())"
+
+  // con.query(
+  //   addressSql,
+  //   [
+  //     data.resId,
+  //     data.dishName,
+  //     data.dishMainIngredients,
+  //     data.dishImageLink,
+  //     data.dishPrice,
+  //     data.dishDesc,
+  //     data.dishCategory,
+  //     data.dishType
+  //   ],
+  //   (err, result) => {
+  //     if (err) {
+  //       console.error("add_dish : " + err);
+  //       res
+  //         .status(500)
+  //         .send(JSON.stringify({ message: "Something went wrong!", err }));
+  //     } else {
+  //       console.log("address inserted "+result);
+  //       res.send(JSON.stringify({ message: "Dish added successfully." }));
+  //     }
+  //   }
+  // );
+  res.send(JSON.stringify({ message: "Dish added successfully." }));
+};
+

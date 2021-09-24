@@ -122,3 +122,76 @@ function isUsernamePresent(username){
       );
   });
 }
+
+exports.validateDishRegistration = [
+  check('resId')
+    .not()
+    .isEmpty()
+    .withMessage('Restaurant Id cannot be empty')
+    .trim()
+    .matches(/^[0-9]+$/)
+    .withMessage('Invalid restaurant Id.')
+    .bail(),
+  check('dishName')
+    .not()
+    .isEmpty()
+    .withMessage('Dish name cannot be empty.')
+    .trim()
+    .matches(/^[a-zA-Z0-9 ,.'-]+$/)
+    .withMessage('Invalid City name.')
+    .bail(),
+  check('dishMainIngredients')
+    .not()
+    .isEmpty()
+    .withMessage('Dish ingredients cannot be empty.')
+    .trim()
+    .matches(/^[a-zA-Z ,.'-]+$/)
+    .withMessage('Invalid dish ingredients.')
+    .bail(),
+  check('dishImageLink')
+    .not()
+    .isEmpty()
+    .withMessage('Image link name cannot be empty.')
+    .trim()
+    .matches(/^\/|(\/[a-zA-Z0-9_-]+)+$/)
+    .withMessage('Invalid image link.')
+    .bail(),
+  check('dishPrice')
+    .not()
+    .isEmpty()
+    .withMessage('Dish price cannot be empty.')
+    .trim()
+    .matches(/^([0-9]+[.])?[0-9]+$/)
+    .withMessage('Invalid dish price.')
+    .bail(),
+  check('dishDesc')
+    .not()
+    .isEmpty()
+    .withMessage('Dish description cannot be empty.')
+    .trim()
+    .matches(/^[a-zA-Z ,.'-]+$/)
+    .withMessage('Invalid dish description.')
+    .bail(), 
+  check('dishCategory')
+    .not()
+    .isEmpty()
+    .withMessage('Dish category cannot be empty.')
+    .trim()
+    .matches(/^[a-zA-Z ,.'-]+$/)
+    .withMessage('Invalid dish category.')
+    .bail(),
+  check('dishType')
+    .not()
+    .isEmpty()
+    .withMessage('Dish type cannot be empty.')
+    .trim()
+    .matches(/^[a-zA-Z ,.'-]+$/)
+    .withMessage('Invalid dish type.')
+    .bail(), 
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty())
+      return res.status(400).json({errors: errors.array()});
+    next();
+  }
+];
