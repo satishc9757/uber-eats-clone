@@ -1,4 +1,6 @@
+
 var con = require("../database/mysqlConnection");
+
 
 exports.register_res = function (req, res) {
   const data = req.body;
@@ -78,7 +80,9 @@ exports.res_login = function (req, res) {
 
 exports.add_dish = function (req, res) {
   const data = req.body;
-  console.log("add_dish "+ req.body);
+  const file = req.file;
+  console.log("file "+ JSON.stringify(file));
+  console.log("dishName : "+ data.dishName);
   let addressSql = "INSERT INTO dishes (dish_res_id, dish_name, dish_main_ingredients, dish_image_link, dish_price, dish_desc, dish_category, dish_type, dish_create_timestamp, dish_update_timestamp) " 
                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, now(), now())"
 
@@ -109,3 +113,101 @@ exports.add_dish = function (req, res) {
   res.send(JSON.stringify({ message: "Dish added successfully." }));
 };
 
+exports.updateDish = function (req, res) {
+  const data = req.body;
+  const file = req.file;
+  console.log("file "+ JSON.stringify(file));
+  console.log("dishName : "+ data.dishName);
+  let sql = "UPDATE dishes SET dish_name = ?, dish_main_ingredients = ? , dish_image_link = ?, dish_price = ?, dish_desc = ?, dish_category = ?, dish_type = ?, dish_update_timestamp = now() " 
+                   + " WHERE dish_id = ?"
+
+  con.query(
+    sql,
+    [
+      data.dishName,
+      data.dishMainIngredients,
+      data.dishImageLink,
+      data.dishPrice,
+      data.dishDesc,
+      data.dishCategory,
+      data.dishType,
+      data.dishId
+    ],
+    (err, result) => {
+      if (err) {
+        console.error("updateDish : " + err);
+        res
+          .status(500)
+          .send(JSON.stringify({ message: "Something went wrong!", err }));
+      } else {
+        //console.log("address inserted "+result);
+        res.send(JSON.stringify({ data: data }));
+      }
+    }
+  );
+  
+};
+
+exports.getAllDishes =  function(req, res){
+  let sql = "select * from dishes";
+  
+  con.query(sql, (err, result) => {
+    if (err) {
+      console.error("getAllDishes : " + err);
+      res
+        .status(500)
+        .send(JSON.stringify({ message: "Something went wrong!", err }));
+    } else {
+      console.log(result);
+      data = result;
+      
+      res.send(JSON.stringify({ data: result }));
+    }
+  }); 
+
+};
+
+
+
+exports.getDish =  function(req, res){
+  const dishId = req.params.id;  
+  
+  let sql = "select * from dishes where dish_id = ?";
+  
+  con.query(sql, [dishId], (err, result) => {
+    if (err) {
+      console.error("getDish : " + err);
+      res
+        .status(500)
+        .send(JSON.stringify({ message: "Something went wrong!", err }));
+    } else {
+      console.log(result);
+      data = result;
+      
+      res.send(JSON.stringify({ data: result }));
+    }
+  }); 
+
+};
+
+
+exports.deleteDish =  function(req, res){
+  const dishId = req.body.dishId;  
+  
+  let sql = "DELETE FROM dishes WHERE dish_id = ?";
+  
+  con.query(sql, [dishId], (err, result) => {
+    if (err) {
+      console.error("deleteDish : " + err);
+      res
+        .status(500)
+        .send(JSON.stringify({ message: "Something went wrong!", err }));
+    } else {
+      console.log(result);
+      data = result;
+      
+      res.send(JSON.stringify({ message: "Dish deleted successfully!" }));
+    }
+  }); 
+
+};

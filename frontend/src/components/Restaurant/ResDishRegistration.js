@@ -23,6 +23,13 @@ class ResDishRegistration extends Component {
 
     onFormSubmit = (event) => {
         event.preventDefault();
+        let formData = new FormData();
+        //formData.append("dishImage", this.state.dishImage);
+        
+        for (var key in this.state) {
+            formData.append(key, this.state[key]);
+        }
+
         console.log("props"+ JSON.stringify(this.props));
         console.log("Here in the on submit "+ event);
         //const isValid = this.validateInputs(); --validation disabled for now
@@ -32,7 +39,7 @@ class ResDishRegistration extends Component {
         if(isValid){
             const url = "http://localhost:8000/res/dish";
             axios
-                .post(url, this.state)
+                .post(url, formData)
                 .then(response => {
                     console.log(response);
                     //this.props.history.push("./home");
