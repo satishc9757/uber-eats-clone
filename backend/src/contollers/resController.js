@@ -78,14 +78,14 @@ exports.res_login = function (req, res) {
 };
 
 
-exports.add_dish = function (req, res) {
+exports.addDish = function (req, res) {
   const data = req.body;
   const file = req.file;
   console.log("file "+ JSON.stringify(file));
   console.log("dishName : "+ data.dishName);
   let addressSql = "INSERT INTO dishes (dish_res_id, dish_name, dish_main_ingredients, dish_image_link, dish_price, dish_desc, dish_category, dish_type, dish_create_timestamp, dish_update_timestamp) " 
                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, now(), now())"
-
+                   
   // con.query(
   //   addressSql,
   //   [

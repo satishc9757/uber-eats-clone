@@ -1,0 +1,1 @@
+const DISH_IMAGE_PATH = "./images/dishes";
