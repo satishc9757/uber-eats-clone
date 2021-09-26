@@ -19,6 +19,7 @@ const upload = multer({ storage: fileStorage });
 var router = express.Router();
 
 router.post("/register", validateResRegistration, resController.register_res);
+router.get("/:id", resController.getRestaurantById);
 
 router.post("/login", validateResLogin, resController.res_login);
 

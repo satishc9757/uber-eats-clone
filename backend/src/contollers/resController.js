@@ -52,6 +52,103 @@ exports.register_res = function (req, res) {
 
 };
 
+exports.updateRes = async function (req, res) {
+  const data = req.body;
+  const file = req.file;
+  console.log("file "+ JSON.stringify(file));
+  console.log("dishName : "+ data.dishName);
+  
+  try{
+    let addressUpdateSql = "UPDATE address SET add_street = ?, add_city = ?, add_state = ?, add_zipcode = ?, add_country = ? "
+                          +" WHERE add_id = (SELECT res_address_id from restaurants WHERE res_id = ?)"
+    const addressResult = await con.query(addressUpdateSql, [
+      data.resStreet,
+      data.resCity,
+      data.resState,
+      data.resZipcode,
+      data.resCountry,
+      data.resId
+    ]);
+
+    console.log(addressResult);
+
+    let resUpdateSql = "UPDATE restaurants SET res_name = ?, res_email = ?, res_password = SHA1(?), res_description = ?, res_phone = ?, res_update_timestamp = now()"
+                          +" WHERE res_id = ?"
+
+    const resResult = await con.query(resUpdateSql, [
+                            data.resName,
+                            data.resEmail,
+                            data.resPassword,
+                            data.resDescription,
+                            data.resPhone,
+                            data.resId
+                          ]);
+
+    console.log(resUpdateSql);                        
+  } catch(err){
+      console.error("updateRes : " + err);
+      res
+          .status(500)
+          .send(JSON.stringify({ message: "Something went wrong!", err }));
+  }
+
+  let sql = "UPDATE SET dish_name = ?, dish_main_ingredients = ? , dish_image_link = ?, dish_price = ?, dish_desc = ?, dish_category = ?, dish_type = ?, dish_update_timestamp = now() " 
+                   + " WHERE dish_id = ?"
+
+  con.query(
+    sql,
+    [
+      data.resName,
+      data.resEmail,
+      data.resDescription,
+      data.resPhone,
+      data.resPassword,
+      data.resPasswordConfirm,
+      data.resStreet,
+      data.resCity,
+      data.resState,
+      data.resZipcode,
+      data.resCountry
+    ],
+    (err, result) => {
+      if (err) {
+        console.error("updateDish : " + err);
+        res
+          .status(500)
+          .send(JSON.stringify({ message: "Something went wrong!", err }));
+      } else {
+        //console.log("address inserted "+result);
+        res.send(JSON.stringify({ data: data }));
+      }
+    }
+  );
+  
+};
+
+
+exports.getRestaurantById = function(req, res){
+  
+  const resId = req.params.id;  
+  
+  let sql = "select res_id as resId, res_name as resName, res_email as resEmail, res_description as resDescription, res_phone as resPhone, add_street as resStreet, add_city as resCity, add_state as resState, add_zipcode as resZipcode "
+            +" from restaurants as r, address as a" 
+            +" where r.res_address_id = a.add_id and res_id = ?";
+  
+  con.query(sql, [resId], (err, result) => {
+    if (err) {
+      console.error("getRestaurantById : " + err);
+      res
+        .status(500)
+        .send(JSON.stringify({ message: "Something went wrong!", err }));
+    } else {
+      console.log(result);
+      data = result;
+      res.send(JSON.stringify(result));
+    }
+  }); 
+
+};
+
 exports.res_login = function (req, res) {
   const data = req.body;
 
@@ -85,7 +182,7 @@ exports.addDish = function (req, res) {
   console.log("dishName : "+ data.dishName);
   let addressSql = "INSERT INTO dishes (dish_res_id, dish_name, dish_main_ingredients, dish_image_link, dish_price, dish_desc, dish_category, dish_type, dish_create_timestamp, dish_update_timestamp) " 
                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, now(), now())"
-                   
+
   // con.query(
   //   addressSql,
   //   [
