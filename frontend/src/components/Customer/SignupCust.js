@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { useHistory } from "react-router-dom";
+import custSignup from '../../redux/reduxActions/customer/signupRedux';
 const axios = require('axios');
 
 
@@ -129,6 +131,7 @@ const axios = require('axios');
     render() {
         return (
             <div className="container">
+                <p>{this.props.registered}</p>
                 <div className="row justify-content-center">
                     <div className="col-lg-7">
                         <div className="card shadow-lg border-0 rounded-lg mt-5">
@@ -205,4 +208,18 @@ const axios = require('axios');
     }
 }
 
-export default SignupCust
+
+const mapStateToProps = state => {
+    return {
+        registered : state.registered,
+        user: state.user
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        custSignup : () => dispatch(custSignup())
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignupCust)

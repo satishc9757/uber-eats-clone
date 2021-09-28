@@ -73,7 +73,7 @@ exports.updateRes = async function (req, res) {
     console.log(addressResult);
 
     let resUpdateSql = "UPDATE restaurants SET res_name = ?, res_email = ?, res_password = SHA1(?), res_description = ?, res_phone = ?, res_update_timestamp = now()"
-                          +" WHERE res_id = ?"
+                        +" WHERE res_id = ?"
 
     const resResult = await con.query(resUpdateSql, [
                             data.resName,

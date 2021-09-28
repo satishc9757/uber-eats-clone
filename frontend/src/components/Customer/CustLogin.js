@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import axios from 'axios';
-import { custLogin } from '../../redux/reduxActions/loginRedux';
 
 class CustLogin extends Component {
 
@@ -27,7 +26,7 @@ class CustLogin extends Component {
         };
     
 
-        custLogin(this.state);
+       //custLogin(this.state);
         // const url = "http://localhost:8000/customer/login";
         // axios
         //     .post(url, this.state)

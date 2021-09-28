@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import axios from 'axios';
-import { custLogin } from '../../redux/reduxActions/loginRedux';
 
 class ResLogin extends Component {
 
