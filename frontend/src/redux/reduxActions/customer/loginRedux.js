@@ -6,6 +6,7 @@ export const custLogin = (data) => {
     axios.post("http://localhost:8000/customer/login", data)
         .then(response => {
             console.log("Response from login request ", response);
+            console.log("Store obj : "+reduxStore);
             reduxStore.dispatch({
                 type:LOGGED_IN,
                 payload: response.data

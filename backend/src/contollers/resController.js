@@ -52,76 +52,47 @@ exports.register_res = function (req, res) {
 
 };
 
-exports.updateRes = async function (req, res) {
+exports.updateRestaurant = async function (req, res) {
   const data = req.body;
-  const file = req.file;
+  const file = req.files;
   console.log("file "+ JSON.stringify(file));
-  console.log("dishName : "+ data.dishName);
+  console.log("data "+ JSON.stringify(data));
+  //console.log("dishName : "+ data.dishName);
   
-  try{
-    let addressUpdateSql = "UPDATE address SET add_street = ?, add_city = ?, add_state = ?, add_zipcode = ?, add_country = ? "
-                          +" WHERE add_id = (SELECT res_address_id from restaurants WHERE res_id = ?)"
-    const addressResult = await con.query(addressUpdateSql, [
-      data.resStreet,
-      data.resCity,
-      data.resState,
-      data.resZipcode,
-      data.resCountry,
-      data.resId
-    ]);
+  // try{
+  //   let addressUpdateSql = "UPDATE address SET add_street = ?, add_city = ?, add_state = ?, add_zipcode = ?, add_country = ? "
+  //                         +" WHERE add_id = (SELECT res_address_id from restaurants WHERE res_id = ?)"
+  //   const addressResult = await con.query(addressUpdateSql, [
+  //     data.resStreet,
+  //     data.resCity,
+  //     data.resState,
+  //     data.resZipcode,
+  //     data.resCountry,
+  //     data.resId
+  //   ]);
 
-    console.log(addressResult);
+  //   console.log(addressResult);
 
-    let resUpdateSql = "UPDATE restaurants SET res_name = ?, res_email = ?, res_password = SHA1(?), res_description = ?, res_phone = ?, res_update_timestamp = now()"
-                        +" WHERE res_id = ?"
+  //   let resUpdateSql = "UPDATE restaurants SET res_name = ?, res_email = ?, res_password = SHA1(?), res_description = ?, res_phone = ?, res_update_timestamp = now()"
+  //                       +" WHERE res_id = ?"
 
-    const resResult = await con.query(resUpdateSql, [
-                            data.resName,
-                            data.resEmail,
-                            data.resPassword,
-                            data.resDescription,
-                            data.resPhone,
-                            data.resId
-                          ]);
+  //   const resResult = await con.query(resUpdateSql, [
+  //                           data.resName,
+  //                           data.resEmail,
+  //                           data.resPassword,
+  //                           data.resDescription,
+  //                           data.resPhone,
+  //                           data.resId
+  //                         ]);
 
-    console.log(resUpdateSql);                        
-  } catch(err){
-      console.error("updateRes : " + err);
-      res
-          .status(500)
-          .send(JSON.stringify({ message: "Something went wrong!", err }));
-  }
-
-  let sql = "UPDATE SET dish_name = ?, dish_main_ingredients = ? , dish_image_link = ?, dish_price = ?, dish_desc = ?, dish_category = ?, dish_type = ?, dish_update_timestamp = now() " 
-                   + " WHERE dish_id = ?"
-
-  con.query(
-    sql,
-    [
-      data.resName,
-      data.resEmail,
-      data.resDescription,
-      data.resPhone,
-      data.resPassword,
-      data.resPasswordConfirm,
-      data.resStreet,
-      data.resCity,
-      data.resState,
-      data.resZipcode,
-      data.resCountry
-    ],
-    (err, result) => {
-      if (err) {
-        console.error("updateDish : " + err);
-        res
-          .status(500)
-          .send(JSON.stringify({ message: "Something went wrong!", err }));
-      } else {
-        //console.log("address inserted "+result);
-        res.send(JSON.stringify({ data: data }));
-      }
-    }
-  );
+  //   console.log(resUpdateSql);                        
+  // } catch(err){
+  //     console.error("updateRes : " + err);
+  //     res
+  //         .status(500)
+  //         .send(JSON.stringify({ message: "Something went wrong!", err }));
+  // }
+  res.send(JSON.stringify({ message: "User updated" }));
   
 };
 

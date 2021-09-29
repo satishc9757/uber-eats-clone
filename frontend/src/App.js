@@ -13,6 +13,8 @@ import Dashboard from './components/Customer/Dashboard';
 import ResDashboard from './components/Restaurant/ResDashboard';
 import Main from './components/Main';
 import axios from 'axios';
+import { Provider } from 'react-redux';
+import reduxStore from './redux/reduxStore/store';
 
 
 function App() {
@@ -30,7 +32,9 @@ function App() {
           <Route path ="/res/signup" exact component={ResSignup}></Route>  
           <Route path ="/res/home" exact component={ResDashboard}></Route>  
         </Switch> */}
-        <Main/>
+        <Provider store={reduxStore}>
+          <Main/>
+        </Provider>
       </div>
      </BrowserRouter>
   );

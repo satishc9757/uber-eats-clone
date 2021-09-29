@@ -11,6 +11,7 @@ class ResProfile extends Component {
         resPhone: "",
         resPassword: "",
         resPasswordConfirm: "",
+        resImages: "",
         resStreet: "",
         resCity: "",
         resState: "",
@@ -20,6 +21,38 @@ class ResProfile extends Component {
 
     onChangeField = (event) => {
         this.setState({[event.target.name]: event.target.value});
+    }
+
+    handleImageFile = (event) => {
+        console.log("Files are "+event.target.files);
+        this.setState({resImages: event.target.files});
+    }
+
+    onFormSubmit = (event) => {
+        event.preventDefault();
+        let formData = new FormData();
+        //formData.append("dishImage", this.state.dishImage);
+        
+        for (var key in this.state) {
+            formData.append(key, this.state[key]);
+        }
+
+        console.log("props"+ JSON.stringify(this.props));
+        console.log("Here in the on submit "+ event);
+        const isValid = true;
+        
+        if(isValid){
+            const url = "http://localhost:8000/res/update";
+            axios
+                .put(url, formData)
+                .then(response => {
+                    console.log(response);
+                    //this.props.history.push("./home");
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
     }
 
     async componentDidMount(){
@@ -41,7 +74,7 @@ class ResProfile extends Component {
                         <div className="card shadow-lg border-0 rounded-lg mt-5">
                             <div className="card-header"><h3 className="text-center font-weight-light my-4">Update Profile</h3></div>
                             <div className="card-body">
-                                <form className="needs-validation" noValidate onSubmit={this.onSignUpSubmit}>
+                                <form className="needs-validation" noValidate onSubmit={this.onFormSubmit}>
                                     <div className="mb-3">
                                         <div className="form-floating mb-3 mb-md-0">
                                                 <input className={"form-control" + (this.state.custFirstNameError ? " invalid-input": "")} id="resName" type="text" 
@@ -86,6 +119,15 @@ class ResProfile extends Component {
                                                 {/* <div className="invalid">{this.state.custPasswordConfirmError}</div> */}
                                             </div>
                                         </div>
+                                    </div>
+                                    <div className="form-floating mb-3">
+                                        <input className="form-control" id="resImages" type="file" 
+                                            name="resImages"
+                                            onChange = {this.handleImageFile}
+                                            multiple="multiple"
+                                            />
+                                        <label htmlFor="resImages">Images</label>
+                                        {/* <div className="invalid">{this.state.custEmailError}</div> */}
                                     </div>
                                     <div className="form-floating mb-3">
                                         <textarea class="form-control" 

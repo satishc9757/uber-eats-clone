@@ -60,19 +60,18 @@ const axios = require('axios');
         const isValid = this.validateInputs();
         console.log("isValid : "+ isValid);
         if(isValid){
-            
-            const url = "http://localhost:8000/customer/register";
-            axios
-                .post(url, this.state)
-                .then(response => {
-                    console.log(response);
-                    this.props.history.push("/login");
-                    //this.props.history.push("/login");
-                    //history.push("/login");
-                })
-                .catch(err => {
-                    console.log(err);
-                });
+            this.props.custSignup(this.state);
+            // const url = "http://localhost:8000/customer/register";
+            // axios
+            //     .post(url, this.state)
+            //     .then(response => {
+            //         console.log(response);
+            //         this.props.history.push("/login");
+                    
+            //     })
+            //     .catch(err => {
+            //         console.log(err);
+            //     });
                 
         }
     }
@@ -218,7 +217,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        custSignup : () => dispatch(custSignup())
+        custSignup : (data) => dispatch(custSignup(data))
     }
 }
 
