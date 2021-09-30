@@ -9,7 +9,6 @@ import SignupCust from './components/Customer/SignupCust';
 import CustLogin from './components/Customer/CustLogin';
 import ResLogin from './components/Restaurant/ResLogin';
 import ResSignup from './components/Restaurant/ResSignup';
-import Dashboard from './components/Customer/Dashboard';
 import ResDashboard from './components/Restaurant/ResDashboard';
 import Main from './components/Main';
 import axios from 'axios';

@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import {Route} from 'react-router-dom';
 import CustLogin from './Customer/CustLogin';
-import Dashboard from './Customer/Dashboard';
 import SignupCust from './Customer/SignupCust';
 import Home from './Home';
 import ResDashboard from './Restaurant/ResDashboard';
@@ -10,6 +9,7 @@ import ResLogin from './Restaurant/ResLogin';
 import ResProfile from './Restaurant/ResProfile';
 import ResSignup from './Restaurant/ResSignup';
 import ResDishUpdate from './Restaurant/ResDishUpdate';
+import Dashboard from './Customer/Dashboard/Dashboard';
 
 class Main extends Component{
     render(){

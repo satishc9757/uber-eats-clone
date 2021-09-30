@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-class ResSidebar extends Component{
+class Sidebar extends Component{
     
     render(){
         return (
@@ -119,4 +119,4 @@ class ResSidebar extends Component{
     }
 }
 
-export default ResSidebar
+export default Sidebar

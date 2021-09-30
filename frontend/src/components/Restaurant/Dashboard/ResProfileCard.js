@@ -1,16 +1,26 @@
 import React, {Component} from 'react'
 import axios from 'axios';
 import { SERVER_ENDPOINT } from '../../constants/serverConfigs';
+import { Link } from 'react-router-dom';
 
 class ResProfileCard extends Component{
     
     state = {
-        
+        resName: "",
+        resEmail: "",
+        resDescription:"",
+        resPhone: "",
+        resImages: "",
+        resStreet: "",
+        resCity: "",
+        resState: "",
+        resZipcode: "",
+        resCountry: "",
     }
 
     async componentDidMount(){
         try {
-            const response = await axios.get(SERVER_ENDPOINT + "/res/2");
+            const response = await axios.get(SERVER_ENDPOINT + "/res/id/"+this.props.resId);
             const data = await response.data;
             console.log("Res data : "+JSON.stringify(data))
             this.setState(data[0]);
@@ -21,8 +31,63 @@ class ResProfileCard extends Component{
 
     render(){
         return (
-            
-                <div className="col-md-6">
+            <div className="col-md-6">
+                <div class="card mb-3">
+                <div class="card-body">
+                  {/* <div class="row">
+                    <div class="col-sm-4">
+                      <h6 class="mb-0">Restaurant Name</h6>
+                    </div>
+                    <div class="col-sm-8 text-secondary">
+                      {this.state.resName}
+                    </div>
+                  </div> 
+                  <hr/>*/}
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Email</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {this.state.resEmail}
+                    </div>
+                  </div>
+                  <hr/>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Phone</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {this.state.resPhone}
+                    </div>
+                  </div>
+                  <hr/>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Address</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {this.state.resStreet}, {this.state.resCity}, {this.state.resState}, {this.state.resState}, {this.state.resCountry} 
+                    </div>
+                  </div>
+                  <hr/>
+                  {/* <div class="row">
+                    <div class="col-sm-4">
+                      <h6 class="mb-0">Address</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      Bay Area, San Francisco, CA
+                    </div>
+                  </div> 
+                  <hr/>*/}
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <Link to={"/res/profile"}><button class="btn btn-uber">Edit</button></Link>
+                    </div>
+                  </div>
+                  </div>
+                  </div>  
+                </div>
+                /* <div className="col-md-6">
                                 <div class="card">
                                     <div class="card-header">
                                         Profile
@@ -36,7 +101,7 @@ class ResProfileCard extends Component{
                                     <a href="#" class="btn btn-uber">Edit Profile</a>
                                     </div>
                                 </div>
-                </div>
+                </div> */
             
         )
     }

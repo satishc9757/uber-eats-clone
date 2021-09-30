@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from "@fortawesome/free-solid-svg-icons";
+
+import uberLogo from "../../images/Uber_Eats_2020_logo.png";
+
 class ResHeader extends Component{
     
 
@@ -9,7 +12,7 @@ class ResHeader extends Component{
             <div>
                 <nav class="sb-topnav navbar navbar-expand ">
                 <button className="btn btn-light" onClick={this.props.toggleSidebar}> <FontAwesomeIcon icon={faBars} /></button>
-                <a class="navbar-brand ps-3" href="./home">UberEats</a>
+                <a class="navbar-brand ps-3" href="./home"><img src={uberLogo} alt="Uber Eats logo"/></a>
                 {/* <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button> */}
                 
            

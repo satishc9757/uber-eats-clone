@@ -261,3 +261,15 @@ button:focus {
   box-shadow: none !important;
   outline-width: 0
 }
+
+
+.res-dashboard-image {
+  height: 27vw;
+  object-fit: cover;
+}
+
+.left-pan {
+  position: absolute;
+  padding-top: 15px;
+  padding-left: 6px;
+}

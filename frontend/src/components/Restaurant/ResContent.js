@@ -39,7 +39,7 @@ class ResContent extends Component {
                     <div className="container-fluid">
                         <div className="row">
                             <div class="card mb-3">
-                                <img class="card-img-top" src={resImage} alt="Card image cap" />
+                                <img class="card-img-top res-dashboard-image" src={resImage} alt="Card image cap" />
                                 <div class="card-body">
                                     <h5 class="card-title">{this.state.resTitle}</h5>
                                     <p class="card-text">{this.state.resDesc}</p>
@@ -48,7 +48,7 @@ class ResContent extends Component {
                             </div>
                         </div>
                         <div className="row">
-                            <ResProfileCard />
+                            <ResProfileCard resId="2"/>
                             <div className="col-md-6">
                                 <div class="card">
                                     <div class="card-header">
