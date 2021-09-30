@@ -12,7 +12,7 @@ const resFileStorage = multer.diskStorage({
         cb(null, RES_IMAGE_PATH);
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now()+"--"+file.originalname);
+        cb(null, file.originalname);
     },
 });
 
@@ -21,7 +21,7 @@ const dishFileStorage = multer.diskStorage({
         cb(null, DISH_IMAGE_PATH);
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now()+"--"+file.originalname);
+        cb(null, file.originalname);
     },
 });
 
@@ -31,16 +31,16 @@ const dishUpload = multer({ storage: dishFileStorage });
 var router = express.Router();
 
 router.post("/register", validateResRegistration, resController.register_res);
-router.get("/:id", resController.getRestaurantById);
+router.get("/id/:id", resController.getRestaurantById);
 router.put("/update", resUpload.array('resImages', 5),resController.updateRestaurant);
 
 router.post("/login", validateResLogin, resController.res_login);
 
+router.get("/dish", resController.getAllDishes);
 router.post("/dish", dishUpload.single('dishImage'), resController.addDish);
-
+router.get("/dish/:id", resController.getDish);
 router.put("/dish", resController.updateDish);
 router.delete("/dish", resController.deleteDish);
-router.get("/dish", resController.getAllDishes);
-router.get("/dish/:id", resController.getDish);
+
 
 module.exports = router;

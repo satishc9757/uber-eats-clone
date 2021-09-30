@@ -54,44 +54,58 @@ exports.register_res = function (req, res) {
 
 exports.updateRestaurant = async function (req, res) {
   const data = req.body;
-  const file = req.files;
-  console.log("file "+ JSON.stringify(file));
+  const files = req.files;
+  console.log("file "+ JSON.stringify(files));
   console.log("data "+ JSON.stringify(data));
   //console.log("dishName : "+ data.dishName);
   
-  // try{
-  //   let addressUpdateSql = "UPDATE address SET add_street = ?, add_city = ?, add_state = ?, add_zipcode = ?, add_country = ? "
-  //                         +" WHERE add_id = (SELECT res_address_id from restaurants WHERE res_id = ?)"
-  //   const addressResult = await con.query(addressUpdateSql, [
-  //     data.resStreet,
-  //     data.resCity,
-  //     data.resState,
-  //     data.resZipcode,
-  //     data.resCountry,
-  //     data.resId
-  //   ]);
+  try{
+    let addressUpdateSql = "UPDATE address SET add_street = ?, add_city = ?, add_state = ?, add_zipcode = ?, add_country = ? "
+                          +" WHERE add_id = (SELECT res_address_id from restaurants WHERE res_id = ?)"
+    const addressResult = await con.query(addressUpdateSql, [
+      data.resStreet,
+      data.resCity,
+      data.resState,
+      data.resZipcode,
+      data.resCountry,
+      data.resId
+    ]);
 
-  //   console.log(addressResult);
+    console.log(addressResult);
 
-  //   let resUpdateSql = "UPDATE restaurants SET res_name = ?, res_email = ?, res_password = SHA1(?), res_description = ?, res_phone = ?, res_update_timestamp = now()"
-  //                       +" WHERE res_id = ?"
+    let resUpdateSql = "UPDATE restaurants SET res_name = ?, res_email = ?, res_password = SHA1(?), res_description = ?, res_phone = ?, res_update_timestamp = now()"
+                        +" WHERE res_id = ?"
 
-  //   const resResult = await con.query(resUpdateSql, [
-  //                           data.resName,
-  //                           data.resEmail,
-  //                           data.resPassword,
-  //                           data.resDescription,
-  //                           data.resPhone,
-  //                           data.resId
-  //                         ]);
+    const resResult = await con.query(resUpdateSql, [
+                            data.resName,
+                            data.resEmail,
+                            data.resPassword,
+                            data.resDescription,
+                            data.resPhone,
+                            data.resId
+                          ]);
 
-  //   console.log(resUpdateSql);                        
-  // } catch(err){
-  //     console.error("updateRes : " + err);
-  //     res
-  //         .status(500)
-  //         .send(JSON.stringify({ message: "Something went wrong!", err }));
-  // }
+    console.log(resResult); 
+
+    const delQuery = "DELETE FROM res_images WHERE img_res_id = ?";                      
+    const delRes = await con.query(delQuery, [data.resId]);
+    console.log("after delete " +delRes); 
+
+    const insertImgQuery = "INSERT INTO res_images(img_res_id, img_name, img_link) VALUES ? "
+    console.log("files : "+files);
+    const inputArr = []
+    //files.map(file => [[data.resId, file.originalname, file.originalname]]);
+    files.forEach(file => inputArr.push([data.resId, file.originalname, file.originalname]));
+    console.log("input arr: "+inputArr);
+    const imageInsertRes = await con.query(insertImgQuery, [inputArr]);
+
+    console.log("after image insert "+imageInsertRes);                        
+  } catch(err){
+      console.error("updateRes : " + err);
+      res
+          .status(500)
+          .send(JSON.stringify({ message: "Something went wrong!", err }));
+  }
   res.send(JSON.stringify({ message: "User updated" }));
   
 };
@@ -154,31 +168,31 @@ exports.addDish = function (req, res) {
   let addressSql = "INSERT INTO dishes (dish_res_id, dish_name, dish_main_ingredients, dish_image_link, dish_price, dish_desc, dish_category, dish_type, dish_create_timestamp, dish_update_timestamp) " 
                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, now(), now())"
 
-  // con.query(
-  //   addressSql,
-  //   [
-  //     data.resId,
-  //     data.dishName,
-  //     data.dishMainIngredients,
-  //     data.dishImageLink,
-  //     data.dishPrice,
-  //     data.dishDesc,
-  //     data.dishCategory,
-  //     data.dishType
-  //   ],
-  //   (err, result) => {
-  //     if (err) {
-  //       console.error("add_dish : " + err);
-  //       res
-  //         .status(500)
-  //         .send(JSON.stringify({ message: "Something went wrong!", err }));
-  //     } else {
-  //       console.log("address inserted "+result);
-  //       res.send(JSON.stringify({ message: "Dish added successfully." }));
-  //     }
-  //   }
-  // );
-  res.send(JSON.stringify({ message: "Dish added successfully." }));
+  con.query(
+    addressSql,
+    [
+      data.resId,
+      data.dishName,
+      data.dishMainIngredients,
+      file.originalname,
+      data.dishPrice,
+      data.dishDesc,
+      data.dishCategory,
+      data.dishType
+    ],
+    (err, result) => {
+      if (err) {
+        console.error("add_dish : " + err);
+        res
+          .status(500)
+          .send(JSON.stringify({ message: "Something went wrong!", err }));
+      } else {
+        console.log("address inserted "+result);
+        res.send(JSON.stringify({ message: "Dish added successfully." }));
+      }
+    }
+  );
+  //res.send(JSON.stringify({ message: "Dish added successfully." }));
 };
 
 exports.updateDish = function (req, res) {
@@ -217,8 +231,8 @@ exports.updateDish = function (req, res) {
 };
 
 exports.getAllDishes =  function(req, res){
-  let sql = "select * from dishes";
-  
+  let sql = "select dish_id as dishId, dish_res_id as dishResId, dish_name as dishName, dish_main_ingredients as dishMainIngredients, dish_image_link as dishImage, dish_price as dishPrice, dish_desc as dishDesc, dish_category as dishCategory, dish_type as dishType  from dishes";
+  console.log("In am here in the get all dishes")
   con.query(sql, (err, result) => {
     if (err) {
       console.error("getAllDishes : " + err);
@@ -229,7 +243,7 @@ exports.getAllDishes =  function(req, res){
       console.log(result);
       data = result;
       
-      res.send(JSON.stringify({ data: result }));
+      res.send(JSON.stringify({ dishes: result }));
     }
   }); 
 
@@ -239,8 +253,8 @@ exports.getAllDishes =  function(req, res){
 
 exports.getDish =  function(req, res){
   const dishId = req.params.id;  
-  
-  let sql = "select * from dishes where dish_id = ?";
+  console.log("In am here in the get dishes")
+  let sql = "select dish_id as dishId, dish_res_id as dishResId, dish_name as dishName, dish_main_ingredients as dishMainIngredients, dish_image_link as dishImage, dish_price as dishPrice, dish_desc as dishDesc, dish_category as dishCategory, dish_type as dishType  from dishes where dish_id = ?";
   
   con.query(sql, [dishId], (err, result) => {
     if (err) {

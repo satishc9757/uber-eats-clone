@@ -1,13 +1,38 @@
 import React, { Component } from 'react';
 import resImage from "../../images/restaurants/res1.jpg"
+import ResProfileCard from './Dashboard/ResProfileCard';
+import axios from 'axios';
+import { SERVER_ENDPOINT } from '../constants/serverConfigs';
+import { Link } from 'react-router-dom';
 
 class ResContent extends Component { 
     state = {
         resTitle: "LA Vic",
-        resDesc: "Of all the delivery spots in St. James Park, La Victoria Taqueria is among the 10 places with the most orders. If you're a fan of super burrito takeout like the rest of your city, you'll be happy to know it's offered at La Victoria"
+        resDesc: "Of all the delivery spots in St. James Park, La Victoria Taqueria is among the 10 places with the most orders. If you're a fan of super burrito takeout like the rest of your city, you'll be happy to know it's offered at La Victoria",
+        dishes: []
+    }
+
+    async componentDidMount(){
+        try {
+            const response = await axios.get(SERVER_ENDPOINT + "/res/dish");
+            const data = await response.data;
+            console.log("Dishes data : "+JSON.stringify(data))
+            this.setState(data);
+        } catch(err){
+            console.log(err);
+        }
     }
 
     render(){
+        let dishesData = [];
+        if(this.state.dishes.length > 0){
+            for(var index in this.state.dishes){
+                dishesData.push(<Link to={"/res/dish" + this.state.dishes[index].dishId}><li class="list-group-item">{this.state.dishes[index].dishName}</li></Link>);
+            }
+        } else {
+            dishesData = <p>No Data</p>
+        }
+
         return (
             <div className="res-content">
                 {/* <nav className="navbar navbar-expand-lg navbar-light bg-light"> */}
@@ -23,21 +48,7 @@ class ResContent extends Component {
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col-md-6">
-                                <div class="card">
-                                    <div class="card-header">
-                                        Profile
-                                    </div>
-                                    <div class="card-body">
-                                        <ul class="list-group list-group-flush">
-                                        <li class="list-group-item">Cras justo odio</li>
-                                        <li class="list-group-item">Dapibus ac facilisis in</li>
-                                        <li class="list-group-item">Vestibulum at eros</li>
-                                    </ul>
-                                    <a href="#" class="btn btn-uber">Edit Profile</a>
-                                    </div>
-                                </div>
-                            </div>
+                            <ResProfileCard />
                             <div className="col-md-6">
                                 <div class="card">
                                     <div class="card-header">
@@ -45,11 +56,12 @@ class ResContent extends Component {
                                     </div>
                                     <div class="card-body">
                                         <ul class="list-group list-group-flush">
-                                        <li class="list-group-item">Cras justo odio</li>
+                                        {/* <li class="list-group-item">Cras justo odio</li>
                                         <li class="list-group-item">Dapibus ac facilisis in</li>
-                                        <li class="list-group-item">Vestibulum at eros</li>
+                                        <li class="list-group-item">Vestibulum at eros</li> */}
+                                        {dishesData}
                                     </ul>
-                                    <a href="#" className="btn btn-uber">Edit Dishes</a>
+                                    <a href="#" className="btn btn-uber">Add Dish</a>
                                     </div>
                                 </div>
                             </div>

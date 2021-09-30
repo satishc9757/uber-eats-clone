@@ -9,6 +9,7 @@ import ResDishRegistration from './Restaurant/ResDishRegistration';
 import ResLogin from './Restaurant/ResLogin';
 import ResProfile from './Restaurant/ResProfile';
 import ResSignup from './Restaurant/ResSignup';
+import ResDishUpdate from './Restaurant/ResDishUpdate';
 
 class Main extends Component{
     render(){
@@ -23,6 +24,7 @@ class Main extends Component{
                 <Route path ="/res/home" exact component={ResDashboard}></Route>
                 <Route path ="/res/dishes" exact component={ResDishRegistration}></Route>
                 <Route path ="/res/profile" exact component={ResProfile}></Route>
+                <Route path ="/res/dish/:dishId" component={ResDishUpdate}></Route>
             </div>
         )
     }

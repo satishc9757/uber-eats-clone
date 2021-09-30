@@ -34,7 +34,14 @@ class ResProfile extends Component {
         //formData.append("dishImage", this.state.dishImage);
         
         for (var key in this.state) {
-            formData.append(key, this.state[key]);
+            if(key === "resImages"){
+                for (const key of Object.keys(this.state.resImages)) {
+                    formData.append('resImages', this.state.resImages[key])
+                }
+            } else {
+                formData.append(key, this.state[key]);
+            }
+            
         }
 
         console.log("props"+ JSON.stringify(this.props));
@@ -57,7 +64,7 @@ class ResProfile extends Component {
 
     async componentDidMount(){
         try {
-            const response = await axios.get(SERVER_ENDPOINT + "/res/2");
+            const response = await axios.get(SERVER_ENDPOINT + "/res/id/2");
             const data = await response.data;
             console.log("Res data : "+JSON.stringify(data))
             this.setState(data[0]);
