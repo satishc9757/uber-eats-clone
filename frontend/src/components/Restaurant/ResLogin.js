@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios';
+import { connect } from 'react-redux';
+import { resLoginAction } from '../../redux/reduxActions/restaurant/loginRedux';
 
 class ResLogin extends Component {
 
@@ -8,11 +10,11 @@ class ResLogin extends Component {
         resPassword: ""
     }
 
-    onChangeField = (event) => {
+    onChangeField =  (event) => {
         this.setState({[event.target.name]: event.target.value});
     }
 
-    login = (event) => {
+    login = async (event) => {
         event.preventDefault();
         const requestOptions = {
             method: 'POST',
@@ -20,6 +22,18 @@ class ResLogin extends Component {
             body: JSON.stringify(this.state)
         };
     
+        try{
+            const url = "http://localhost:8000/res/login";
+            const response = await axios.post(url, this.state);
+            this.props.resLogin(response.data);
+            this.props.history.push("./home");
+        } catch(err){
+            console.log("Error : "+err)
+        }
+        
+        
+
+
         //console.log("State inside login: "+this.state);
         //custLogin(this.state);
         const url = "http://localhost:8000/res/login";
@@ -90,4 +104,18 @@ class ResLogin extends Component {
     }    
 }
 
-export default ResLogin;
+const mapStateToProps = state => {
+    return {
+        loggedIn : state.loggedIn,
+        user: state.user
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        resLogin : (data) => dispatch(resLoginAction(data))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ResLogin);
+

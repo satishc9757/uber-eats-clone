@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
 import axios from 'axios';
+//import { custLogin } from '../../redux/reduxActions/customer/loginRedux';
+import { connect } from 'react-redux';
+import {custLoginAction} from '../../redux/reduxActions/customer/loginRedux';
 
 class CustLogin extends Component {
 
@@ -17,17 +20,21 @@ class CustLogin extends Component {
     }
 
 
-    login = (event) => {
+    login = async (event) => {
         event.preventDefault();
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(this.state)
-        };
-    
+        
+        try{
+            const url = "http://localhost:8000/customer/login";
+            const response = await axios.post(url, this.state);
+            this.props.custLogin(response.data);
+        } catch(err){
+            console.log("Error : "+err)
+        }
+        
+        this.props.history.push("./home");
 
        //custLogin(this.state);
-        // const url = "http://localhost:8000/customer/login";
+        
         // axios
         //     .post(url, this.state)
         //     .then(response => {
@@ -72,10 +79,6 @@ class CustLogin extends Component {
                                         onChange = {this.onChangeCustPassword}/>
                                         <label for="inputPassword">Password</label>
                                     </div>
-                                    <div className="form-check mb-3">
-                                        <input className="form-check-input" id="inputRememberPassword" type="checkbox" value="" />
-                                        <label className="form-check-label" for="inputRememberPassword">Remember Password</label>
-                                    </div>
                                     <div className="d-flex align-items-center justify-content-between mt-4 mb-0">
                                         <a className="small" href="password.html">Forgot Password?</a>
                                         <button className="d-grid btn btn-primary" type="submit">Login</button>
@@ -93,4 +96,24 @@ class CustLogin extends Component {
     }    
 }
 
-export default CustLogin;
+const mapStateToProps = state => {
+    return {
+        loggedIn : state.loggedIn,
+        user: state.user
+    }
+}
+
+// const mapDispatchToProps = dispatch => {
+//     return {
+//         custLogin : (data) => dispatch(custLogin(data))
+//     }
+// }
+
+const custLoginActions = dispatch => {
+    return {
+        custLogin : (data) => dispatch(custLoginAction(data))
+    } 
+}
+
+
+export default connect(mapStateToProps, custLoginActions)(CustLogin)

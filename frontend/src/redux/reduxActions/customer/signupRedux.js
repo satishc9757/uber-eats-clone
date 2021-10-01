@@ -21,4 +21,11 @@ const custSignup = (data) => {
         });
 }
 
-export default custSignup;
+const custSignupAction = (data) => {
+    return {
+        type:SIGN_UP,
+        payload: data
+    }
+}
+
+export default custSignupAction;

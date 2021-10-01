@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { useHistory } from "react-router-dom";
+import resSignupAction from '../../redux/reduxActions/restaurant/signupRedux';
 const axios = require('axios');
 
 
@@ -31,7 +33,7 @@ const axios = require('axios');
         this.setState({[event.target.name]: event.target.value});
     }
 
-    onSignUpSubmit = (event) => {
+    onSignUpSubmit = async (event) => {
         event.preventDefault();
         console.log("props"+ JSON.stringify(this.props));
         console.log("Here in the on submit "+ event);
@@ -40,19 +42,29 @@ const axios = require('axios');
         console.log("isValid : "+ isValid);
         
         if(isValid){
+           
+            try{
+                const url = "http://localhost:8000/res/register";
+                const response = await axios.post(url, this.state);
+                this.props.resSignup(response.data);
+            } catch(err){
+                console.log("Error : "+err)
+            }
             
-            const url = "http://localhost:8000/res/register";
-            axios
-                .post(url, this.state)
-                .then(response => {
-                    console.log(response);
-                    this.props.history.push("./login");
-                    //this.props.history.push("/login");
-                    //history.push("/login");
-                })
-                .catch(err => {
-                    console.log(err);
-                });
+            this.props.history.push("./login");
+
+            // const url = "http://localhost:8000/res/register";
+            // axios
+            //     .post(url, this.state)
+            //     .then(response => {
+            //         console.log(response);
+            //         this.props.history.push("./login");
+            //         //this.props.history.push("/login");
+            //         //history.push("/login");
+            //     })
+            //     .catch(err => {
+            //         console.log(err);
+            //     });
                 
         }
     }
@@ -242,4 +254,18 @@ const axios = require('axios');
     }
 }
 
-export default ResSignup
+const mapStateToProps = state => {
+    return {
+        registered : state.registered,
+        user: state.user
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        resSignup : (data) => dispatch(resSignupAction(data))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ResSignup);
+

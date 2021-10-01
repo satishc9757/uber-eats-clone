@@ -2,6 +2,12 @@ import React, { Component } from 'react'
 
 class Sidebar extends Component{
     
+    onSignout = (event) => {
+        event.preventDefault();
+        this.props.logout();
+        this.props.navigateToLoginPage(); 
+    }
+
     render(){
         return (
             <div className="res-sidebar">
@@ -57,7 +63,7 @@ class Sidebar extends Component{
                         <a href="https://bootstrapious.com/tutorial/files/sidebar.zip" className="download">Download source</a>
                     </li> */}
                     <li>
-                        <a href="https://bootstrapious.com/p/bootstrap-sidebar" className="article">Signout</a>
+                        <a href="https://bootstrapious.com/p/bootstrap-sidebar" onClick={this.onSignout} className="article">Signout</a>
                     </li>
                 </ul>
             </nav>

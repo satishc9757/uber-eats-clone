@@ -4,6 +4,9 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Header from '../Header';
 import Sidebar from '../Sidebar'; 
+import Content from './Content';
+import { connect } from 'react-redux';
+import { custLogoutAction } from '../../../redux/reduxActions/customer/loginRedux';
 
 class Dashboard extends Component {
 
@@ -11,6 +14,9 @@ class Dashboard extends Component {
         isSidebarOpen: false
     }
 
+    navigateToLoginPage = () => {
+        this.props.history.push("./login");
+    }
     
     handleViewSidebar = () => {
         console.log("I am here");
@@ -22,8 +28,8 @@ class Dashboard extends Component {
             <div>
                 <Header toggleSidebar={this.handleViewSidebar}/>
                 <div className="wrapper">
-                    <Sidebar isOpen={this.state.isSidebarOpen}/>
-                    
+                    <Sidebar isOpen={this.state.isSidebarOpen} logout={this.props.custLogout} navigateToLoginPage={this.navigateToLoginPage}/>
+                    <Content />
                 </div>
             </div>
         )
@@ -65,4 +71,20 @@ class Dashboard extends Component {
     // }
 }
 
-export default Dashboard
+const mapStateToProps = state => {
+    return {
+        loggedIn : state.loggedIn,
+        user: state.user
+    }
+}
+
+
+const custLogoutActions = dispatch => {
+    return {
+        custLogout : (data) => dispatch(custLogoutAction(data))
+    } 
+}
+
+
+export default connect(mapStateToProps, custLogoutActions)(Dashboard)
+

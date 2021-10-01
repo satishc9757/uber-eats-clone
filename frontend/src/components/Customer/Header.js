@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-
+import {faMapMarkerAlt} from "@fortawesome/free-solid-svg-icons";
+import {faShoppingCart} from "@fortawesome/free-solid-svg-icons";
 import uberLogo from "../../images/Uber_Eats_2020_logo.png";
 
 class Header extends Component{
@@ -36,13 +37,22 @@ class Header extends Component{
                     <div className="navbar-header">
                         <button className="btn btn-light" onClick={this.props.toggleSidebar}> <FontAwesomeIcon icon={faBars} /></button>
                         <a className=" navbar-brand ps-3" href="./home"><img src={uberLogo} alt="Uber Eats logo"/></a>
+                        
                     </div>
                     
-                
+                    <div class="switch-button">
+                            <input class="switch-button-checkbox" type="checkbox"></input>
+                            <label class="switch-button-label" for=""><span class="switch-button-label-span">Delivery</span></label>
+                    </div>
+
+                    <div class="nav-location">
+                        <button className="btn btn-grey rounded-pill"><FontAwesomeIcon icon={faMapMarkerAlt} /> San Jose</button>
+                    </div>
+
                     <ul class="nav navbar-nav navbar-right">
                         <li><span className="left-pan"><FontAwesomeIcon icon={faSearch} /></span></li>
                         <li><input type="text" className="form-control form-input" placeholder="    What are you craving?"/> </li>
-                        {/* <li><button className="btn btn-uber">Search</button></li> */}
+                        <li><button className="btn btn-uber rounded-pill"><FontAwesomeIcon icon={faShoppingCart} /></button></li>
                     </ul>
                     
 

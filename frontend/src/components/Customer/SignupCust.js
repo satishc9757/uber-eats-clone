@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from "react-router-dom";
-import custSignup from '../../redux/reduxActions/customer/signupRedux';
+import custSignupAction from '../../redux/reduxActions/customer/signupRedux';
 const axios = require('axios');
 
 
@@ -53,14 +53,22 @@ const axios = require('axios');
         this.setState({custPasswordConfirm: event.target.value});
     }
 
-    onSignUpSubmit = (event) => {
+    onSignUpSubmit = async (event) => {
         event.preventDefault();
         console.log("props"+ JSON.stringify(this.props));
         console.log("Here in the on submit "+ event);
         const isValid = this.validateInputs();
         console.log("isValid : "+ isValid);
         if(isValid){
-            this.props.custSignup(this.state);
+            try{
+                const url = "http://localhost:8000/customer/register";
+                const response = await axios.post(url, this.state);
+                this.props.custSignup(response.data);
+            } catch(err){
+                console.log("Error : "+err)
+            }
+            
+            this.props.history.push("./login");
             // const url = "http://localhost:8000/customer/register";
             // axios
             //     .post(url, this.state)
@@ -217,7 +225,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        custSignup : (data) => dispatch(custSignup(data))
+        custSignup : (data) => dispatch(custSignupAction(data))
     }
 }
 

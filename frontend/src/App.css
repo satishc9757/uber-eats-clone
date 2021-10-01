@@ -273,3 +273,10 @@ button:focus {
   padding-top: 15px;
   padding-left: 6px;
 }
+
+
+.btn-grey, .btn-grey:hover { 
+  border-color: #d3d3d3; 
+  background-color: #d3d3d3;
+  color: black;
+}

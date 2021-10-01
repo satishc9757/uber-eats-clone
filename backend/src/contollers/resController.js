@@ -249,8 +249,6 @@ exports.getAllDishes =  function(req, res){
 
 };
 
-
-
 exports.getDish =  function(req, res){
   const dishId = req.params.id;  
   console.log("In am here in the get dishes")

@@ -47,7 +47,7 @@ exports.login_customer = function (req, res) {
           .status(400)
           .send(JSON.stringify({ message: "Invalid login credentials." }));
       } else {
-        res.send(JSON.stringify({ message: "Login success." }));
+        res.send(JSON.stringify({ user: data.custUsername }));
       }
     }
   });
