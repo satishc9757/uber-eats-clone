@@ -1,5 +1,4 @@
-import { LOGGED_IN, LOGGED_OUT } from "../../reduxActions/actionTypes";
-
+import { LOGGED_IN, LOGGED_OUT } from "../reduxActions/actionTypes";
 
 const initialState = {
     loggedIn: false,

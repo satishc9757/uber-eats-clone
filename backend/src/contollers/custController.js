@@ -22,7 +22,11 @@ exports.register_customer = function (req, res) {
           .send(JSON.stringify({ message: "Something went wrong!", err }));
       } else {
         console.log(result);
-        res.send(JSON.stringify({ message: "User Registeration done!" }));
+        res.send(JSON.stringify({
+          custFirstName: data.custFirstName,
+          custLastName: data.custLastName,
+          custEmail: data.custEmail,
+        }));
       }
     }
   );

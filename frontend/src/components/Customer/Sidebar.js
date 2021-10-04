@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 
 class Sidebar extends Component{
     
-    onSignout = (event) => {
+    onSignout = async (event) => {
         event.preventDefault();
-        this.props.logout();
+        await this.props.logout();
         this.props.navigateToLoginPage(); 
     }
 

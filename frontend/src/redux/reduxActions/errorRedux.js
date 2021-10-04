@@ -8,3 +8,4 @@ const errorAction = (data) => {
 }
 
 export default errorAction;
+

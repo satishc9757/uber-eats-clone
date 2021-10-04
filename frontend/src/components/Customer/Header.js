@@ -8,6 +8,15 @@ import uberLogo from "../../images/Uber_Eats_2020_logo.png";
 
 class Header extends Component{
     
+    state = {
+        dishType: "Veg",
+        searchText:""
+    }
+
+    onChangeField =  (event) => {
+        //console.log("value "+event.target.value);
+        this.setState({[event.target.name]: event.target.value});
+    }
 
     render(){
         return (
@@ -49,9 +58,36 @@ class Header extends Component{
                         <button className="btn btn-grey rounded-pill"><FontAwesomeIcon icon={faMapMarkerAlt} /> San Jose</button>
                     </div>
 
+                    {/* <div className="btn-group" data-toggle="buttons-radio">
+                        <button className="btn btn-uber" value="1" type="button" >1</button>
+                        <button className="btn btn-uber" value="2" type="button" >2</button>
+                    </div> */}
+
+                    <div class="btn-group">
+                        <input type="radio" class="btn-check" name="distType" id="resVeg" autocomplete="off" value="Veg" onChange={this.onChangeField}/>
+                        <label class="btn btn-outline-uber rounded-pill" for="resVeg">Veg</label>
+                    
+                        <input type="radio" class="btn-check" name="distType" id="resNonVeg" autocomplete="off" value="Non-Veg" onChange={this.onChangeField} />
+                        <label class="btn btn-outline-uber rounded-pill" for="resNonVeg">Non-Veg</label>
+                    
+                        <input type="radio" class="btn-check" name="distType" id="resVegan" autocomplete="off" value="Vegan" onChange={this.onChangeField} />
+                        <label class="btn btn-outline-uber rounded-pill" for="resVegan">Vegan</label>
+                    </div>
+                    {/* <ul class="nav navbar-nav navbar-right">
+                        {/* <li><span className="left-pan"><FontAwesomeIcon icon={faSearch} /></span></li> 
+                        <li><button className="btn btn-grey rounded-pill"><FontAwesomeIcon icon={faSearch} />Veg</button></li>
+                        <li><button className="btn btn-uber"><FontAwesomeIcon icon={faSearch} /></button></li>
+                        <li><span></span></li>
+                        <li><button className="btn btn-uber rounded-pill"><FontAwesomeIcon icon={faShoppingCart} /></button></li>
+                    </ul> */}
+
                     <ul class="nav navbar-nav navbar-right">
-                        <li><span className="left-pan"><FontAwesomeIcon icon={faSearch} /></span></li>
-                        <li><input type="text" className="form-control form-input" placeholder="    What are you craving?"/> </li>
+                        {/* <li><span className="left-pan"><FontAwesomeIcon icon={faSearch} /></span></li> */}
+                        <li><input type="text" name="searchText" className="form-control form-input" 
+                                    placeholder=" What are you craving?"
+                                    onChange={this.onChangeField}/> </li>
+                        <li><button className="btn btn-uber" onClick={(event) => {this.props.onResSearch(this.state.searchText)}}><FontAwesomeIcon icon={faSearch} /></button></li>
+                        <li><span></span></li>
                         <li><button className="btn btn-uber rounded-pill"><FontAwesomeIcon icon={faShoppingCart} /></button></li>
                     </ul>
                     

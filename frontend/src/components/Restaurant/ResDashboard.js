@@ -1,6 +1,6 @@
 import { Component } from 'react'
 import { connect } from 'react-redux'
-import { resLogoutAction } from '../../redux/reduxActions/restaurant/loginRedux'
+import { resLogout } from '../../redux/reduxActions/restaurant/loginRedux'
 import ResContent from './ResContent'
 import ResHeader from './ResHeader'
 import ResSidebar from './ResSidebar'
@@ -41,12 +41,12 @@ const mapStateToProps = state => {
 }
 
 
-const resLogoutActions = dispatch => {
-    return {
-        resLogout : (data) => dispatch(resLogoutAction(data))
-    } 
-}
+// const resLogoutActions = dispatch => {
+//     return {
+//         resLogout : (data) => dispatch(resLogoutAction(data))
+//     } 
+// }
 
 
-export default connect(mapStateToProps, resLogoutActions)(ResDashboard)
+export default connect(mapStateToProps, {resLogout})(ResDashboard)
 

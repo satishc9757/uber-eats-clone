@@ -42,7 +42,11 @@ exports.register_res = function (req, res) {
                 .send(JSON.stringify({ message: "Something went wrong!", err }));
             } else {
               console.log(result);
-              res.send(JSON.stringify({ message: "Restaurant Registeration done!" }));
+              res.send({
+                                          resName: data.resName,
+                                          resEmail: data.resEmail,
+                                          resCity: data.resCity,
+                                        });
             }
           }
         );
@@ -134,6 +138,29 @@ exports.getRestaurantById = function(req, res){
 
 };
 
+exports.getRestaurantByQueryString = function(req, res){
+    const searchText = req.query.searchText;  
+    console.log(" searchString : "+searchText);
+    let sql = "select res_id as resId, res_name as resName, '' as resImage ,res_email as resEmail, res_description as resDescription, res_phone as resPhone, add_street as resStreet, add_city as resCity, add_state as resState, add_zipcode as resZipcode "
+              +" from restaurants as r, address as a " 
+              +" where r.res_address_id = a.add_id " 
+              +" and (lower(a.add_city) = lower(?)"
+              +" or r.res_id = (select d.dish_res_id from dishes as d where lower(d.dish_name) = lower(?)))";
+    
+    con.query(sql, [searchText, searchText], (err, result) => {
+      if (err) {
+        console.error("getRestaurantById : " + err);
+        res
+          .status(500)
+          .send(JSON.stringify({ message: "Something went wrong!", err }));
+      } else {
+        console.log(result);
+        data = result;
+        res.send(JSON.stringify(result));
+      }
+    }); 
+}
+
 exports.res_login = function (req, res) {
   const data = req.body;
 
@@ -153,7 +180,7 @@ exports.res_login = function (req, res) {
           .status(400)
           .send(JSON.stringify({ message: "Invalid login credentials." }));
       } else {
-        res.send(JSON.stringify({ message: "Login success." }));
+        res.send(JSON.stringify({ user: data.resUsername }));
       }
     }
   });

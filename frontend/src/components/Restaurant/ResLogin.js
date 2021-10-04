@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import axios from 'axios';
 import { connect } from 'react-redux';
-import { resLoginAction } from '../../redux/reduxActions/restaurant/loginRedux';
+import { resLogin } from '../../redux/reduxActions/restaurant/loginRedux';
+import errorAction from '../../redux/reduxActions/errorRedux';
 
 class ResLogin extends Component {
 
@@ -22,31 +23,35 @@ class ResLogin extends Component {
             body: JSON.stringify(this.state)
         };
     
-        try{
-            const url = "http://localhost:8000/res/login";
-            const response = await axios.post(url, this.state);
-            this.props.resLogin(response.data);
-            this.props.history.push("./home");
-        } catch(err){
-            console.log("Error : "+err)
-        }
-        
-        
+       
+        await this.props.resLogin(this.state);
+        this.props.history.push("./home");
 
 
+         // try{
+        //     const url = "http://localhost:8000/res/login";
+        //     const response = await axios.post(url, this.state);
+        //     this.props.resLogin(response.data);
+        //     this.props.history.push("./home");
+        // } catch(err){
+        //     this.props.errorAction(err);
+        //     console.log("Error : "+err)
+        // }
+        
+        
         //console.log("State inside login: "+this.state);
         //custLogin(this.state);
-        const url = "http://localhost:8000/res/login";
-        axios
-            .post(url, this.state)
-            .then(response => {
-                console.log(response);
-                    //this.props.history.push("/login");
-                    //history.push("/login");
-            })
-            .catch(err => {
-                console.log(err);
-        });
+        // const url = "http://localhost:8000/res/login";
+        // axios
+        //     .post(url, this.state)
+        //     .then(response => {
+        //         console.log(response);
+        //             //this.props.history.push("/login");
+        //             //history.push("/login");
+        //     })
+        //     .catch(err => {
+        //         console.log(err);
+        // });
 
         // return fetch(`${config.apiUrl}/users/authenticate`, requestOptions)
         //     .then(handleResponse)
@@ -111,11 +116,12 @@ const mapStateToProps = state => {
     }
 }
 
-const mapDispatchToProps = dispatch => {
-    return {
-        resLogin : (data) => dispatch(resLoginAction(data))
-    }
-}
+// const mapDispatchToProps = dispatch => {
+//     return {
+//         resLogin : (data) => dispatch(resLoginAction(data)),
+//         errorAction : (data) => dispatch(errorAction(data))
+//     }
+// }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ResLogin);
+export default connect(mapStateToProps, {resLogin})(ResLogin);
 

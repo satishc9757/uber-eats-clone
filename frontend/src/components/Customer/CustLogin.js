@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import axios from 'axios';
 //import { custLogin } from '../../redux/reduxActions/customer/loginRedux';
 import { connect } from 'react-redux';
-import {custLoginAction} from '../../redux/reduxActions/customer/loginRedux';
+import {custLogin} from '../../redux/reduxActions/customer/loginRedux';
+import errorAction from '../../redux/reduxActions/errorRedux';
 
 class CustLogin extends Component {
 
@@ -23,15 +24,19 @@ class CustLogin extends Component {
     login = async (event) => {
         event.preventDefault();
         
-        try{
-            const url = "http://localhost:8000/customer/login";
-            const response = await axios.post(url, this.state);
-            this.props.custLogin(response.data);
-        } catch(err){
-            console.log("Error : "+err)
-        }
+        await this.props.custLogin(this.state);
         
         this.props.history.push("./home");
+
+
+        // try{
+        //     const url = "http://localhost:8000/customer/login";
+        //     const response = await axios.post(url, this.state);
+        //     this.props.custLogin(response.data);
+        // } catch(err){
+        //     this.props.errorAction(err);
+        //     console.log("Error : "+err)
+        // }
 
        //custLogin(this.state);
         
@@ -103,17 +108,4 @@ const mapStateToProps = state => {
     }
 }
 
-// const mapDispatchToProps = dispatch => {
-//     return {
-//         custLogin : (data) => dispatch(custLogin(data))
-//     }
-// }
-
-const custLoginActions = dispatch => {
-    return {
-        custLogin : (data) => dispatch(custLoginAction(data))
-    } 
-}
-
-
-export default connect(mapStateToProps, custLoginActions)(CustLogin)
+export default connect(mapStateToProps, {custLogin})(CustLogin)

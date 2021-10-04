@@ -280,3 +280,9 @@ button:focus {
   background-color: #d3d3d3;
   color: black;
 }
+
+a.res-card,
+a.res-card:hover {
+  color: inherit;
+  text-decoration: none;
+}

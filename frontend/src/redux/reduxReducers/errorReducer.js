@@ -4,7 +4,7 @@ const initialState = {
     error: {}
 }
 
-export default function (state = initialState, action){
+export default function errorReducer(state = initialState, action){
     switch(action.type){
         case ERROR: 
             console.log("ERROR reducer ");

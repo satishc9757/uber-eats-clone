@@ -68,3 +68,13 @@
       }
     }
   }
+
+.btn-outline-uber {
+    border-color: black;
+}
+
+.btn-check:checked + .btn-outline-uber, .btn-check:active + .btn-outline-uber, .btn-outline-uber:active, .btn-outline-uber.active, .btn-outline-uber.dropdown-toggle.show {
+    color: #fff;
+    background-color: black;
+    border-color: black;
+}

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from "react-router-dom";
-import resSignupAction from '../../redux/reduxActions/restaurant/signupRedux';
+import errorAction from '../../redux/reduxActions/errorRedux';
+import {resSignup} from '../../redux/reduxActions/restaurant/signupRedux';
 const axios = require('axios');
 
 
@@ -43,15 +44,18 @@ const axios = require('axios');
         
         if(isValid){
            
-            try{
-                const url = "http://localhost:8000/res/register";
-                const response = await axios.post(url, this.state);
-                this.props.resSignup(response.data);
-            } catch(err){
-                console.log("Error : "+err)
-            }
-            
+            await this.props.resSignup(this.state);
             this.props.history.push("./login");
+
+
+            // try{
+            //     const url = "http://localhost:8000/res/register";
+            //     const response = await axios.post(url, this.state);
+            //     this.props.resSignup(response.data);
+            // } catch(err){
+            //     this.props.errorAction(err);
+            //     console.log("Error : "+err)
+            // }
 
             // const url = "http://localhost:8000/res/register";
             // axios
@@ -231,7 +235,7 @@ const axios = require('axios');
                                                     value = {this.state.resCountry}
                                                     onChange = {this.onChangeField}
                                                     placeholder="Select Country" />
-                                                <label htmlFor="resCountry">State</label>
+                                                <label htmlFor="resCountry">Country</label>
                                                 {/* <div className="invalid">{this.state.custLastNameError}</div> */}
                                             </div>
                                         </div>
@@ -261,11 +265,6 @@ const mapStateToProps = state => {
     }
 }
 
-const mapDispatchToProps = dispatch => {
-    return {
-        resSignup : (data) => dispatch(resSignupAction(data))
-    }
-}
 
-export default connect(mapStateToProps, mapDispatchToProps)(ResSignup);
+export default connect(mapStateToProps, {resSignup})(ResSignup);
 

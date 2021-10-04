@@ -30,8 +30,10 @@ const dishUpload = multer({ storage: dishFileStorage });
 
 var router = express.Router();
 
+router.get("/query", resController.getRestaurantByQueryString);
 router.post("/register", validateResRegistration, resController.register_res);
 router.get("/id/:id", resController.getRestaurantById);
+
 router.put("/update", resUpload.array('resImages', 5),resController.updateRestaurant);
 
 router.post("/login", validateResLogin, resController.res_login);

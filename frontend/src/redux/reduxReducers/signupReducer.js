@@ -1,4 +1,4 @@
-import { SIGN_UP } from "../../reduxActions/actionTypes";
+import { SIGN_UP } from "../reduxActions/actionTypes";
 
 
 const initialState = {

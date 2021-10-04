@@ -6,12 +6,22 @@ import Header from '../Header';
 import Sidebar from '../Sidebar'; 
 import Content from './Content';
 import { connect } from 'react-redux';
-import { custLogoutAction } from '../../../redux/reduxActions/customer/loginRedux';
+import { custLogout } from '../../../redux/reduxActions/customer/loginRedux';
+import axios from 'axios';
+import { SERVER_ENDPOINT } from '../../constants/serverConfigs';
 
 class Dashboard extends Component {
 
     state = {
-        isSidebarOpen: false
+        isSidebarOpen: false,
+        resData: [
+            {resImage: "http://localhost:8000/static/images/res1.jpeg", resName: "Okayama Sushi", rating:"4.5", resDescription:"Not only is Okayama Sushi one of the most popular spots for Japanese delivery in San Jose."},
+            {resImage: "http://localhost:8000/static/images/res2.jpeg", resName:"Hawaiian BBQ", rating:"4.2", resDescription:"This is among the 3 most popular places for Hawaiian delivery in San Jose on Uber Eats."},
+            {resImage: "http://localhost:8000/static/images/res3.jpeg", resName: "Habana Cuba", rating:"4.4", resDescription:"This is among the 3 most popular places for Hawaiian delivery in San Jose on Uber Eats."},
+            {resImage: "http://localhost:8000/static/images/res1.jpeg", resName: "Okayama Sushi", rating:"4.5", resDescription:"Not only is Okayama Sushi one of the most popular spots for Japanese delivery in San Jose."},
+            {resImage: "http://localhost:8000/static/images/res2.jpeg", resName:"Hawaiian BBQ", rating:"4.2", resDescription:"This is among the 3 most popular places for Hawaiian delivery in San Jose on Uber Eats."},
+            {resImage: "http://localhost:8000/static/images/res3.jpeg", resName: "Habana Cuba", rating:"4.4", resDescription:"This is among the 3 most popular places for Hawaiian delivery in San Jose on Uber Eats."},
+        ]
     }
 
     navigateToLoginPage = () => {
@@ -23,13 +33,35 @@ class Dashboard extends Component {
         this.setState({isSidebarOpen: !this.state.isSidebarOpen});
     }
 
+    onResSearch = async (text) => {
+        
+        const searchText = text;
+        const url = SERVER_ENDPOINT + "/res/query?searchText="+searchText;
+        
+        try{
+            const response = await axios.get(url);
+            const data = response.data;
+            this.setState({resData: data});
+            console.log(" res data fetched : "+data);
+        } catch(err) {
+            console.log("Error while fecthing resturants "+err);
+        }    
+        
+
+    }
+
+
+    
+
     render(){
         return (
             <div>
-                <Header toggleSidebar={this.handleViewSidebar}/>
+                <Header toggleSidebar={this.handleViewSidebar} onResSearch={this.onResSearch}/>
                 <div className="wrapper">
-                    <Sidebar isOpen={this.state.isSidebarOpen} logout={this.props.custLogout} navigateToLoginPage={this.navigateToLoginPage}/>
-                    <Content />
+                    <Sidebar isOpen={this.state.isSidebarOpen} 
+                             logout={this.props.custLogout} 
+                             navigateToLoginPage={this.navigateToLoginPage}/>
+                    <Content resData={this.state.resData}/>
                 </div>
             </div>
         )
@@ -79,12 +111,12 @@ const mapStateToProps = state => {
 }
 
 
-const custLogoutActions = dispatch => {
-    return {
-        custLogout : (data) => dispatch(custLogoutAction(data))
-    } 
-}
+// const custLogoutActions = dispatch => {
+//     return {
+//         custLogout : (data) => dispatch(custLogoutAction(data))
+//     } 
+// }
 
 
-export default connect(mapStateToProps, custLogoutActions)(Dashboard)
+export default connect(mapStateToProps, {custLogout})(Dashboard)
 

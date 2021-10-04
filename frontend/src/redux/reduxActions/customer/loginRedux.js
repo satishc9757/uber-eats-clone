@@ -1,58 +1,30 @@
-import axios from "axios"
-import reduxStore from "../../reduxStore/store";
+import axios from "axios";
 import { ERROR, LOGGED_IN, LOGGED_OUT } from "../actionTypes";
 
-
-// export const custLogin = (data) => {
-//     axios.post("http://localhost:8000/customer/login", data)
-//         .then(response => {
-//             console.log("Response from login request ", response);
-//             console.log("Store obj : "+reduxStore);
-//             reduxStore.dispatch({
-//                 type:LOGGED_IN,
-//                 payload: response.data
-//             });
-//         })
-//         .catch(err => {
-//             console.log("Error from login request ", err);
-//             reduxStore.dispatch({
-//                 type:ERROR,
-//                 payload: err
-//             });
-//         });
-// }
-
-export const custLogin2 = (data) => async dispatch => {
-        console.log("Inside cust login redux ");  
-        await axios.post("http://localhost:8000/customer/login", data)
-        .then(response => {
-            console.log("Response from login request ", response);
-            //console.log("Store obj : "+reduxStore);
-            dispatch({
-                type:LOGGED_IN,
-                payload: response.data
-            });
-        })
-        .catch(err => {
-            console.log("Error from login request ", err);
-            dispatch({
-                type:ERROR,
-                payload: err
-            });
+export const custLogin = (data) => async dispatch => {
+    console.log("Inside cust login redux ");  
+    await axios.post("http://localhost:8000/customer/login", data)
+    .then(response => {
+        console.log("Response from login request ", response);
+        
+        dispatch({
+            type:LOGGED_IN,
+            payload: response.data
         });
-    }
-   
-export const custLoginAction = (data) => {
-    return {
-        type:LOGGED_IN,
-        payload: data
-    }
+    })
+    .catch(err => {
+        console.log("Error from login request ", err);
+        dispatch({
+            type:ERROR,
+            payload: err
+        });
+    });
 }
 
-export const custLogoutAction = (data) => {
-    return {
+export const custLogout = (data) => async dispatch =>  {
+    dispatch({
         type:LOGGED_OUT,
         payload: data
-    }
+    });
 }
 
