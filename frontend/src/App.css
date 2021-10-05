@@ -1,5 +1,5 @@
 .App {
-  text-align: center;
+  /* text-align: center; */
 }
 
 
@@ -285,4 +285,53 @@ a.res-card,
 a.res-card:hover {
   color: inherit;
   text-decoration: none;
+}
+
+.small-input-display {
+  padding: 0px 8px;
+}
+
+
+.order-side-panel{
+  background-color: grey;
+  
+}
+
+.shopping-summary{
+	border-top: 2px solid black;
+    background-color: #f7f7f7;
+    height: 100%;
+    padding: 30px;
+}
+
+.shopping-summary h3{
+	text-align: center;
+	font-size: 1.3em;
+	font-weight: 600;
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+
+.shopping-summary .shopping-summary-item:not(:last-of-type){
+	padding-bottom: 10px;
+	padding-top: 10px;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+ .shopping-summary .text{
+	font-size: 1em;
+	font-weight: 600;
+}
+
+.shopping-summary .price{
+	font-size: 1em;
+	float: right;
+}
+.shopping-summary button{
+	margin-top: 20px;
+}
+
+.grey-round-bg{
+  background-color: #dbdddf;
+  text-align: center;
 }

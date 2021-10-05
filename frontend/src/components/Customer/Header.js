@@ -5,6 +5,7 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import {faMapMarkerAlt} from "@fortawesome/free-solid-svg-icons";
 import {faShoppingCart} from "@fortawesome/free-solid-svg-icons";
 import uberLogo from "../../images/Uber_Eats_2020_logo.png";
+import CartModal from './Cart/CartModal';
 
 class Header extends Component{
     
@@ -87,10 +88,9 @@ class Header extends Component{
                                     placeholder=" What are you craving?"
                                     onChange={this.onChangeField}/> </li>
                         <li><button className="btn btn-uber" onClick={(event) => {this.props.onResSearch(this.state.searchText)}}><FontAwesomeIcon icon={faSearch} /></button></li>
-                        <li><span></span></li>
-                        <li><button className="btn btn-uber rounded-pill"><FontAwesomeIcon icon={faShoppingCart} /></button></li>
+                        
                     </ul>
-                    
+                    <CartModal />
 
                     {/* <div className="col-md-6">
                         <div className="form"> <span className="left-pan"><FontAwesomeIcon icon={faSearch} /></span> <input type="text" className="form-control form-input" placeholder="What are you craving?"/>  </div>

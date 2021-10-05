@@ -8,4 +8,6 @@ router.post("/register", validateCustRegistration, custController.register_custo
 
 router.post("/login", validateCustLogin, custController.login_customer);
 
+router.post("/order/create", custController.createOrder)
+
 module.exports = router;
