@@ -5,6 +5,10 @@ import DishCard from './DishCard'
 class Menu extends Component {
     
 
+    onAddToCart = (dish) => {
+        this.props.onAddToCart(dish);
+    }    
+
     renderDishCard = (card) => {
         return(
             // <div className="col-md-3">
@@ -23,7 +27,7 @@ class Menu extends Component {
             //             </Link>
             //         </div>
 
-            <DishCard dish={card} />
+            <DishCard onAddToCart={this.onAddToCart} dish={card} />
         )
     }
 

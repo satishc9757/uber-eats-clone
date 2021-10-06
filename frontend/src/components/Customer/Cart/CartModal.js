@@ -3,6 +3,7 @@ import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { Component } from 'react'
 import {Modal, Button} from 'react-bootstrap'
+import { Link } from 'react-router-dom';
 class CartModal extends Component{
 
     state = {
@@ -10,14 +11,14 @@ class CartModal extends Component{
         cartInfo: {
             cartResName: "La Vic",
             cartItems : [{ dishName: "Sandwich",
-                            dishQty: 1,
-                            disPrice: 15},
+                            dishQuantity: 1,
+                            dishPrice: 15},
                             { dishName: "Burrito",
-                            dishQty: 2,
-                            disPrice: 20},
+                            dishQuantity: 2,
+                            dishPrice: 20},
                             { dishName: "Burger",
-                            dishQty: 1,
-                            disPrice: 23}]
+                            dishQuantity: 1,
+                            dishPrice: 23}]
         }
     }
 
@@ -30,18 +31,43 @@ class CartModal extends Component{
         showCart: true,
     });
 
+    componentDidMount(){
+        // const cartInfo = sessionStorage.getItem("custCart");
+        // console.log("inside component did u");
+        // console.log("cartInfo : "+cartInfo);
+        // if(cartInfo){
+        //     this.setState({cartInfo: JSON.parse(cartInfo)});
+        // }
+        
+    }
 
     renderCartItem = (item) => {
         return(
             <div class="row">
-                <div class="col-md-2">{item.dishQty}</div>
+                <div class="col-md-2">{item.dishQuantity}</div>
                 <div class="col-md-8">{item.dishName}</div>
-                <div class="col-md-2">${item.disPrice}</div>
+                <div class="col-md-2">${item.dishPrice}</div>
             </div>         
         ) 
     }
 
     render(){
+
+        let cartInfo = sessionStorage.getItem("custCart");
+        
+        let cartItemsData = "";
+        let cartResName = "";
+        
+        if(!cartInfo){
+            cartItemsData = <p>Cart is empty</p>;
+        } else {
+            cartInfo = JSON.parse(cartInfo);
+            cartItemsData = cartInfo.cartItems.map(this.renderCartItem) ;
+            cartResName = cartInfo.cartResName;
+        }
+        
+        
+
         return (
 
             <div className="cart-modal">
@@ -51,20 +77,22 @@ class CartModal extends Component{
 
                 <Modal show={this.state.showCart} onHide={this.handleClose}>
                     <Modal.Header closeButton>
-                    <Modal.Title>{this.state.cartInfo.cartResName}</Modal.Title>
+                    <Modal.Title>{cartResName}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                     <div class="container-fluid">
-                        {this.state.cartInfo.cartItems.map(this.renderCartItem)}   
+                        {cartItemsData}
                     </div>
                     </Modal.Body>
                     <Modal.Footer>
                     {/* <Button variant="secondary" onClick={this.handleClose}>
                         Close
                     </Button> */}
-                    <Button variant="uber" onClick={this.handleClose}>
-                        Go to checkout
-                    </Button>
+                    <Link className="res-card" to={"/checkout"}>
+                        <Button variant="uber" onClick={this.handleClose}>
+                            Go to checkout
+                        </Button>
+                    </Link>
                     {/* <button type="button" class="btn btn-uber btn-lg btn-block">Go to checkout</button> */}
                     </Modal.Footer>
                 </Modal>

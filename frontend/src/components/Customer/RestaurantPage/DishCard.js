@@ -24,6 +24,7 @@ class DishCard extends Component {
     }
 
     onAddToCart = () => {
+        console.log("Here in DishCard");
         const dishData =  {...this.props.dish, dishQuantity: this.state.dishQuantity}
         this.props.onAddToCart(dishData);
     }

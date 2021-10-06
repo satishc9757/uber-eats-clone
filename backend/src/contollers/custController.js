@@ -57,12 +57,16 @@ exports.login_customer = function (req, res) {
       } else {
         console.log("Login successful");
         res.cookie('cookie',"customer",{maxAge: 900000, httpOnly: false, path : '/'});
-        res.cookie('customer', JSON.stringify({
-          custId: result[0].custId,
-          custEmail: result[0].custEmail,
-          custFirstName: result[0].custFirstName,
-          custLastName: result[0].custLastName,
-        }),{maxAge: 900000, httpOnly: false, path : '/'});
+        // res.cookie('customer', {
+        //   custId: result[0].custId,
+        //   custEmail: result[0].custEmail,
+        //   custFirstName: result[0].custFirstName,
+        //   custLastName: result[0].custLastName,
+        // },{maxAge: 900000, httpOnly: false, path : '/'});
+        res.cookie('custId',result[0].custId,{maxAge: 900000, httpOnly: false, path : '/'});
+        res.cookie('custEmail',result[0].custEmail,{maxAge: 900000, httpOnly: false, path : '/'});
+        res.cookie('custFirstName',result[0].custFirstName,{maxAge: 900000, httpOnly: false, path : '/'});
+        res.cookie('custLastName',result[0].custLastName,{maxAge: 900000, httpOnly: false, path : '/'});
         req.session.user = {
           custId: result[0].custId,
           custEmail: result[0].custEmail,

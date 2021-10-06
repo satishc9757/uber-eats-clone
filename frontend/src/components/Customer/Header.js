@@ -26,9 +26,9 @@ class Header extends Component{
         let redirectVar = null;
         // console.log("cookie : "+cookie.load('cookie'));
         // console.log("load cookie "+!cookie.load('cookie'));
-        if(!cookie.load('cookie')){
-            redirectVar = <Redirect to="/login"/>
-        }
+        // if(!cookie.load('cookie')){
+        //     redirectVar = <Redirect to="/login"/>
+        // }
 
         return (
             <div>

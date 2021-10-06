@@ -3,25 +3,15 @@ import { Card, FormControl, InputGroup, ListGroup, Radio } from 'react-bootstrap
 import DeliveryAddressModal from './DeliveryAddressModal';
 import axios from'axios';
 import {SERVER_ENDPOINT} from '../../constants/serverConfigs'
+import cookie  from 'react-cookies';
 
 class CheckoutPage extends Component{
     
     state = {
 
         cartInfo: {
-            cartResName: "La Vic",
-            cartItems : [{ dishName: "Sandwich",
-                            dishId: "1",
-                            dishQty: 1,
-                            dishPrice: 15.00},
-                            { dishName: "Burrito",
-                            dishQty: 2,
-                            dishId: "2",
-                            dishPrice: 20.44},
-                            { dishName: "Burger",
-                            dishId: "3",
-                            dishQty: 1,
-                            dishPrice: 23.00}]
+            cartResName: "",
+            cartItems : []
         },
         deliveryFee: 3.00,
         serviceFee: 5.00,
@@ -47,7 +37,8 @@ class CheckoutPage extends Component{
         //     zipcode: "95126",
         //     country: "US"
         // }],
-        selectedDeliveryAddressIndex : 0
+        selectedDeliveryAddressIndex : 0,
+        custId: ""
     }
 
     async componentDidMount(){
@@ -57,6 +48,23 @@ class CheckoutPage extends Component{
             const data = await response.data;
             console.log("Addresses data : "+JSON.stringify(data));
             this.setState({deliveryAddresses: data});
+
+
+            //Cart data
+            const cartInfo = sessionStorage.getItem("custCart");
+            console.log("inside component did u");
+            console.log("cartInfo : "+cartInfo);
+            if(cartInfo){
+                this.setState({cartInfo: JSON.parse(cartInfo)});
+            }
+
+            //user info
+            let custId = cookie.load("custId");
+            if(custId){
+                this.setState({custId: custId});
+                console.log("cust id" +this.state.custId );
+            }
+
         } catch(err){
             console.log(err);
         }
@@ -64,7 +72,7 @@ class CheckoutPage extends Component{
 
     subTotalAmount = () => {
         let total = 0;
-        const reducer = (previousValue, currentValue) => previousValue + (currentValue.dishPrice * currentValue.dishQty);
+        const reducer = (previousValue, currentValue) => previousValue + (parseFloat(currentValue.dishPrice) * parseFloat(currentValue.dishQuantity));
         total += this.state.cartInfo.cartItems.reduce(reducer, 0);
 
         return total;
@@ -80,6 +88,7 @@ class CheckoutPage extends Component{
     };
 
     decimalFormat = (num) => {
+        num = parseFloat(num);
         return num.toFixed(2);
     }
 
@@ -98,7 +107,7 @@ class CheckoutPage extends Component{
         return(
             <li class="list-group-item">
                 <div class="row">
-                    <div class="col-md-1 rounded-pill grey-round-bg">{item.dishQty}</div>
+                    <div class="col-md-1 rounded-pill grey-round-bg">{item.dishQuantity}</div>
                     <div class="col-md-9">{item.dishName}</div>
                     <div class="col-md-2">${this.decimalFormat(item.dishPrice)}</div>
                 </div>
@@ -127,8 +136,8 @@ class CheckoutPage extends Component{
                 deliveryAddress: this.state.deliveryAddresses[this.state.selectedDeliveryAddressIndex],
                 deliveryFee: this.state.deliveryFee,
                 serviceFee: this.state.serviceFee,
-                custId: "3", //hardcoded for now
-                resId: "2" //hardcoded for now
+                custId: this.state.custId, 
+                resId: this.state.cartInfo.cartResId
             }
             console.log("payload : "+JSON.stringify(payload));
             const response = await axios.post(url, payload);
