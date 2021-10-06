@@ -24,32 +24,39 @@ class CustLogin extends Component {
     login = async (event) => {
         event.preventDefault();
         
-        await this.props.custLogin(this.state);
+        // await this.props.custLogin(this.state);
         
-        this.props.history.push("./home");
+        // this.props.history.push("./home");
 
+        //set the with credentials to true
+        axios.defaults.withCredentials = true;
 
         // try{
+            
+
         //     const url = "http://localhost:8000/customer/login";
         //     const response = await axios.post(url, this.state);
-        //     this.props.custLogin(response.data);
+        //     this.props.history.push("./home");
+
+        //     //this.props.custLogin(response.data);
         // } catch(err){
         //     this.props.errorAction(err);
         //     console.log("Error : "+err)
         // }
 
-       //custLogin(this.state);
+        custLogin(this.state);
+        const url = "http://localhost:8000/customer/login";
         
-        // axios
-        //     .post(url, this.state)
-        //     .then(response => {
-        //         console.log(response);
-        //             //this.props.history.push("/login");
-        //             //history.push("/login");
-        //     })
-        //     .catch(err => {
-        //         console.log(err);
-        // });
+        axios
+            .post(url, this.state)
+            .then(response => {
+                console.log(response);
+                this.props.history.push("/home");
+                
+            })
+            .catch(err => {
+                console.log(err);
+            });
 
         // return fetch(`${config.apiUrl}/users/authenticate`, requestOptions)
         //     .then(handleResponse)

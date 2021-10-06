@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import cookie from 'react-cookies';
+import {Redirect} from 'react-router';
 
 class Sidebar extends Component{
     
@@ -6,6 +8,14 @@ class Sidebar extends Component{
         event.preventDefault();
         await this.props.logout();
         this.props.navigateToLoginPage(); 
+    }
+
+    
+    handleLogout = () => {
+        console.log("Logout clicked");
+        console.log("cookie data "+ cookie.load('cookie'));
+        cookie.remove('cookie', { path: '/' })
+        this.props.navigateToLoginPage();
     }
 
     render(){
@@ -63,7 +73,8 @@ class Sidebar extends Component{
                         <a href="https://bootstrapious.com/tutorial/files/sidebar.zip" className="download">Download source</a>
                     </li> */}
                     <li>
-                        <a href="https://bootstrapious.com/p/bootstrap-sidebar" onClick={this.onSignout} className="article">Signout</a>
+                        {/* <button onClick={this.handleLogout} className="btn btn-uber">Signout</button>  */}
+                        <a href="" onClick={this.handleLogout} className="article">Signout</a>
                     </li>
                 </ul>
             </nav>

@@ -23,6 +23,11 @@ class DishCard extends Component {
         })
     }
 
+    onAddToCart = () => {
+        const dishData =  {...this.props.dish, dishQuantity: this.state.dishQuantity}
+        this.props.onAddToCart(dishData);
+    }
+
     render(){
         return (
             <div className="col-md-3">
@@ -38,7 +43,7 @@ class DishCard extends Component {
                                                 <span className="small-input-display"> {this.state.dishQuantity}</span>
                                                 <a className="rounded-circle res-card" onClick={this.incrementQuantity}><FontAwesomeIcon icon={faPlus} /></a> 
                                     </div>
-                                    <button className="btn btn-uber rounded-pill" >Add to cart</button>
+                                    <button className="btn btn-uber rounded-pill" onClick={this.onAddToCart}>Add to cart</button>
                                 
                                 </div>
                             </div>

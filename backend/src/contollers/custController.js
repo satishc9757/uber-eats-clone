@@ -38,7 +38,8 @@ exports.login_customer = function (req, res) {
 
   console.log(data);
   let sql =
-    "SELECT COUNT(*) as count FROM customers WHERE cust_email = ? and cust_password = SHA1(?)";
+    // "SELECT COUNT(*) as count FROM customers WHERE cust_email = ? and cust_password = SHA1(?)";
+    "SELECT cust_id as custId, cust_email as custEmail, cust_first_name as custFirstName, cust_last_name as custLastName from customers WHERE cust_email = ? and cust_password = SHA1(?)"
   con.query(sql, [data.custUsername, data.custPassword], (err, result) => {
     if (err) {
       console.error("login_user : " + err);
@@ -47,12 +48,33 @@ exports.login_customer = function (req, res) {
         .send(JSON.stringify({ message: "Something went wrong!", err }));
     } else {
       console.log(result);
-      if (result[0].count == 0) {
+      // if (result[0].count == 0) {
+      if (result.length == 0) {  
+        console.log("Login failed");
         res
           .status(400)
           .send(JSON.stringify({ message: "Invalid login credentials." }));
       } else {
-        res.send(JSON.stringify({ user: data.custUsername }));
+        console.log("Login successful");
+        res.cookie('cookie',"customer",{maxAge: 900000, httpOnly: false, path : '/'});
+        res.cookie('customer', JSON.stringify({
+          custId: result[0].custId,
+          custEmail: result[0].custEmail,
+          custFirstName: result[0].custFirstName,
+          custLastName: result[0].custLastName,
+        }),{maxAge: 900000, httpOnly: false, path : '/'});
+        req.session.user = {
+          custId: result[0].custId,
+          custEmail: result[0].custEmail,
+          custFirstName: result[0].custFirstName,
+          custLastName: result[0].custLastName,
+        };
+
+        console.log("req session : "+JSON.stringify(req.session.user));
+        res.writeHead(200,{
+          'Content-Type' : 'text/plain'
+        })
+        res.end("Successful Login");
       }
     }
   });
@@ -63,7 +85,8 @@ exports.createOrder = async function(req, res) {
   const data = req.body;
   const address = data.deliveryAddress;
   const items = data.cartItems;
-  
+  console.log("add_id "+address.add_id);
+  if(address.add_id === null || address.add_id === ''){
     let addressSql = "INSERT INTO address (add_street, add_city, add_state, add_zipcode, add_country) VALUES (?, ?, ?, ?, ?)";
     con.query(addressSql, 
       [address.street, address.city, address.state, address.zipcode, address.country], (err, result1) => {
@@ -74,41 +97,112 @@ exports.createOrder = async function(req, res) {
             .status(500)
             .send(JSON.stringify({ message: "Something went wrong!", err }));
         } else {
-          console.log(result1);
-          let ordersSql = "INSERT INTO orders (order_cust_id, order_restaurant_id, order_address_id, order_delivery_fee, order_service_fee, order_timestamp, order_status) VALUES (?, ?, ?,?, ?, now(), 'Order Placed')";
+      //     console.log(result1);
+      //     let ordersSql = "INSERT INTO orders (order_cust_id, order_restaurant_id, order_address_id, order_delivery_fee, order_service_fee, order_timestamp, order_status) VALUES (?, ?, ?,?, ?, now(), 'Order Placed')";
           
-          con.query(ordersSql, 
-            [data.custId, data.resId, result1.insertId, data.deliveryFee, data.serviceFee], (err, result2) => {
-              if (err) {
-                console.error("createOrder 2 : " + err);
-                res
-                  .status(500)
-                  .send(JSON.stringify({ message: "Something went wrong!", err }));
-              } else {
-                let orderDetailsSql = "INSERT INTO order_details(od_order_id, od_dish_id, od_quantity, od_item_price) VALUES ?";
-                console.log("Order items : "+items);
+      //     con.query(ordersSql, 
+      //       [data.custId, data.resId, result1.insertId, data.deliveryFee, data.serviceFee], (err, result2) => {
+      //         if (err) {
+      //           console.error("createOrder 2 : " + err);
+      //           res
+      //             .status(500)
+      //             .send(JSON.stringify({ message: "Something went wrong!", err }));
+      //         } else {
+      //           let orderDetailsSql = "INSERT INTO order_details(od_order_id, od_dish_id, od_quantity, od_item_price) VALUES ?";
+      //           console.log("Order items : "+items);
                 
-                let inputArr = [];
+      //           let inputArr = [];
     
-                items.forEach(item => inputArr.push([result2.insertId, item.dishId, item.dishQty, item.dishPrice]));
-                console.log("input arr: "+inputArr);
-                con.query(orderDetailsSql, [inputArr], (err, result3) => {
-                  if (err) {
-                    console.error("createOrder 3 : " + err);
-                    res
-                      .status(500)
-                      .send(JSON.stringify({ message: "Something went wrong!", err }));
-                  } else {
-                    res.send(JSON.stringify({ message: "Order Placed successfully", err }));
-                  }
-              });
-            }
+      //           items.forEach(item => inputArr.push([result2.insertId, item.dishId, item.dishQty, item.dishPrice]));
+      //           console.log("input arr: "+inputArr);
+      //           con.query(orderDetailsSql, [inputArr], (err, result3) => {
+      //             if (err) {
+      //               console.error("createOrder 3 : " + err);
+      //               res
+      //                 .status(500)
+      //                 .send(JSON.stringify({ message: "Something went wrong!", err }));
+      //             } else {
+      //               res.send(JSON.stringify({ message: "Order Placed successfully", err }));
+      //             }
+      //         });
+      //       }
           
       
-      });
-
+      // });
+            return insertOrder(req, res, result1.insertId);
   
     }});
+  } else {
+      console.log("Address skipped!")
+      return insertOrder(req, res, address.add_id);
+  }
+
 }
 
 
+insertOrder = function(req, res, addId){
+  const data = req.body;
+  //console.log(result1);
+  let ordersSql = "INSERT INTO orders (order_cust_id, order_restaurant_id, order_address_id, order_delivery_fee, order_service_fee, order_timestamp, order_status) VALUES (?, ?, ?,?, ?, now(), 'Order Placed')";
+  
+  con.query(ordersSql, 
+    [data.custId, data.resId, addId, data.deliveryFee, data.serviceFee], (err, result2) => {
+      if (err) {
+        console.error("insertOrder : " + err);
+        res
+          .status(500)
+          .send(JSON.stringify({ message: "Something went wrong!", err }));
+      } else {
+        return insertOrderDetails(req, res, result2.insertId);
+    }
+  
+
+});
+}
+
+
+insertOrderDetails = function(req, res, orderId){
+  const data = req.body;
+  const items = data.cartItems;
+  let orderDetailsSql = "INSERT INTO order_details(od_order_id, od_dish_id, od_quantity, od_item_price) VALUES ?";
+        console.log("Order items : "+items);
+        
+        let inputArr = [];
+
+        items.forEach(item => inputArr.push([orderId, item.dishId, item.dishQty, item.dishPrice]));
+        console.log("input arr: "+inputArr);
+        con.query(orderDetailsSql, [inputArr], (err, result3) => {
+          if (err) {
+            console.error("createOrder 3 : " + err);
+            res
+              .status(500)
+              .send(JSON.stringify({ message: "Something went wrong!", err }));
+          } else {
+            res.send(JSON.stringify({ message: "Order Placed successfully", err }));
+          }
+      });
+}
+
+exports.getDeliveryAddressesForUser = function(req, res){
+  
+  const custId = req.query.custId;  
+  
+  let sql = "select a.add_id, a.add_street as street, a.add_city as city, a.add_state as state, a.add_zipcode as zipcode, a.add_country as country"
+            +" from address as a "
+            +" where a.add_id in (select distinct order_address_id "
+            +" from orders as o "
+            +" where o.order_cust_id = ?)";
+  
+  con.query(sql, [custId], (err, result) => {
+    if (err) {
+      console.error("getRestaurantById : " + err);
+      res
+        .status(500)
+        .send(JSON.stringify({ message: "Something went wrong!", err }));
+    } else {
+        console.log(result);
+        res.send(result);
+    }
+  }); 
+
+};

@@ -10,4 +10,6 @@ router.post("/login", validateCustLogin, custController.login_customer);
 
 router.post("/order/create", custController.createOrder)
 
+router.get("/order/address", custController.getDeliveryAddressesForUser);
+
 module.exports = router;

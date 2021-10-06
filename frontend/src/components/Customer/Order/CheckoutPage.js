@@ -25,28 +25,41 @@ class CheckoutPage extends Component{
         },
         deliveryFee: 3.00,
         serviceFee: 5.00,
-        deliveryAddresses: [{
-            street: "754, The Alameda ",
-            city: "San Jose",
-            state: "CA",
-            zipcode: "95126",
-            country: "US"
-        },
-        {
-            street: "754, The Alameda ",
-            city: "San Jose",
-            state: "CA",
-            zipcode: "95126",
-            country: "US"
-        },
-        {
-            street: "754, The Alameda ",
-            city: "San Jose",
-            state: "CA",
-            zipcode: "95126",
-            country: "US"
-        }],
+        deliveryAddresses: [],
+        // [{
+        //     street: "754, The Alameda ",
+        //     city: "San Jose",
+        //     state: "CA",
+        //     zipcode: "95126",
+        //     country: "US"
+        // },
+        // {
+        //     street: "754, The Alameda ",
+        //     city: "San Jose",
+        //     state: "CA",
+        //     zipcode: "95126",
+        //     country: "US"
+        // },
+        // {
+        //     street: "754, The Alameda ",
+        //     city: "San Jose",
+        //     state: "CA",
+        //     zipcode: "95126",
+        //     country: "US"
+        // }],
         selectedDeliveryAddressIndex : 0
+    }
+
+    async componentDidMount(){
+        try {
+            const url = SERVER_ENDPOINT + "/customer/order/address?custId="+"1";//hardcoded for now
+            const response = await axios.get(url);
+            const data = await response.data;
+            console.log("Addresses data : "+JSON.stringify(data));
+            this.setState({deliveryAddresses: data});
+        } catch(err){
+            console.log(err);
+        }
     }
 
     subTotalAmount = () => {
@@ -78,7 +91,7 @@ class CheckoutPage extends Component{
 
     onChangeDeliveryAddress = (event) => {
         console.log(event.target.value);
-        this.setState({selectedDeliveryAddress: event.target.value});
+        this.setState({selectedDeliveryAddressIndex: event.target.value});
     }
 
     renderCartItem = (item) => {

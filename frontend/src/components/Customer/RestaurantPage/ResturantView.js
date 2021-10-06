@@ -8,6 +8,7 @@ class ResturantView extends Component{
 
     state = {
         isSidebarOpen: false,
+        resId: "1",
         resImage : "http://localhost:8000/static/images/res1.jpeg",
         resName: "LA Vic",
         resDescription: "Of all the delivery spots in St. James Park, La Victoria Taqueria is among the 10 places with the most orders. If you're a fan of super burrito takeout like the rest of your city, you'll be happy to know it's offered at La Victoria",
@@ -48,6 +49,25 @@ class ResturantView extends Component{
 
     componentDidMount(){
 
+    }
+
+    onAddToCart = (dish) => {
+        const currentCartState = sessionStorage.getItem("custCart");
+        if(currentCartState){
+            currentCartState = JSON.parse(currentCartState);
+            if(currentCartState.resId != this.state.resId){
+                console.log("you cannot add from another cart")
+            } 
+        } else {
+            
+            const cartData = {
+                cartResId: this.state.resId,
+                cartResName: this.state.resName,
+                cartDishes: [dish],
+            }
+        }
+        const dishData =  {...this.props.dish, dishQuantity: this.state.dishQuantity}
+        this.props.onAddToCart(dishData);
     }
 
     render(){

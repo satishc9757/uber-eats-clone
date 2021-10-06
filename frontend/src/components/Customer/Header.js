@@ -6,6 +6,8 @@ import {faMapMarkerAlt} from "@fortawesome/free-solid-svg-icons";
 import {faShoppingCart} from "@fortawesome/free-solid-svg-icons";
 import uberLogo from "../../images/Uber_Eats_2020_logo.png";
 import CartModal from './Cart/CartModal';
+import cookie from 'react-cookies';
+import {Redirect} from 'react-router';
 
 class Header extends Component{
     
@@ -20,9 +22,17 @@ class Header extends Component{
     }
 
     render(){
+        
+        let redirectVar = null;
+        // console.log("cookie : "+cookie.load('cookie'));
+        // console.log("load cookie "+!cookie.load('cookie'));
+        if(!cookie.load('cookie')){
+            redirectVar = <Redirect to="/login"/>
+        }
+
         return (
             <div>
-
+                {redirectVar}
                 {/* <nav class="navbar navbar-inverse">
                 <div class="container-fluid">
                     
