@@ -1,4 +1,6 @@
+import axios from 'axios'
 import React, { Component } from 'react'
+import { SERVER_ENDPOINT } from '../../constants/serverConfigs'
 import Content from '../Dashboard/Content'
 import Header from '../Header'
 import Sidebar from '../Sidebar'
@@ -8,6 +10,13 @@ class ResturantView extends Component{
 
     state = {
         isSidebarOpen: false,
+        resData: {
+            resId: "2",
+            resImage : "http://localhost:8000/static/images/res1.jpeg",
+            resName: "LA Vic",
+            resDescription: "Of all the delivery spots in St. James Park, La Victoria Taqueria is among the 10 places with the most orders. If you're a fan of super burrito takeout like the rest of your city, you'll be happy to know it's offered at La Victoria",
+            resAddress: "140 E San Carlos St, San Jose, CA 95112 ",
+        },
         resId: "2",
         resImage : "http://localhost:8000/static/images/res1.jpeg",
         resName: "LA Vic",
@@ -47,8 +56,39 @@ class ResturantView extends Component{
        
     }
 
-    componentDidMount(){
+    async componentDidMount(){
+        this.setDishesData();
+        this.setResData();
+    }
 
+    setDishesData = async() => {
+        try{
+            const resId = this.props.match.params.resId;
+            const url = SERVER_ENDPOINT + "/res/getDishByRes/"+resId;
+
+            const response = await axios.get(url);
+            const data = response.data;
+            this.setState({resDishes: data});
+            console.log(" dishes data fetched : "+data);
+     
+        } catch(err) {
+            console.log("Error while fecthing resturants "+err);
+        }
+    }
+
+    setResData = async() => {
+        try{
+            const resId = this.props.match.params.resId;
+            const resUrl = SERVER_ENDPOINT + "/res/id/"+resId;
+
+            const response = await axios.get(resUrl);
+            const data = response.data;
+            this.setState({resData: data});
+            console.log(" res data fetched : "+data);
+     
+        } catch(err) {
+            console.log("Error while fecthing resturants "+err);
+        }
     }
 
     onAddToCart = (dish) => { 
@@ -88,12 +128,12 @@ class ResturantView extends Component{
                     <div className="container-fluid">
                         <div className="row">
                             <div class="card mb-3">
-                                <img class="card-img-top res-dashboard-image" src={this.state.resImage} alt="Card image cap" />
+                                <img class="card-img-top res-dashboard-image" src={this.state.resData.resImage} alt="Card image cap" />
                                 <div class="card-body">
-                                    <h5 class="card-title">{this.state.resName}</h5>
-                                    <p>{this.state.resDescription}</p>
-                                    <p>{this.state.resAddress}</p>
-                                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                                    <h5 class="card-title">{this.state.resData.resName}</h5>
+                                    <p>{this.state.resData.resDescription}</p>
+                                    <p>{this.state.resData.resAddress}</p>
+                                    {/* <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> */}
                                 </div>
                             </div>
                         </div>

@@ -38,7 +38,9 @@ router.put("/update", resUpload.array('resImages', 5),resController.updateRestau
 
 router.post("/login", validateResLogin, resController.res_login);
 
+router.get("/getDishByRes/:resId", resController.getDishByRes);
 router.get("/dish", resController.getAllDishes);
+
 router.post("/dish", dishUpload.single('dishImage'), resController.addDish);
 router.get("/dish/:id", resController.getDish);
 router.put("/dish", resController.updateDish);

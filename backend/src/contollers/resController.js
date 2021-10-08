@@ -276,6 +276,26 @@ exports.getAllDishes =  function(req, res){
 
 };
 
+exports.getDishByRes =  function(req, res){
+  const resId = req.params.resId;
+  let sql = "select dish_id as dishId, dish_res_id as dishResId, dish_name as dishName, dish_main_ingredients as dishMainIngredients, dish_image_link as dishImage, dish_price as dishPrice, dish_desc as dishDesc, dish_category as dishCategory, dish_type as dishType  from dishes where dish_res_id=? ";
+  console.log("I am here in the getDishByRes")
+  con.query(sql, [resId], (err, result) => {
+    if (err) {
+      console.error("getDishByRes : " + err);
+      res
+        .status(500)
+        .send(JSON.stringify({ message: "Something went wrong!", err }));
+    } else {
+      console.log(result);
+      data = result;
+      
+      res.send(JSON.stringify(result));
+    }
+  }); 
+
+};
+
 exports.getDish =  function(req, res){
   const dishId = req.params.id;  
   console.log("In am here in the get dishes")

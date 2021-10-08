@@ -42,13 +42,13 @@ class CheckoutPage extends Component{
     }
 
     async componentDidMount(){
+        const custId = cookie.load('custId');
         try {
-            const url = SERVER_ENDPOINT + "/customer/order/address?custId="+"1";//hardcoded for now
+            const url = SERVER_ENDPOINT + "/customer/order/address?custId="+custId;
             const response = await axios.get(url);
             const data = await response.data;
             console.log("Addresses data : "+JSON.stringify(data));
             this.setState({deliveryAddresses: data});
-
 
             //Cart data
             const cartInfo = sessionStorage.getItem("custCart");

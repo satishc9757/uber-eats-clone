@@ -187,6 +187,54 @@ insertOrderDetails = function(req, res, orderId){
       });
 }
 
+exports.getOrdersByCustomer = function(req, res){
+  
+  const custId = req.query.custId;  
+  
+  let sql = "select o.order_id as orderId, o.order_total as orderTotal, r.res_name as resName, a.add_street as street, a.add_city as city, a.add_state as state, a.add_zipcode as zipcode," 
+            +" DATE_FORMAT(order_timestamp, '%Y-%m-%d %H:%i:%s') as orderTimestamp, order_status as orderStatus, order_delivery_fee as orderDeliveryFee, order_service_fee as orderServiceFee "
+            +" from orders as o, restaurants as r, address as a "
+            +" where o.order_restaurant_id = r.res_id "
+            +" and o.order_address_id = a.add_id "
+            +" and o.order_cust_id = ? "
+  
+  con.query(sql, [custId], (err, result) => {
+    if (err) {
+      console.error("getOrdersByCustomer : " + err);
+      res
+        .status(500)
+        .send(JSON.stringify({ message: "Something went wrong!", err }));
+    } else {
+        console.log(result);
+        res.send(result);
+    }
+  }); 
+
+};
+
+exports.getOrderDetailsByOrderId = function(req, res){
+  
+  const orderId = req.query.orderId;  
+  
+  let sql = "select o.od_id as odId, d.dish_name as dishName, o.od_quantity as odQuantity, o.od_item_price as odPrice"
+            +" from order_details as o, dishes as d"
+            +" where o.od_dish_id = d.dish_id"
+            +" and o.od_order_id = ? "
+  
+  con.query(sql, [orderId], (err, result) => {
+    if (err) {
+      console.error("getOrderDetailsByOrderId : " + err);
+      res
+        .status(500)
+        .send(JSON.stringify({ message: "Something went wrong!", err }));
+    } else {
+        console.log(result);
+        res.send(result);
+    }
+  }); 
+
+};
+
 exports.getDeliveryAddressesForUser = function(req, res){
   
   const custId = req.query.custId;  

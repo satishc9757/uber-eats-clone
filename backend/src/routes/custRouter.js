@@ -12,4 +12,8 @@ router.post("/order/create", custController.createOrder)
 
 router.get("/order/address", custController.getDeliveryAddressesForUser);
 
+router.get("/orders", custController.getOrdersByCustomer);
+
+router.get("/orderdetails", custController.getOrderDetailsByOrderId);
+
 module.exports = router;
