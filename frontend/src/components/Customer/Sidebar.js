@@ -30,7 +30,7 @@ class Sidebar extends Component{
                 <ul className="list-unstyled components">
                     {/* <p>Dummy Heading</p> */}
                     <li className="active">
-                        <a href="/res/home" data-toggle="collapse" aria-expanded="false">Dashboard</a>
+                        <a href="./home" data-toggle="collapse" aria-expanded="false">Dashboard</a>
                         {/* <ul className="collapse list-unstyled" id="homeSubmenu">
                             <li>
                                 <a href="/res/home">Home</a>
@@ -44,7 +44,13 @@ class Sidebar extends Component{
                         </ul> */}
                     </li>
                     <li>
-                        <a href="/res/profile">Profile</a>
+                        <a href="./profile">Profile</a>
+                    </li>
+                    <li>
+                        <a href="./orders">Orders</a>
+                    </li>
+                    <li>
+                        <a href="./checkout">Checkout</a>
                     </li>
                     {/* <li>
                         <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" className="dropdown-toggle">Pages</a>

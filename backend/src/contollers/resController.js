@@ -338,3 +338,80 @@ exports.deleteDish =  function(req, res){
   }); 
 
 };
+
+
+exports.getOrdersByRes = function(req, res){
+  
+  const resId = req.query.resId;  
+  
+  let sql = "select o.order_id as orderId, o.order_total as orderTotal, c.cust_first_name as custFirstName, c.cust_last_name as custLastName, c.cust_id as custId, a.add_street as street, a.add_city as city, a.add_state as state, a.add_zipcode as zipcode," 
+            +" DATE_FORMAT(order_timestamp, '%Y-%m-%d %H:%i:%s') as orderTimestamp, order_status as orderStatus, order_delivery_fee as orderDeliveryFee, order_service_fee as orderServiceFee "
+            +" from orders as o, restaurants as r, address as a, customers as c "
+            +" where o.order_restaurant_id = r.res_id "
+            +" and o.order_address_id = a.add_id "
+            +" and o.order_res_id = ? "
+  
+  con.query(sql, [resId], (err, result) => {
+    if (err) {
+      console.error("getOrdersByRes : " + err);
+      res
+        .status(500)
+        .send(JSON.stringify({ message: "Something went wrong!", err }));
+    } else {
+        console.log(result);
+        res.send(result);
+    }
+  }); 
+
+};
+
+exports.getOrderDetailsByOrderId = function(req, res){
+  
+  const orderId = req.query.orderId;  
+  
+  let sql = "select o.od_id as odId, d.dish_name as dishName, o.od_quantity as odQuantity, o.od_item_price as odPrice"
+            +" from order_details as o, dishes as d"
+            +" where o.od_dish_id = d.dish_id"
+            +" and o.od_order_id = ? "
+  
+  con.query(sql, [orderId], (err, result) => {
+    if (err) {
+      console.error("getOrderDetailsByOrderId : " + err);
+      res
+        .status(500)
+        .send(JSON.stringify({ message: "Something went wrong!", err }));
+    } else {
+        console.log(result);
+        res.send(result);
+    }
+  }); 
+
+};
+
+
+exports.updateOrderStatus = function (req, res) {
+  const data = req.body;
+  
+  let sql = "UPDATE orders SET order_status = ? " 
+                   + " WHERE order_id = ?"
+
+  con.query(
+    sql,
+    [
+      data.orderStatus,
+      data.orderId,
+    ],
+    (err, result) => {
+      if (err) {
+        console.error("updateOrderStatus : " + err);
+        res
+          .status(500)
+          .send(JSON.stringify({ message: "Something went wrong!", err }));
+      } else {
+        //console.log("address inserted "+result);
+        res.send("Order Status updated successfully");
+      }
+    }
+  );
+  
+};

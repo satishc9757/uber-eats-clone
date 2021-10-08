@@ -37,7 +37,7 @@ class OrderSummaryModal extends Component {
         try{
             const orderId = this.props.orderId;
             
-            const url = SERVER_ENDPOINT + "/customer/orderdetails?orderId="+6; //hardcoded for now
+            const url = SERVER_ENDPOINT + "/res/orderdetails?orderId="+6; //hardcoded for now
             const response = await axios.get(url);
             const data = await response.data;
             console.log("order details data : "+JSON.stringify(data));

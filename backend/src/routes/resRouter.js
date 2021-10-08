@@ -46,5 +46,10 @@ router.get("/dish/:id", resController.getDish);
 router.put("/dish", resController.updateDish);
 router.delete("/dish", resController.deleteDish);
 
+router.get("/orders", resController.getOrdersByRes);
+router.get("/orderdetails", resController.getOrderDetailsByOrderId);
+
+router.put("/order/status", resController.updateOrderStatus);
+
 
 module.exports = router;

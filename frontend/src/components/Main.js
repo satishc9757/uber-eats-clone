@@ -13,6 +13,8 @@ import Dashboard from './Customer/Dashboard/Dashboard';
 import ResturantView from './Customer/RestaurantPage/ResturantView';
 import CheckoutPage from './Customer/Order/CheckoutPage';
 import OrdersList from './Customer/Order/OrdersList';
+import ResOrdersList from './Restaurant/Orders/OrdersList';
+import CustProfile from './Customer/CustProfile';
 
 class Main extends Component{
     render(){
@@ -23,6 +25,7 @@ class Main extends Component{
                 <Route path ="/login" exact component={CustLogin}></Route>
                 <Route path ="/home" exact component={Dashboard}></Route>
                 <Route path ="/checkout" component={CheckoutPage}></Route>  
+                <Route path ="/profile" component={CustProfile}></Route>  
                 <Route path ="/res/login" exact component={ResLogin}></Route>  
                 <Route path ="/res/signup" exact component={ResSignup}></Route>  
                 <Route path ="/res/home" exact component={ResDashboard}></Route>
@@ -31,6 +34,7 @@ class Main extends Component{
                 <Route path ="/res/dish/:dishId" component={ResDishUpdate}></Route>
                 <Route path ="/res/store/:resId" component={ResturantView}></Route>
                 <Route path ="/orders" component={OrdersList}></Route>
+                <Route path ="/res/orders" component={ResOrdersList}></Route>
 
             </div>
         )
