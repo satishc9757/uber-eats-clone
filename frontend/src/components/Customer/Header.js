@@ -13,12 +13,22 @@ class Header extends Component{
     
     state = {
         dishType: "Veg",
-        searchText:""
+        searchText:"",
+        deliveryType: "Delivery"
     }
 
     onChangeField =  (event) => {
         //console.log("value "+event.target.value);
         this.setState({[event.target.name]: event.target.value});
+    }
+
+    onDishTypChange =  (event) => {
+        //console.log("value "+event.target.value);
+        this.setState({[event.target.name]: event.target.value});
+        this.props.onDishTypeFilter(event.target.value);
+    }
+
+    onDeliveryTypeChange = (event) => {
     }
 
     render(){
@@ -29,8 +39,9 @@ class Header extends Component{
         // if(!cookie.load('cookie')){
         //     redirectVar = <Redirect to="/login"/>
         // }
-
+        let custLocation = cookie.load("custLocation");
         return (
+            
             <div>
                 {redirectVar}
                 {/* <nav class="navbar navbar-inverse">
@@ -56,17 +67,17 @@ class Header extends Component{
                 <div className="container-fluid">
                     <div className="navbar-header">
                         <button className="btn btn-light" onClick={this.props.toggleSidebar}> <FontAwesomeIcon icon={faBars} /></button>
-                        <a className=" navbar-brand ps-3" href="./home"><img src={uberLogo} alt="Uber Eats logo"/></a>
+                        <a className=" navbar-brand ps-3" href="/home"><img src={uberLogo} alt="Uber Eats logo"/></a>
                         
                     </div>
                     
                     <div class="switch-button">
-                            <input class="switch-button-checkbox" type="checkbox"></input>
+                            <input class="switch-button-checkbox" type="checkbox" onChange={this.onDeliveryTypeChange}></input>
                             <label class="switch-button-label" for=""><span class="switch-button-label-span">Delivery</span></label>
                     </div>
 
                     <div class="nav-location">
-                        <button className="btn btn-grey rounded-pill"><FontAwesomeIcon icon={faMapMarkerAlt} /> San Jose</button>
+                        <button className="btn btn-grey rounded-pill"><FontAwesomeIcon icon={faMapMarkerAlt} />{custLocation}</button>
                     </div>
 
                     {/* <div className="btn-group" data-toggle="buttons-radio">
@@ -75,13 +86,13 @@ class Header extends Component{
                     </div> */}
 
                     <div class="btn-group">
-                        <input type="radio" class="btn-check" name="distType" id="resVeg" autocomplete="off" value="Veg" onChange={this.onChangeField}/>
+                        <input type="radio" class="btn-check" name="distType" id="resVeg" autocomplete="off" value="Veg" onChange={this.onDishTypChange}/>
                         <label class="btn btn-outline-uber rounded-pill" for="resVeg">Veg</label>
                     
-                        <input type="radio" class="btn-check" name="distType" id="resNonVeg" autocomplete="off" value="Non-Veg" onChange={this.onChangeField} />
+                        <input type="radio" class="btn-check" name="distType" id="resNonVeg" autocomplete="off" value="Non-Veg" onChange={this.onDishTypChange} />
                         <label class="btn btn-outline-uber rounded-pill" for="resNonVeg">Non-Veg</label>
                     
-                        <input type="radio" class="btn-check" name="distType" id="resVegan" autocomplete="off" value="Vegan" onChange={this.onChangeField} />
+                        <input type="radio" class="btn-check" name="distType" id="resVegan" autocomplete="off" value="Vegan" onChange={this.onDishTypChange} />
                         <label class="btn btn-outline-uber rounded-pill" for="resVegan">Vegan</label>
                     </div>
                     {/* <ul class="nav navbar-nav navbar-right">

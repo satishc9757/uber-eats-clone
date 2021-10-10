@@ -1,5 +1,7 @@
 var con = require("../database/mysqlConnection");
 const util = require('util');
+const {uploadFile} = require('../aws/s3/FileUpload')
+const { unlinkSync } = require('fs');
 
 exports.register_customer = function (req, res) {
   const data = req.body;
@@ -39,7 +41,8 @@ exports.login_customer = function (req, res) {
   console.log(data);
   let sql =
     // "SELECT COUNT(*) as count FROM customers WHERE cust_email = ? and cust_password = SHA1(?)";
-    "SELECT cust_id as custId, cust_email as custEmail, cust_first_name as custFirstName, cust_last_name as custLastName from customers WHERE cust_email = ? and cust_password = SHA1(?)"
+    "SELECT cust_id as custId, cust_email as custEmail, cust_first_name as custFirstName, cust_last_name as custLastName, cust_profile_image_link as custImageLink, IFNULL(add_city,'') as custLocation "
+      +" from customers as c left join address as a on c.cust_address_id = a.add_id WHERE  cust_email = ? and cust_password = SHA1(?)"
   con.query(sql, [data.custUsername, data.custPassword], (err, result) => {
     if (err) {
       console.error("login_user : " + err);
@@ -67,6 +70,8 @@ exports.login_customer = function (req, res) {
         res.cookie('custEmail',result[0].custEmail,{maxAge: 900000, httpOnly: false, path : '/'});
         res.cookie('custFirstName',result[0].custFirstName,{maxAge: 900000, httpOnly: false, path : '/'});
         res.cookie('custLastName',result[0].custLastName,{maxAge: 900000, httpOnly: false, path : '/'});
+        res.cookie('custImageLink',result[0].custImageLink,{maxAge: 900000, httpOnly: false, path : '/'});
+        res.cookie('custLocation',result[0].custLocation,{maxAge: 900000, httpOnly: false, path : '/'});
         req.session.user = {
           custId: result[0].custId,
           custEmail: result[0].custEmail,
@@ -187,6 +192,29 @@ insertOrderDetails = function(req, res, orderId){
       });
 }
 
+exports.getCustomerById = async function(req, res){
+  
+  const custId = req.params.id;  
+  
+  let sql = "select cust_id as custId, cust_first_name as custFirstName, cust_last_name as custLastName, cust_email as custEmail, cust_phone as custPhone, cust_dob as custDob, IFNULL(cust_nickname, '') as custNickname, cust_about as custAbout, cust_profile_image_link as custImage, add_street as custStreet, add_city as custCity, add_state as custState, add_zipcode as custZipcode, add_country as custCountry, add_id as custAddId "
+            +" from customers as c LEFT JOIN address as a ON c.cust_address_id = a.add_id" 
+            +" where c.cust_id = ? ";
+  
+  con.query(sql, [custId], (err, result) => {
+    if (err) {
+      console.error("getCustomerById : " + err);
+      res
+        .status(500)
+        .send(JSON.stringify({ message: "Something went wrong!", err }));
+    } else {
+      console.log(result);
+      data = result;
+      res.send(JSON.stringify(result));
+    }
+  }); 
+
+};
+
 exports.getOrdersByCustomer = function(req, res){
   
   const custId = req.query.custId;  
@@ -258,3 +286,133 @@ exports.getDeliveryAddressesForUser = function(req, res){
   }); 
 
 };
+
+exports.updateCustomerProfile = async function (req, res) {
+  const data = req.body;
+  const file = req.file;
+  
+  console.log("file "+ JSON.stringify(file));
+  console.log("data "+ JSON.stringify(data));
+ 
+  const fileKey = file.destination +"/"+ data.custId +"_"+file.filename;
+  
+  const fileUploadRes = await uploadFile(file, fileKey);  
+  
+  console.log("file uploaed to s3 " +JSON.stringify(fileUploadRes));
+
+  try {
+    unlinkSync(file.path);
+    console.log('successfully deleted /tmp/hello');
+  } catch (err) {
+    // handle the error
+  }
+
+    let addId = data.custAddId;
+    console.log("Address id : "+addId);
+    if(data.custAddId == null || data.custAddId === '' || data.custAddId == 'null'){
+      let addressSql = "INSERT INTO address (add_street, add_city, add_state, add_zipcode, add_country) VALUES (?, ?, ?, ?, ?)"
+      const addressInsertRes =  con.query(addressSql, [
+        data.custStreet,
+        data.custCity,
+        data.custState,
+        data.custZipcode,
+        data.custCountry
+      ],
+      (err, result) => {
+        if (err) {
+          console.error("register_user : " + err);
+          res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+        } else {
+          console.log(result);
+          updateCustData(req, res, result.insertId, fileUploadRes.Location);
+        }
+      });
+      
+    
+    } else {
+      let addressUpdateSql = "UPDATE address SET add_street = ?, add_city = ?, add_state = ?, add_zipcode = ?, add_country = ? "
+      +" WHERE add_id = ?"
+      const addressResult = con.query(addressUpdateSql, [
+        data.custStreet,
+        data.custCity,
+        data.custState,
+        data.custZipcode,
+        data.custCountry,
+        data.addId
+      ],
+      (err, result) => {
+        if (err) {
+          console.error("register_user : " + err);
+          res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+        } else {
+          console.log(result);
+          updateCustData(req, res, data.addId, fileUploadRes.Location);
+        }
+      });
+    
+    }
+
+    // let custUpdateSql = "UPDATE customers SET cust_first_name = ?, cust_last_name = ?, cust_email = ?, cust_about = ?, cust_phone = ?, cust_dob = ?, cust_nickname = ?, cust_profile_image_link = ?, cust_address_id = ?, cust_update_timestamp = now()"
+    //                     +" WHERE cust_id = ?"
+
+    // const resResult = await con.query(custUpdateSql, [
+    //                         data.custFirstName,
+    //                         data.custLastName,
+    //                         data.custEmail,
+    //                         data.custAbout,
+    //                         data.custPhone,
+    //                         data.custDob,
+    //                         data.custNickname,
+    //                         data.custId+"_"+file.originalname,
+    //                         addId,
+    //                         data.custId
+    //                       ]);
+
+    // console.log(resResult); 
+    // res.send(JSON.stringify({ message: "Customer updated" }));
+    
+
+  
+  
+};
+
+
+updateCustData = async function(req, res, addId, imageLink){
+  const file = req.file;
+  const data = req.body;
+  let custUpdateSql = "UPDATE customers SET cust_first_name = ?, cust_last_name = ?, cust_email = ?, cust_about = ?, cust_phone = ?, cust_dob = ?, cust_nickname = ?, cust_profile_image_link = ?, cust_address_id = ?, cust_update_timestamp = now()"
+                        +" WHERE cust_id = ?"
+
+    const resResult = await asyncQuery(custUpdateSql, [
+                            data.custFirstName,
+                            data.custLastName,
+                            data.custEmail,
+                            data.custAbout,
+                            data.custPhone,
+                            data.custDob,
+                            data.custNickname,
+                            imageLink,
+                            addId,
+                            data.custId
+                          ]);
+
+    console.log(resResult); 
+    res.send(JSON.stringify({ message: "Customer updated" }));
+}
+
+
+
+function asyncQuery(query, params) {
+  return new Promise((resolve, reject) =>{
+      con.query(query, params, (err, result) => {
+          if (err)
+              return reject(err);
+          resolve(result);
+      });
+  });
+
+}

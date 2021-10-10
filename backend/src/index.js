@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const cors = require('cors');
@@ -7,6 +8,10 @@ const custRouter = require('./routes/custRouter');
 const resRouter = require('./routes/resRouter');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
+
+
+
+
 //listening
 app.listen(port, () => console.info("Listening on port " + port));
 const image_dir = "/Users/satishc/Desktop/Folders/Masters/SJSU/Courses/EDS - Shim/Images/restaurants/";

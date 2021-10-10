@@ -23,9 +23,9 @@ class ResLogin extends Component {
             body: JSON.stringify(this.state)
         };
     
-       
-        await this.props.resLogin(this.state);
-        this.props.history.push("./home");
+        axios.defaults.withCredentials = true;
+        //await this.props.resLogin(this.state);
+        //this.props.history.push("./home");
 
 
          // try{
@@ -40,18 +40,17 @@ class ResLogin extends Component {
         
         
         //console.log("State inside login: "+this.state);
-        //custLogin(this.state);
-        // const url = "http://localhost:8000/res/login";
-        // axios
-        //     .post(url, this.state)
-        //     .then(response => {
-        //         console.log(response);
-        //             //this.props.history.push("/login");
-        //             //history.push("/login");
-        //     })
-        //     .catch(err => {
-        //         console.log(err);
-        // });
+        const url = "http://localhost:8000/res/login";
+        axios
+            .post(url, this.state)
+            .then(response => {
+                console.log(response);
+                    //this.props.history.push("/login");
+                this.props.history.push("./home");
+            })
+            .catch(err => {
+                console.log(err);
+        });
 
         // return fetch(`${config.apiUrl}/users/authenticate`, requestOptions)
         //     .then(handleResponse)

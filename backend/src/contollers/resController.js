@@ -1,6 +1,7 @@
 
 var con = require("../database/mysqlConnection");
-
+const {uploadFile} = require('../aws/s3/FileUpload')
+const { unlinkSync } = require('fs');
 
 exports.register_res = function (req, res) {
   const data = req.body;
@@ -25,13 +26,14 @@ exports.register_res = function (req, res) {
       } else {
         console.log("address inserted "+addressResult);
         let sql =
-        "INSERT INTO restaurants (res_name, res_email, res_password, res_address_id, res_create_timestamp, res_update_timestamp) VALUES (?, ?, SHA1(?), ?, now(), now())";
+        "INSERT INTO restaurants (res_name, res_email, res_password, res_delivery_type, res_address_id, res_create_timestamp, res_update_timestamp) VALUES (?, ?, SHA1(?), ?, ?, now(), now())";
         con.query(
           sql,
           [
             data.resName,
             data.resEmail,
             data.resPassword,
+            data.resDeliveryType,
             addressResult.insertId
           ],
           (err, result) => {
@@ -57,13 +59,21 @@ exports.register_res = function (req, res) {
 };
 
 exports.updateRestaurant = async function (req, res) {
-  const data = req.body;
-  const files = req.files;
-  console.log("file "+ JSON.stringify(files));
-  console.log("data "+ JSON.stringify(data));
-  //console.log("dishName : "+ data.dishName);
+  
   
   try{
+
+    const data = req.body;
+    const file = req.file;
+    console.log("file "+ JSON.stringify(file));
+    console.log("data "+ JSON.stringify(data));
+    //console.log("dishName : "+ data.dishName);
+    const fileKey = file.destination +"/"+ data.resId +"_"+file.filename;
+    
+    const fileUploadRes = await uploadFile(file, fileKey);  
+    
+    console.log("file uploaed to s3 " +JSON.stringify(fileUploadRes));
+
     let addressUpdateSql = "UPDATE address SET add_street = ?, add_city = ?, add_state = ?, add_zipcode = ?, add_country = ? "
                           +" WHERE add_id = (SELECT res_address_id from restaurants WHERE res_id = ?)"
     const addressResult = await con.query(addressUpdateSql, [
@@ -77,21 +87,25 @@ exports.updateRestaurant = async function (req, res) {
 
     console.log(addressResult);
 
-    let resUpdateSql = "UPDATE restaurants SET res_name = ?, res_email = ?, res_password = SHA1(?), res_description = ?, res_phone = ?, res_update_timestamp = now()"
+    let resUpdateSql = "UPDATE restaurants SET res_name = ?, res_email = ?, res_description = ?, res_phone = ?, res_image = ?, res_update_timestamp = now()"
                         +" WHERE res_id = ?"
 
     const resResult = await con.query(resUpdateSql, [
                             data.resName,
                             data.resEmail,
-                            data.resPassword,
                             data.resDescription,
                             data.resPhone,
+                            fileUploadRes.Location,
                             data.resId
                           ]);
 
     console.log(resResult); 
+    
+    unlinkSync(file.path);
+    console.log('successfully deleted after upload');
 
-    const delQuery = "DELETE FROM res_images WHERE img_res_id = ?";                      
+    res.send(JSON.stringify({ message: "Restaurant updated" }));
+    /*const delQuery = "DELETE FROM res_images WHERE img_res_id = ?";                      
     const delRes = await con.query(delQuery, [data.resId]);
     console.log("after delete " +delRes); 
 
@@ -103,14 +117,14 @@ exports.updateRestaurant = async function (req, res) {
     console.log("input arr: "+inputArr);
     const imageInsertRes = await con.query(insertImgQuery, [inputArr]);
 
-    console.log("after image insert "+imageInsertRes);                        
+    console.log("after image insert "+imageInsertRes);   */                     
   } catch(err){
       console.error("updateRes : " + err);
       res
           .status(500)
           .send(JSON.stringify({ message: "Something went wrong!", err }));
   }
-  res.send(JSON.stringify({ message: "User updated" }));
+  
   
 };
 
@@ -119,7 +133,7 @@ exports.getRestaurantById = function(req, res){
   
   const resId = req.params.id;  
   
-  let sql = "select res_id as resId, res_name as resName, res_email as resEmail, res_description as resDescription, res_phone as resPhone, add_street as resStreet, add_city as resCity, add_state as resState, add_zipcode as resZipcode "
+  let sql = "select res_id as resId, res_name as resName, res_email as resEmail, res_description as resDescription, res_phone as resPhone, add_street as resStreet, add_city as resCity, add_state as resState, add_zipcode as resZipcode, res_delivery_time as resDeliveryTime, res_image as resImage "
             +" from restaurants as r, address as a" 
             +" where r.res_address_id = a.add_id and res_id = ?";
   
@@ -132,7 +146,7 @@ exports.getRestaurantById = function(req, res){
     } else {
       console.log(result);
       data = result;
-      res.send(JSON.stringify(result));
+      res.send(data[0]);
     }
   }); 
 
@@ -141,7 +155,9 @@ exports.getRestaurantById = function(req, res){
 exports.getRestaurantByQueryString = function(req, res){
     const searchText = req.query.searchText;  
     console.log(" searchString : "+searchText);
-    let sql = "select res_id as resId, res_name as resName, '' as resImage ,res_email as resEmail, res_description as resDescription, res_phone as resPhone, add_street as resStreet, add_city as resCity, add_state as resState, add_zipcode as resZipcode "
+    let sql = "select res_id as resId, res_name as resName, res_image as resImage ,res_email as resEmail, res_description as resDescription, res_phone as resPhone, add_street as resStreet, add_city as resCity, add_state as resState, add_zipcode as resZipcode, "
+              +" res_delivery_type as resDeliveryType, "
+              +" (select GROUP_CONCAT(distinct(dish_type)) from dishes where dish_res_id = r.res_id) as dishTypes"
               +" from restaurants as r, address as a " 
               +" where r.res_address_id = a.add_id " 
               +" and (lower(a.add_city) = lower(?)"
@@ -166,7 +182,7 @@ exports.res_login = function (req, res) {
 
   console.log(data);
   let sql =
-    "SELECT COUNT(*) as count FROM restaurants WHERE res_email = ? and res_password = SHA1(?)";
+    "SELECT res_id AS resId, res_name as resName, res_email as resEmail, res_image as resImage FROM restaurants WHERE res_email = ? and res_password = SHA1(?)";
   con.query(sql, [data.resUsername, data.resPassword], (err, result) => {
     if (err) {
       console.error("res_login : " + err);
@@ -175,19 +191,39 @@ exports.res_login = function (req, res) {
         .send(JSON.stringify({ message: "Something went wrong!", err }));
     } else {
       console.log(result);
-      if (result[0].count == 0) {
+      if (result.length == 0) {
         res
           .status(400)
           .send(JSON.stringify({ message: "Invalid login credentials." }));
       } else {
-        res.send(JSON.stringify({ user: data.resUsername }));
+
+        console.log("Login successful");
+        res.cookie('cookie',"restaurant",{maxAge: 900000, httpOnly: false, path : '/'});
+        res.cookie('resId',result[0].resId,{maxAge: 900000, httpOnly: false, path : '/'});
+        res.cookie('resEmail',result[0].resEmail,{maxAge: 900000, httpOnly: false, path : '/'});
+        res.cookie('resName',result[0].resName,{maxAge: 900000, httpOnly: false, path : '/'});
+        
+        req.session.user = {
+          resId: result[0].resId,
+          resEmail: result[0].resEmail,
+          resName: result[0].resName,
+          
+        };
+
+        console.log("req session : "+JSON.stringify(req.session.user));
+        res.writeHead(200,{
+          'Content-Type' : 'text/plain'
+        })
+        res.end("Successful Login");
+
+        //res.send(JSON.stringify({ user: data.resUsername }));
       }
     }
   });
 };
 
 
-exports.addDish = function (req, res) {
+exports.addDish = async function (req, res) {
   const data = req.body;
   const file = req.file;
   console.log("file "+ JSON.stringify(file));
@@ -207,15 +243,31 @@ exports.addDish = function (req, res) {
       data.dishCategory,
       data.dishType
     ],
-    (err, result) => {
+    async (err, result) => {
       if (err) {
         console.error("add_dish : " + err);
         res
           .status(500)
           .send(JSON.stringify({ message: "Something went wrong!", err }));
       } else {
-        console.log("address inserted "+result);
-        res.send(JSON.stringify({ message: "Dish added successfully." }));
+        
+        const fileKey = file.destination +"/"+ result.insertId +"_"+file.filename;
+        const fileUploadRes = await uploadFile(file, fileKey);  
+        console.log("file uploaed to s3 " +JSON.stringify(fileUploadRes));
+        
+        const updateImageSql = "Update dishes set dish_image_link = ? where dish_id = ? "
+        con.query(updateImageSql, [fileUploadRes.Location, result.insertId],
+          (err, result) => {
+            if (err) {
+              console.error("add_dish : " + err);
+              res
+                .status(500)
+                .send(JSON.stringify({ message: "Something went wrong!", err }));
+            } else {
+              res.send(JSON.stringify({ message: "Dish added successfully." }));
+            }
+          });
+        
       }
     }
   );

@@ -19,12 +19,18 @@ class Sidebar extends Component{
     }
 
     render(){
+        let custFirstName = cookie.load('custFirstName');
+        let custImageLink = cookie.load('custImageLink');
         return (
             <div className="res-sidebar">
             {/* <div className="wrapper"> */}
             <nav id="sidebar" className={this.props.isOpen? "" : "active"}>
-                <div className="sidebar-header">
-                    <h3>Satish</h3>
+                <div className="sidebar-header text-center">
+                    <img src={custImageLink} 
+                        width="120px"
+                        className="rounded-circle float-right"/>
+                    <br/>
+                    <h3>{custFirstName}</h3>
                 </div> 
 
                 <ul className="list-unstyled components">

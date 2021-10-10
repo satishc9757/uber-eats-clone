@@ -2,6 +2,7 @@ import {Component} from 'react';
 import axios from 'axios';
 import { SERVER_ENDPOINT } from '../constants/serverConfigs';
 import countryList from '../constants/countryList';
+import cookie from 'react-cookies'
 
 class ResProfile extends Component {
     state = {
@@ -11,7 +12,7 @@ class ResProfile extends Component {
         resPhone: "",
         resPassword: "",
         resPasswordConfirm: "",
-        resImages: "",
+        resImage: "",
         resStreet: "",
         resCity: "",
         resState: "",
@@ -24,8 +25,8 @@ class ResProfile extends Component {
     }
 
     handleImageFile = (event) => {
-        console.log("Files are "+event.target.files);
-        this.setState({resImages: event.target.files});
+        console.log("Files are "+event.target.files[0]);
+        this.setState({resImage: event.target.files[0]});
     }
 
     onFormSubmit = (event) => {
@@ -34,15 +35,19 @@ class ResProfile extends Component {
         //formData.append("dishImage", this.state.dishImage);
         
         for (var key in this.state) {
-            if(key === "resImages"){
-                for (const key of Object.keys(this.state.resImages)) {
-                    formData.append('resImages', this.state.resImages[key])
-                }
-            } else {
-                formData.append(key, this.state[key]);
-            }
-            
+            formData.append(key, this.state[key]);
         }
+
+        // for (var key in this.state) {
+        //     if(key === "resImages"){
+        //         for (const key of Object.keys(this.state.resImages)) {
+        //             formData.append('resImages', this.state.resImages[key])
+        //         }
+        //     } else {
+        //         formData.append(key, this.state[key]);
+        //     }
+            
+        // }
 
         console.log("props"+ JSON.stringify(this.props));
         console.log("Here in the on submit "+ event);
@@ -54,7 +59,7 @@ class ResProfile extends Component {
                 .put(url, formData)
                 .then(response => {
                     console.log(response);
-                    //this.props.history.push("./home");
+                    this.props.history.push("./home");
                 })
                 .catch(err => {
                     console.log(err);
@@ -64,10 +69,11 @@ class ResProfile extends Component {
 
     async componentDidMount(){
         try {
-            const response = await axios.get(SERVER_ENDPOINT + "/res/id/2");
+            const resId = cookie.load('resId');
+            const response = await axios.get(SERVER_ENDPOINT + "/res/id/"+resId);
             const data = await response.data;
             console.log("Res data : "+JSON.stringify(data))
-            this.setState(data[0]);
+            this.setState(data);
         } catch(err){
             console.log(err);
         }
@@ -103,37 +109,14 @@ class ResProfile extends Component {
                                         <label htmlFor="resEmail">Email address</label>
                                         {/* <div className="invalid">{this.state.custEmailError}</div> */}
                                     </div>
-                                    <div className="row mb-3">
-                                        <div className="col-md-6">
-                                            <div className="form-floating mb-3 mb-md-0">
-                                                <input className="form-control" id="resPassword" type="password" 
-                                                    name="resPassword"
-                                                    value = {this.state.resPassword}
-                                                    onChange = {this.onChangeField}
-                                                    placeholder="Create a password" />
-                                                <label htmlFor="resPassword">Password</label>
-                                                {/* <div className="invalid">{this.state.custPasswordError}</div> */}
-                                            </div>
-                                        </div>
-                                        <div className="col-md-6">
-                                            <div className="form-floating mb-3 mb-md-0">
-                                                <input className="form-control" id="resPasswordConfirm" type="password" 
-                                                    name="resPasswordConfirm"
-                                                    value = {this.state.custPasswordConfirm}
-                                                    onChange = {this.onChangeCustConfirmPassword}
-                                                    placeholder="Confirm password" />
-                                                <label htmlFor="resPasswordConfirm">Confirm Password</label>
-                                                {/* <div className="invalid">{this.state.custPasswordConfirmError}</div> */}
-                                            </div>
-                                        </div>
-                                    </div>
+                                    
                                     <div className="form-floating mb-3">
-                                        <input className="form-control" id="resImages" type="file" 
-                                            name="resImages"
+                                        <input className="form-control" id="resImage" type="file" 
+                                            name="resImage"
                                             onChange = {this.handleImageFile}
-                                            multiple="multiple"
+                                            
                                             />
-                                        <label htmlFor="resImages">Images</label>
+                                        <label htmlFor="resImage">Images</label>
                                         {/* <div className="invalid">{this.state.custEmailError}</div> */}
                                     </div>
                                     <div className="form-floating mb-3">
@@ -215,7 +198,7 @@ class ResProfile extends Component {
                                                 {countryList.map((c) => {
                                                     return (<option value={c}>{c}</option>)})}
                                             </select>
-                                                <label htmlFor="dishType">Type</label>
+                                                <label htmlFor="dishType">Country</label>
                                                 {/* <div className="invalid">{this.state.custLastNameError}</div> */}
                                             </div>
                                         </div>

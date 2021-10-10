@@ -30,6 +30,7 @@ import axios from 'axios';
         custNickname:"",
         custPhone:"",
         custAbout:"",
+        custAddId:""
     }
 
     redirectToSuccesPage(){
@@ -37,14 +38,26 @@ import axios from 'axios';
     }
 
     onChangeField = (event) => {
+        //console.log("On change "+event.target.name+", "+event.target.value)
         this.setState({[event.target.name]: event.target.value});
     }
 
     handleImageFile = (event) => {
         console.log("Files are "+event.target.files[0]);
-        this.setState({dishImage: event.target.files[0]});
+        this.setState({custImage: event.target.files[0]});
     }
    
+    async componentDidMount(){
+        try {
+            const response = await axios.get(SERVER_ENDPOINT + "/customer/id/1002");
+            const data = await response.data;
+            console.log("Cust data : "+JSON.stringify(data))
+            this.setState(data[0]);
+        } catch(err){
+            console.log(err);
+        }
+    }
+
     onSignUpSubmit = async (event) => {
         event.preventDefault();
         console.log("props"+ JSON.stringify(this.props));
@@ -72,7 +85,7 @@ import axios from 'axios';
                     .put(url, formData)
                     .then(response => {
                         console.log(response);
-                        //this.props.history.push("./home");
+                        this.props.history.push("./home");
                     })
                     .catch(err => {
                         console.log(err);
@@ -103,7 +116,6 @@ import axios from 'axios';
                 
         }
     }
-
 
     validateInputs(){
         let isValid = true;
@@ -162,7 +174,7 @@ import axios from 'axios';
                 <div className="row justify-content-center">
                     <div className="col-lg-7">
                         <div className="card shadow-lg border-0 rounded-lg mt-5">
-                            <div className="card-header"><h3 className="text-center font-weight-light my-4">Create Account</h3></div>
+                            <div className="card-header"><h3 className="text-center font-weight-light my-4">Update Account</h3></div>
                             <div className="card-body">
                                 <form className="needs-validation" noValidate onSubmit={this.onSignUpSubmit}>
                                     <div className="row mb-3">
@@ -170,7 +182,7 @@ import axios from 'axios';
                                             <div className="form-floating mb-3 mb-md-0">
                                                 <input className={"form-control" } id="custFirstName" type="text" 
                                                     value = {this.state.custFirstName}
-                                                    onChange = {this.onChangeCustFirstName}
+                                                    onChange = {this.onChangeField}
                                                     placeholder="Enter your first name" 
                                                     required/>  
                                                 <label htmlFor="custFirstName">First name</label>
@@ -181,7 +193,7 @@ import axios from 'axios';
                                             <div className="form-floating">
                                                 <input className="form-control" id="custLastName" type="text" 
                                                     value = {this.state.custLastName}
-                                                    onChange = {this.onChangeCustLastName}
+                                                    onChange = {this.onChangeField}
                                                     placeholder="Enter your last name" />
                                                 <label htmlFor="custLastName">Last name</label>
                                                 
@@ -191,7 +203,7 @@ import axios from 'axios';
                                     <div className="form-floating mb-3">
                                         <input className="form-control" id="custEmail" type="email" 
                                             value = {this.state.custEmail}
-                                            onChange = {this.onChangeCustEmail}
+                                            onChange = {this.onChangeField}
                                             placeholder="name@example.com" />
                                         <label htmlFor="custEmail">Email address</label>
                                         
@@ -201,7 +213,7 @@ import axios from 'axios';
                                             <div className="form-floating mb-3 mb-md-0">
                                                 <input className="form-control" id="custDob" type="date" 
                                                     value = {this.state.custDob}
-                                                    onChange = {this.onChangeCustPassword}
+                                                    onChange = {this.onChangeField}
                                                     placeholder="Create a password" />
                                                 <label htmlFor="custDob">Date of birth</label>
                                                 
@@ -210,9 +222,10 @@ import axios from 'axios';
                                         <div className="col-md-6">
                                             <div className="form-floating mb-3 mb-md-0">
                                                 <input className="form-control" id="custNickname" type="text" 
+                                                    name="custNickname"
                                                     value = {this.state.custNickname}
-                                                    onChange = {this.onChangeCustConfirmPassword}
-                                                    placeholder="Confirm password" />
+                                                    onChange = {this.onChangeField}
+                                                    placeholder="Nickname" />
                                                 <label htmlFor="custNickname">Nickname</label>
                                                 
                                             </div>

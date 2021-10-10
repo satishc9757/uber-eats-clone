@@ -14,6 +14,7 @@ class Dashboard extends Component {
 
     state = {
         isSidebarOpen: false,
+        resMainData:[],
         resData: [
             {resImage: "http://localhost:8000/static/images/res1.jpeg", resName: "Okayama Sushi", rating:"4.5", resDescription:"Not only is Okayama Sushi one of the most popular spots for Japanese delivery in San Jose."},
             {resImage: "http://localhost:8000/static/images/res2.jpeg", resName:"Hawaiian BBQ", rating:"4.2", resDescription:"This is among the 3 most popular places for Hawaiian delivery in San Jose on Uber Eats."},
@@ -41,19 +42,40 @@ class Dashboard extends Component {
         try{
             const response = await axios.get(url);
             const data = response.data;
+            this.setState({resMainData: data});
             this.setState({resData: data});
             console.log(" res data fetched : "+data);
         } catch(err) {
             console.log("Error while fecthing resturants "+err);
         }    
-        
 
     }
+
+    onDishTypeFilter = (dishType) => {
+        this.setState({
+            resData: this.state.resMainData.filter(res => {
+                return res.dishTypes.split(",").includes(dishType)
+            })
+        })
+    }
+
+    onDeliveryTypeFilter = (deliveryType) => {
+        this.setState({
+            resData: this.state.resMainData.filter(res => {
+                return res.resDeliveryType.includes(deliveryType)
+            })
+        })
+    }
+
 
     render(){
         return (
             <div>
-                <Header toggleSidebar={this.handleViewSidebar} onResSearch={this.onResSearch}/>
+                <Header toggleSidebar={this.handleViewSidebar} 
+                        onResSearch={this.onResSearch} 
+                        onDishTypeFilter={this.onDishTypeFilter}
+                        onDeliveryTypeFilter={this.onDeliveryTypeFilter} 
+                        />
                 <div className="wrapper">
                     <Sidebar isOpen={this.state.isSidebarOpen} 
                              logout={this.props.custLogout} 

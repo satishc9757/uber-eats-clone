@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import axios from 'axios';
 import { SERVER_ENDPOINT } from '../../constants/serverConfigs';
 import { Link } from 'react-router-dom';
+import cookie from 'react-cookies';
 
 class ResProfileCard extends Component{
     
@@ -20,10 +21,11 @@ class ResProfileCard extends Component{
 
     async componentDidMount(){
         try {
-            const response = await axios.get(SERVER_ENDPOINT + "/res/id/"+this.props.resId);
+            const resId = cookie.load("resId");
+            const response = await axios.get(SERVER_ENDPOINT + "/res/id/"+resId);
             const data = await response.data;
-            console.log("Res data : "+JSON.stringify(data))
-            this.setState(data[0]);
+            console.log("Res1 data : "+JSON.stringify(data))
+            this.setState(data);
         } catch(err){
             console.log(err);
         }
@@ -66,7 +68,7 @@ class ResProfileCard extends Component{
                       <h6 class="mb-0">Address</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                      {this.state.resStreet}, {this.state.resCity}, {this.state.resState}, {this.state.resState}, {this.state.resCountry} 
+                      {this.state.resStreet}, {this.state.resCity}, {this.state.resState}, {this.state.resCountry} 
                     </div>
                   </div>
                   <hr/>

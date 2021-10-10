@@ -1,15 +1,19 @@
 import React, { Component } from 'react'
 import axios from 'axios';
+import cookie from 'react-cookies';
+
 class ResDishRegistration extends Component {
 
     state = {
+    
       dishName: "",
       dishMainIngredients: "",
       dishImage: "",
       dishPrice: "",
       dishDesc: "",
       dishCategory: "",
-      dishType:""
+      dishType:"",
+      
     }
 
     onChangeField = (event) => {
@@ -23,13 +27,15 @@ class ResDishRegistration extends Component {
 
     onFormSubmit = (event) => {
         event.preventDefault();
+        const resId = cookie.load('resId');
         let formData = new FormData();
         //formData.append("dishImage", this.state.dishImage);
         
         for (var key in this.state) {
             formData.append(key, this.state[key]);
         }
-
+        formData.append("resId", resId);
+        
         console.log("props"+ JSON.stringify(this.props));
         console.log("Here in the on submit "+ event);
         //const isValid = this.validateInputs(); --validation disabled for now
@@ -42,7 +48,7 @@ class ResDishRegistration extends Component {
                 .post(url, formData)
                 .then(response => {
                     console.log(response);
-                    //this.props.history.push("./home");
+                    this.props.history.push("./home");
                 })
                 .catch(err => {
                     console.log(err);

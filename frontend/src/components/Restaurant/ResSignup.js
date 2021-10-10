@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { useHistory } from "react-router-dom";
 import errorAction from '../../redux/reduxActions/errorRedux';
 import {resSignup} from '../../redux/reduxActions/restaurant/signupRedux';
+import countryList from '../constants/countryList';
 const axios = require('axios');
 
 
@@ -23,6 +24,7 @@ const axios = require('axios');
         resState: "",
         resZipcode: "",
         resCountry: "",
+        resDeliveryType:""
     
     }
 
@@ -44,31 +46,19 @@ const axios = require('axios');
         
         if(isValid){
            
-            await this.props.resSignup(this.state);
-            this.props.history.push("./login");
+            
+       
 
-
-            // try{
-            //     const url = "http://localhost:8000/res/register";
-            //     const response = await axios.post(url, this.state);
-            //     this.props.resSignup(response.data);
-            // } catch(err){
-            //     this.props.errorAction(err);
-            //     console.log("Error : "+err)
-            // }
-
-            // const url = "http://localhost:8000/res/register";
-            // axios
-            //     .post(url, this.state)
-            //     .then(response => {
-            //         console.log(response);
-            //         this.props.history.push("./login");
-            //         //this.props.history.push("/login");
-            //         //history.push("/login");
-            //     })
-            //     .catch(err => {
-            //         console.log(err);
-            //     });
+            const url = "http://localhost:8000/res/register";
+            axios
+                .post(url, this.state)
+                .then(response => {
+                    console.log(response);
+                    this.props.history.push("./login");
+                })
+                .catch(err => {
+                    console.log(err);
+                });
                 
         }
     }
@@ -228,22 +218,43 @@ const axios = require('axios');
                                                 {/* <div className="invalid">{this.state.custLastNameError}</div> */}
                                             </div>
                                         </div>
+
                                         <div className="col-md-6">
                                             <div className="form-floating">
-                                                <input className="form-control" id="resCountry" type="text" 
-                                                    name="resCountry"
-                                                    value = {this.state.resCountry}
-                                                    onChange = {this.onChangeField}
-                                                    placeholder="Select Country" />
+                                            <select className="form-control form-select" 
+                                                name="resCountry"
+                                                value = {this.state.resCountry}
+                                                onChange = {this.onChangeField}>
+                                                <option selected></option>
+                                                {countryList.map((c) => {
+                                                    return (<option value={c}>{c}</option>)})}
+                                            </select>
                                                 <label htmlFor="resCountry">Country</label>
                                                 {/* <div className="invalid">{this.state.custLastNameError}</div> */}
                                             </div>
                                         </div>
+
+                                        
                                     </div>
                                     
+                                    <div className="col-md-6">
+                                            <div className="form-floating">
+                                            <select className="form-control form-select" 
+                                                name="resDeliveryType"
+                                                value = {this.state.resDeliveryType}
+                                                onChange = {this.onChangeField}>
+                                                <option selected>Delivery and Pickup</option>
+                                                <option>Delivery</option>
+                                                <option>Pickup</option>
+                                            </select>
+                                                <label htmlFor="custCountry">Delivery Type</label>
+                                                {/* <div className="invalid">{this.state.custLastNameError}</div> */}
+                                            </div>
+                                        </div>
+
                                     <div className="mt-4 mb-0">
                                         {/* <div className="d-grid"><a className="btn btn-primary btn-block">Create Account</a></div> */}
-                                        <button className="d-grid btn btn-primary" type="submit">Create Account</button>
+                                        <button className="d-grid btn btn-uber" type="submit">Create Account</button>
                                     </div>
                                 </form>
                             </div>
@@ -258,13 +269,14 @@ const axios = require('axios');
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        registered : state.registered,
-        user: state.user
-    }
-}
+// const mapStateToProps = state => {
+//     return {
+//         registered : state.registered,
+//         user: state.user
+//     }
+// }
 
 
-export default connect(mapStateToProps, {resSignup})(ResSignup);
+//export default connect(mapStateToProps, {resSignup})(ResSignup);
+export default ResSignup;
 

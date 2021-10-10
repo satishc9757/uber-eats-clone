@@ -4,20 +4,31 @@ import ResProfileCard from './Dashboard/ResProfileCard';
 import axios from 'axios';
 import { SERVER_ENDPOINT } from '../constants/serverConfigs';
 import { Link } from 'react-router-dom';
+import cookie from 'react-cookies';
 
 class ResContent extends Component { 
     state = {
-        resTitle: "LA Vic",
-        resDesc: "Of all the delivery spots in St. James Park, La Victoria Taqueria is among the 10 places with the most orders. If you're a fan of super burrito takeout like the rest of your city, you'll be happy to know it's offered at La Victoria",
+        resName: "",
+        resDescription: "",
+        resImage:"",
+        resId:"",
         dishes: []
     }
 
     async componentDidMount(){
         try {
-            const response = await axios.get(SERVER_ENDPOINT + "/res/dish");
+            //restaurant
+            const resId = cookie.load("resId");
+            const resResponse = await axios.get(SERVER_ENDPOINT + "/res/id/"+resId);
+            const resData = await resResponse.data;
+            console.log("Res data : "+JSON.stringify(resData))
+            this.setState(resData);
+
+            //dishes
+            const response = await axios.get(SERVER_ENDPOINT + "/res/getDishByRes/"+resId);
             const data = await response.data;
             console.log("Dishes data : "+JSON.stringify(data))
-            this.setState(data);
+            this.setState({dishes: data});
         } catch(err){
             console.log(err);
         }
@@ -39,16 +50,16 @@ class ResContent extends Component {
                     <div className="container-fluid">
                         <div className="row">
                             <div class="card mb-3">
-                                <img class="card-img-top res-dashboard-image" src={resImage} alt="Card image cap" />
+                                <img class="card-img-top res-dashboard-image" src={this.state.resImage} alt="Card image cap" />
                                 <div class="card-body">
-                                    <h5 class="card-title">{this.state.resTitle}</h5>
-                                    <p class="card-text">{this.state.resDesc}</p>
-                                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                                    <h5 class="card-title">{this.state.resName}</h5>
+                                    <p class="card-text">{this.state.resDescription}</p>
+                                    {/* <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> */}
                                 </div>
                             </div>
                         </div>
                         <div className="row">
-                            <ResProfileCard resId="2"/>
+                            <ResProfileCard resId={this.state.resId}/>
                             <div className="col-md-6">
                                 <div class="card">
                                     <div class="card-header">
@@ -61,7 +72,7 @@ class ResContent extends Component {
                                         <li class="list-group-item">Vestibulum at eros</li> */}
                                         {dishesData}
                                     </ul>
-                                    <a href="#" className="btn btn-uber">Add Dish</a>
+                                    <a href="./dishes" className="btn btn-uber">Add Dish</a>
                                     </div>
                                 </div>
                             </div>

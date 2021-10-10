@@ -44,7 +44,7 @@ class CustLogin extends Component {
         //     console.log("Error : "+err)
         // }
 
-        custLogin(this.state);
+        //custLogin(this.state);
         const url = "http://localhost:8000/customer/login";
         
         axios
