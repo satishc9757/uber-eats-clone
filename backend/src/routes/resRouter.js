@@ -30,6 +30,7 @@ const dishUpload = multer({ storage: dishFileStorage });
 
 var router = express.Router();
 
+router.get("/favorites", resController.getFavRestaurantsByCustId);
 router.get("/query", resController.getRestaurantByQueryString);
 router.post("/register", validateResRegistration, resController.register_res);
 router.get("/id/:id", resController.getRestaurantById);
@@ -50,6 +51,7 @@ router.get("/orders", resController.getOrdersByRes);
 router.get("/orderdetails", resController.getOrderDetailsByOrderId);
 
 router.put("/order/status", resController.updateOrderStatus);
+
 
 
 module.exports = router;

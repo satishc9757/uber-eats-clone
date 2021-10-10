@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import { custLogout } from '../../../redux/reduxActions/customer/loginRedux';
 import axios from 'axios';
 import { SERVER_ENDPOINT } from '../../constants/serverConfigs';
+import cookie from 'react-cookies';
 
 class Dashboard extends Component {
 
@@ -42,8 +43,8 @@ class Dashboard extends Component {
         try{
             const response = await axios.get(url);
             const data = response.data;
-            this.setState({resMainData: data});
             this.setState({resData: data});
+            this.setState({resMainData: data});
             console.log(" res data fetched : "+data);
         } catch(err) {
             console.log("Error while fecthing resturants "+err);
@@ -62,11 +63,30 @@ class Dashboard extends Component {
     onDeliveryTypeFilter = (deliveryType) => {
         this.setState({
             resData: this.state.resMainData.filter(res => {
-                return res.resDeliveryType.includes(deliveryType)
+
+                return res.resDeliveryType !== null && res.resDeliveryType.includes(deliveryType);
             })
         })
     }
 
+    async componentDidMount(){
+        const custLocation = cookie.load("custLocation");
+        
+        if(custLocation){
+            const url = SERVER_ENDPOINT + "/res/query?searchText="+custLocation;
+        
+            try{
+                const response = await axios.get(url);
+                const data = response.data;
+                this.setState({resData: data});
+                this.setState({resMainData: data});
+                console.log(" res data fetched : "+data);
+            } catch(err) {
+                console.log("Error while fecthing resturants "+err);
+            }  
+        }
+        
+    }
 
     render(){
         return (

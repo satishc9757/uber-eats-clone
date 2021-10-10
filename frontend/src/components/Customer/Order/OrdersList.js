@@ -7,7 +7,9 @@ import OrderSummaryModal from './OrderSummaryModal';
 class OrdersList extends  Component {
     
     state = {
-        ordersData : []
+        ordersData : [],
+        ordersMainData: []
+
     }
 
 
@@ -18,29 +20,68 @@ class OrdersList extends  Component {
             const url = SERVER_ENDPOINT + "/customer/orders?custId="+custId;
             const response = await axios.get(url);
             const data = await response.data;
-            console.log("Addresses data : "+JSON.stringify(data));
+            console.log("Orders data  : "+JSON.stringify(data));
             this.setState({ordersData: data});
+            this.setState({ordersMainData: data});
         } catch(err){
             console.log(err);
         }
      
     }
 
+    onOrderTypeChange = (event) => {
+        
+        const orderType = event.target.value;
+        console.log(orderType);
+        if(orderType === "Delivered"){
+            this.setState({ordersData: this.state.ordersMainData.filter(o => {
+                return o.orderStatus === "Delivered"
+            })});
+        } else {
+            this.setState({ordersData: this.state.ordersMainData.filter(o => {
+                return o.orderStatus !== "Delivered"
+            })});
+        }
+    }
+
     renderOrder = (order) => {
-                    <div className="row">
+                    const order_status_class = "alert order-status rounded-pill "+ (order.orderStatus === "Delivered"?  "alert-success": "alert-warning");
+                    return(
+                    <div className="row" key={order.odId}>
                         <h5>{order.resName}</h5>
                         <br />
-                        <p className="text-muted">{order.order_status} on {order.orderTimestamp}</p>
+                        <p className="text-muted">Order Placed on {order.orderTimestamp}</p>
+                        <div class={order_status_class} role="alert">
+                            Order Status: {order.orderStatus}
+                        </div>
+                        
                         <OrderSummaryModal total={order.orderTotal} deliveryAddress={order.street +","+ order.city +","+ order.state +","+ order.zipcode} orderId={order.orderId} />
                         <hr />
                     </div>
+                    )
     }
 
     render(){
         return (
             <div className="ordersList">
-                <h3>Past Orders</h3>
+                <div className="header">
+                        <h3>Past Orders</h3>
+                        <div class="btn-group">
+                                <input type="radio" class="btn-check" name="ordersType" id="orderOn" autocomplete="off" value="Ongoing" onChange={this.onOrderTypeChange}/>
+                                <label class="btn btn-outline-uber rounded-pill" for="orderOn">Ongoing</label>
+                            
+                                <input type="radio" class="btn-check" name="ordersType" id="orderDelivered" autocomplete="off" value="Delivered" onChange={this.onOrderTypeChange} />
+                                <label class="btn btn-outline-uber rounded-pill" for="orderDelivered">Delivered</label>
+                            
+                        </div>
+                        <br/><br/>
+                    </div>
+                
                 <div className="container">
+                    
+
+                {this.state.ordersData.map(this.renderOrder)}
+
                     <div className="row">
                         <h5>La Vic</h5>
                         <br />
@@ -51,7 +92,7 @@ class OrdersList extends  Component {
                 </div>
                 
 
-                {this.state.ordersData.map(this.renderOrder)}
+                
             </div>
         )
     }

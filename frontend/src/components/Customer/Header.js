@@ -29,6 +29,9 @@ class Header extends Component{
     }
 
     onDeliveryTypeChange = (event) => {
+        this.setState({deliveryType: this.state.deliveryType === "Delivery" ? "Pickup" : "Delivery"})
+        console.log("delivery type on change : "+this.state.deliveryType);
+        this.props.onDeliveryTypeFilter(this.state.deliveryType);
     }
 
     render(){
@@ -73,7 +76,7 @@ class Header extends Component{
                     
                     <div class="switch-button">
                             <input class="switch-button-checkbox" type="checkbox" onChange={this.onDeliveryTypeChange}></input>
-                            <label class="switch-button-label" for=""><span class="switch-button-label-span">Delivery</span></label>
+                            <label class="switch-button-label" for=""><span class="switch-button-label-span">Pickup</span></label>
                     </div>
 
                     <div class="nav-location">
@@ -111,7 +114,7 @@ class Header extends Component{
                         <li><button className="btn btn-uber" onClick={(event) => {this.props.onResSearch(this.state.searchText)}}><FontAwesomeIcon icon={faSearch} /></button></li>
                         
                     </ul>
-                    <CartModal />
+                    <CartModal cartValue={this.props.cartValue}/>
 
                     {/* <div className="col-md-6">
                         <div className="form"> <span className="left-pan"><FontAwesomeIcon icon={faSearch} /></span> <input type="text" className="form-control form-input" placeholder="What are you craving?"/>  </div>

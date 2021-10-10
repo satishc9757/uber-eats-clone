@@ -401,7 +401,7 @@ exports.getOrdersByRes = function(req, res){
             +" from orders as o, restaurants as r, address as a, customers as c "
             +" where o.order_restaurant_id = r.res_id "
             +" and o.order_address_id = a.add_id "
-            +" and o.order_res_id = ? "
+            +" and o.order_restaurant_id = ? "
   
   con.query(sql, [resId], (err, result) => {
     if (err) {
@@ -467,3 +467,29 @@ exports.updateOrderStatus = function (req, res) {
   );
   
 };
+
+
+exports.getFavRestaurantsByCustId = function(req, res){
+  const custId = req.query.custId;  
+  
+  let sql = "select res_id as resId, res_name as resName, res_image as resImage ,res_email as resEmail, res_description as resDescription, res_phone as resPhone, add_street as resStreet, add_city as resCity, add_state as resState, add_zipcode as resZipcode, "
+            +" res_delivery_type as resDeliveryType, "
+            +" (select GROUP_CONCAT(distinct(dish_type)) from dishes where dish_res_id = r.res_id) as dishTypes"
+            +" from restaurants as r, address as a, favorites as f " 
+            +" where r.res_address_id = a.add_id " 
+            +" and r.res_id = f.fav_res_id"
+           +" and f.fav_cust_id = ?";
+  
+  con.query(sql, [custId], (err, result) => {
+    if (err) {
+      console.error("getFavRestaurantsByCustId : " + err);
+      res
+        .status(500)
+        .send(JSON.stringify({ message: "Something went wrong!", err }));
+    } else {
+      console.log(result);
+      data = result;
+      res.send(JSON.stringify(result));
+    }
+  }); 
+}

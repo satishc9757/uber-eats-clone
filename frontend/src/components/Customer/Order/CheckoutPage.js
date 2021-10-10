@@ -51,15 +51,14 @@ class CheckoutPage extends Component{
             this.setState({deliveryAddresses: data});
 
             //Cart data
-            const cartInfo = sessionStorage.getItem("custCart");
+            const custCart = sessionStorage.getItem("custCart");
             console.log("inside component did u");
-            console.log("cartInfo : "+cartInfo);
-            if(cartInfo){
-                this.setState({cartInfo: JSON.parse(cartInfo)});
+            console.log("cartInfo : "+custCart);
+            if(custCart){
+                this.setState({cartInfo: JSON.parse(custCart)});
             }
 
             //user info
-            let custId = cookie.load("custId");
             if(custId){
                 this.setState({custId: custId});
                 console.log("cust id" +this.state.custId );
@@ -137,11 +136,13 @@ class CheckoutPage extends Component{
                 deliveryFee: this.state.deliveryFee,
                 serviceFee: this.state.serviceFee,
                 custId: this.state.custId, 
-                resId: this.state.cartInfo.cartResId
+                resId: this.state.cartInfo.cartResId,
+                cartTotal: this.decimalFormat(this.totalAmount())
             }
             console.log("payload : "+JSON.stringify(payload));
             const response = await axios.post(url, payload);
-            console.log("Response from order create : "+response.data);
+            //console.log("Response from order create : "+response.data);
+            this.props.history.push("/orders");
         } catch(err){   
             console.log("Error from order create : "+err);
         }

@@ -5,6 +5,7 @@ import Content from '../Dashboard/Content'
 import Header from '../Header'
 import Sidebar from '../Sidebar'
 import Menu from './Menu'
+import cookie from 'react-cookies'
 
 class ResturantView extends Component{
 
@@ -76,6 +77,23 @@ class ResturantView extends Component{
         }
     }
 
+    onAddToFav = async (event) => {
+        try{
+            const custId = cookie.load("custId");
+            const resId = this.props.match.params.resId;
+            const resUrl = SERVER_ENDPOINT + "/customer/favorite/";
+
+            const response = await axios.post(resUrl, {custId: custId, resId: resId});
+            const data = response.data;
+           // this.setState({resData: data});
+            console.log("  response : "+data);
+     
+                
+        }catch(err){
+            console.log("Error while adding to favorites "+err);
+        }
+    }
+
     setResData = async() => {
         try{
             const resId = this.props.match.params.resId;
@@ -96,8 +114,8 @@ class ResturantView extends Component{
         if(currentCartState){
             currentCartState = JSON.parse(currentCartState);
             console.log("from cookie "+ currentCartState.cartResId);
-            console.log("from state "+ this.state.resId);
-            if(currentCartState.cartResId !== this.state.resId){
+            console.log("from state "+ this.state.resData.resId);
+            if(currentCartState.cartResId !== this.state.resData.resId){
                 console.log("you cannot add from another cart")
             } else {
                 currentCartState.cartItems.push(dish);
@@ -106,8 +124,8 @@ class ResturantView extends Component{
         } else {
             
             const cartData = {
-                cartResId: this.state.resId,
-                cartResName: this.state.resName,
+                cartResId: this.state.resData.resId,
+                cartResName: this.state.resData.resName,
                 cartItems: [dish],
             }
 
@@ -134,6 +152,7 @@ class ResturantView extends Component{
                                     <p>{this.state.resData.resDescription}</p>
                                     <p>{this.state.resData.resAddress}</p>
                                     {/* <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> */}
+                                <button className="btn btn-uber" onClick={this.onAddToFav}>Add to favorites</button>
                                 </div>
                             </div>
                         </div>

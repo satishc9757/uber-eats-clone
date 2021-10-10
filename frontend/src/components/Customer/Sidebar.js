@@ -58,6 +58,9 @@ class Sidebar extends Component{
                     <li>
                         <a href="./checkout">Checkout</a>
                     </li>
+                    <li>
+                        <a href="./favorites">Favorites</a>
+                    </li>
                     {/* <li>
                         <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" className="dropdown-toggle">Pages</a>
                         <ul className="collapse list-unstyled" id="pageSubmenu">

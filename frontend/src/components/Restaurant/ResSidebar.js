@@ -36,6 +36,9 @@ class ResSidebar extends Component{
                     <li>
                         <a href="/res/profile">Profile</a>
                     </li>
+                    <li>
+                        <a href="/res/orders">Orders</a>
+                    </li>
                     {/* <li>
                         <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" className="dropdown-toggle">Pages</a>
                         <ul className="collapse list-unstyled" id="pageSubmenu">

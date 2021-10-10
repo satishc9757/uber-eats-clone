@@ -343,3 +343,9 @@ a.res-card:hover {
   background-color: #dbdddf;
   text-align: center;
 }
+
+.order-status {
+  width: 27%;
+  padding: 6px;
+  margin-left: 10px;
+}

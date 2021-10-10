@@ -9,16 +9,8 @@ class CartModal extends Component{
     state = {
         showCart: false,
         cartInfo: {
-            cartResName: "La Vic",
-            cartItems : [{ dishName: "Sandwich",
-                            dishQuantity: 1,
-                            dishPrice: 15},
-                            { dishName: "Burrito",
-                            dishQuantity: 2,
-                            dishPrice: 20},
-                            { dishName: "Burger",
-                            dishQuantity: 1,
-                            dishPrice: 23}]
+            cartResName: "",
+            cartItems : []
         }
     }
 
@@ -72,7 +64,7 @@ class CartModal extends Component{
 
             <div className="cart-modal">
                 <button className="btn btn-uber rounded-pill" onClick={this.handleShow}>
-                    <FontAwesomeIcon icon={faShoppingCart} />
+                    <FontAwesomeIcon icon={faShoppingCart} /> 
                 </button>
 
                 <Modal show={this.state.showCart} onHide={this.handleClose}>

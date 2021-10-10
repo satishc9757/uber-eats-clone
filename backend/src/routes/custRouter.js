@@ -32,4 +32,6 @@ router.get("/orders", custController.getOrdersByCustomer);
 
 router.get("/orderdetails", custController.getOrderDetailsByOrderId);
 
+router.post("/favorite", custController.addFavoriteRes)
+
 module.exports = router;

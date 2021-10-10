@@ -152,10 +152,10 @@ exports.createOrder = async function(req, res) {
 insertOrder = function(req, res, addId){
   const data = req.body;
   //console.log(result1);
-  let ordersSql = "INSERT INTO orders (order_cust_id, order_restaurant_id, order_address_id, order_delivery_fee, order_service_fee, order_timestamp, order_status) VALUES (?, ?, ?,?, ?, now(), 'Order Placed')";
+  let ordersSql = "INSERT INTO orders (order_cust_id, order_restaurant_id, order_address_id, order_delivery_fee, order_service_fee, order_timestamp, order_status, order_total) VALUES (?, ?, ?,?, ?, now(), 'Order Placed', ?)";
   
   con.query(ordersSql, 
-    [data.custId, data.resId, addId, data.deliveryFee, data.serviceFee], (err, result2) => {
+    [data.custId, data.resId, addId, data.deliveryFee, data.serviceFee, data.cartTotal], (err, result2) => {
       if (err) {
         console.error("insertOrder : " + err);
         res
@@ -178,7 +178,7 @@ insertOrderDetails = function(req, res, orderId){
         
         let inputArr = [];
 
-        items.forEach(item => inputArr.push([orderId, item.dishId, item.dishQty, item.dishPrice]));
+        items.forEach(item => inputArr.push([orderId, item.dishId, item.dishQuantity, item.dishPrice]));
         console.log("input arr: "+inputArr);
         con.query(orderDetailsSql, [inputArr], (err, result3) => {
           if (err) {
@@ -233,7 +233,7 @@ exports.getOrdersByCustomer = function(req, res){
         .status(500)
         .send(JSON.stringify({ message: "Something went wrong!", err }));
     } else {
-        console.log(result);
+        console.log("orders fetched : "+result);
         res.send(result);
     }
   }); 
@@ -404,6 +404,31 @@ updateCustData = async function(req, res, addId, imageLink){
     res.send(JSON.stringify({ message: "Customer updated" }));
 }
 
+exports.addFavoriteRes = function (req, res) {
+  const data = req.body;
+  
+  let sql = "INSERT into favorites(fav_res_id, fav_cust_id) values(?, ?)"
+
+  con.query(
+    sql,
+    [
+      data.resId,
+      data.custId,
+    ],
+    (err, result) => {
+      if (err) {
+        console.error("addFavoriteRes : " + err);
+        res
+          .status(500)
+          .send(JSON.stringify({ message: "Something went wrong!", err }));
+      } else {
+        //console.log("address inserted "+result);
+        res.send("Favorite added successfully");
+      }
+    }
+  );
+  
+};
 
 
 function asyncQuery(query, params) {

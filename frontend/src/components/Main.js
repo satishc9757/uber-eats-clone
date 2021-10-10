@@ -15,6 +15,7 @@ import CheckoutPage from './Customer/Order/CheckoutPage';
 import OrdersList from './Customer/Order/OrdersList';
 import ResOrdersList from './Restaurant/Orders/OrdersList';
 import CustProfile from './Customer/CustProfile';
+import Favorites from './Customer/Favorites/Favorites';
 
 class Main extends Component{
     render(){
@@ -26,6 +27,7 @@ class Main extends Component{
                 <Route path ="/home" exact component={Dashboard}></Route>
                 <Route path ="/checkout" component={CheckoutPage}></Route>  
                 <Route path ="/profile" component={CustProfile}></Route>  
+                <Route path ="/favorites" component={Favorites}></Route>  
                 <Route path ="/res/login" exact component={ResLogin}></Route>  
                 <Route path ="/res/signup" exact component={ResSignup}></Route>  
                 <Route path ="/res/home" exact component={ResDashboard}></Route>

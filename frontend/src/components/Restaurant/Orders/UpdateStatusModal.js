@@ -10,7 +10,8 @@ class UpdateStatusModal  extends Component {
 
     state = {
         showUpdate: false,
-        resStatus:""
+        resStatus:"",
+        orderId:""
     }
 
     handleClose = () => this.setState({
@@ -21,16 +22,19 @@ class UpdateStatusModal  extends Component {
         showUpdate: true,
     });
 
-
+    componentDidMount(){
+        const orderId = this.props.orderId;
+        this.setState({orderId: orderId});
+    }
     handleSubmit = (event) => {
         event.preventDefault();
-
+        console.log("here is the prop : ",this.props.resId);
         const url = "http://localhost:8000/res/order/status";
             axios
-                .put(url, {resId: this.props.resId, resStatus: this.state.resStatus})
+                .put(url, {orderId: this.state.orderId, orderStatus: this.state.resStatus})
                 .then(response => {
                     console.log(response);
-                    this.props.history.push("/res/orders");
+                    //this.props.history.push("/res/orders");
                 })
                 .catch(err => {
                     console.log(err);
