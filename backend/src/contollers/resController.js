@@ -58,6 +58,16 @@ exports.register_res = function (req, res) {
 
 };
 
+exports.logout = function(req, res) {
+  res.cookie('cookie', 'none', {
+    expires: new Date(Date.now() + 1 * 1000),
+    httpOnly: true,
+  })
+  res
+    .status(200)
+    .json({ success: true, message: 'User logged out successfully' })
+  };
+
 exports.updateRestaurant = async function (req, res) {
   
   
@@ -276,10 +286,10 @@ exports.addDish = async function (req, res) {
 
 exports.updateDish = function (req, res) {
   const data = req.body;
-  const file = req.file;
-  console.log("file "+ JSON.stringify(file));
+  //const file = req.file;
+  //console.log("file "+ JSON.stringify(file));
   console.log("dishName : "+ data.dishName);
-  let sql = "UPDATE dishes SET dish_name = ?, dish_main_ingredients = ? , dish_image_link = ?, dish_price = ?, dish_desc = ?, dish_category = ?, dish_type = ?, dish_update_timestamp = now() " 
+  let sql = "UPDATE dishes SET dish_name = ?, dish_main_ingredients = ? , dish_price = ?, dish_desc = ?, dish_category = ?, dish_type = ?, dish_update_timestamp = now() " 
                    + " WHERE dish_id = ?"
 
   con.query(
@@ -287,7 +297,6 @@ exports.updateDish = function (req, res) {
     [
       data.dishName,
       data.dishMainIngredients,
-      data.dishImageLink,
       data.dishPrice,
       data.dishDesc,
       data.dishCategory,
@@ -401,6 +410,7 @@ exports.getOrdersByRes = function(req, res){
             +" from orders as o, restaurants as r, address as a, customers as c "
             +" where o.order_restaurant_id = r.res_id "
             +" and o.order_address_id = a.add_id "
+            + " and o.order_cust_id = c.cust_id"
             +" and o.order_restaurant_id = ? "
   
   con.query(sql, [resId], (err, result) => {

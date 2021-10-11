@@ -6,7 +6,9 @@ import errorAction from '../../redux/reduxActions/errorRedux';
 import { SERVER_ENDPOINT } from '../constants/serverConfigs';
 import countryList from '../constants/countryList';
 import axios from 'axios';
-
+import CommonHeader from './CommonHeader';
+import Sidebar from './Sidebar';
+import cookie from 'react-cookies';
 
 
  class CustProfile extends Component {
@@ -17,6 +19,7 @@ import axios from 'axios';
     }
 
     state = {
+        isSidebarOpen: false,
         custId:"",
         custFirstName: "",
         custLastName: "",
@@ -33,6 +36,15 @@ import axios from 'axios';
         custAddId:""
     }
 
+    handleViewSidebar = () => {
+        this.setState({isSidebarOpen: !this.state.isSidebarOpen});
+       
+    }
+
+    navigateToLoginPage = () => {
+        this.props.history.push("/login");
+    }
+
     redirectToSuccesPage(){
         this.props.history.push('/login');
     }
@@ -47,9 +59,11 @@ import axios from 'axios';
         this.setState({custImage: event.target.files[0]});
     }
    
+    
     async componentDidMount(){
         try {
-            const response = await axios.get(SERVER_ENDPOINT + "/customer/id/1002");
+            const custId = cookie.load('custId');
+            const response = await axios.get(SERVER_ENDPOINT + "/customer/id/"+custId);
             const data = await response.data;
             console.log("Cust data : "+JSON.stringify(data))
             this.setState(data[0]);
@@ -80,7 +94,7 @@ import axios from 'axios';
             const isValid = true;
             
             if(isValid){
-                const url = "http://localhost:8000/customer/update";
+                const url = SERVER_ENDPOINT+"/customer/update";
                 axios
                     .put(url, formData)
                     .then(response => {
@@ -93,26 +107,7 @@ import axios from 'axios';
             }
   
             
-            // try{
-            //     const url = "http://localhost:8000/customer/register";
-            //     const response = await axios.post(url, this.state);
-            //     this.props.custSignup(response.data);
-            // } catch(err){
-            //     this.props.errorAction(err);
-            //     console.log("Error : "+err)
-            // }
-
-            // const url = "http://localhost:8000/customer/register";
-            // axios
-            //     .post(url, this.state)
-            //     .then(response => {
-            //         console.log(response);
-            //         this.props.history.push("/login");
-                    
-            //     })
-            //     .catch(err => {
-            //         console.log(err);
-            //     });
+           
                 
         }
     }
@@ -169,8 +164,14 @@ import axios from 'axios';
 
     render() {
         return (
-            <div className="container">
+            <div>
+            <CommonHeader toggleSidebar={this.handleViewSidebar} onResSearch={this.onResSearch}/>
                 <p>{this.props.registered}</p>
+                    {/* <Sidebar isOpen={this.state.isSidebarOpen} 
+                             navigateToLoginPage={this.navigateToLoginPage}/> */}
+            <div className="container">
+                
+               
                 <div className="row justify-content-center">
                     <div className="col-lg-7">
                         <div className="card shadow-lg border-0 rounded-lg mt-5">
@@ -335,7 +336,8 @@ import axios from 'axios';
                         </div>
                     </div>
                 </div>
-            </div>
+               </div> 
+               </div>
         );
     }
 }

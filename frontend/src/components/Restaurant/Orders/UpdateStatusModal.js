@@ -29,12 +29,15 @@ class UpdateStatusModal  extends Component {
     handleSubmit = (event) => {
         event.preventDefault();
         console.log("here is the prop : ",this.props.resId);
-        const url = "http://localhost:8000/res/order/status";
+        const url = SERVER_ENDPOINT+"/res/order/status";
             axios
                 .put(url, {orderId: this.state.orderId, orderStatus: this.state.resStatus})
                 .then(response => {
                     console.log(response);
-                    //this.props.history.push("/res/orders");
+                    this.setState({
+                        showUpdate: false,
+                    });
+                    this.props.onSuccessfulUpdate();
                 })
                 .catch(err => {
                     console.log(err);

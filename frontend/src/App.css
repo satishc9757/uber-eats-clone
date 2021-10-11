@@ -349,3 +349,31 @@ a.res-card:hover {
   padding: 6px;
   margin-left: 10px;
 }
+
+.orders-header{
+  margin-left: 56px;
+}
+
+
+
+header.masthead {
+  padding-top: 10.5rem;
+  padding-bottom: 6rem;
+  text-align: center;
+  color: #fff;
+  background-image: url("https://uber-eats-store-0144.s3.us-east-2.amazonaws.com/uber_eats_background.png");
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+  background-position: center center;
+  background-size: cover;
+}
+
+.home-footer {
+  margin-top: 160px;
+  color: white;
+  background-color: black;
+}
+
+.text-white-color{
+  color: white;
+}

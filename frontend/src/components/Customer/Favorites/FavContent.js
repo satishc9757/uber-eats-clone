@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 
-class Content extends Component {
+class FavContent extends Component {
 
     // renderResCard = (card) => {
     //     return(
@@ -19,10 +19,6 @@ class Content extends Component {
     // }
 
     renderResCard = (card) => {
-        let resDesc = "";
-        if(card.resDescription){
-            resDesc = card.resDescription.substring(0,100) + "...Read more";
-        } 
         return(
             <div className="col-md-6">
                         <Link className="res-card" to={"/res/store/" + card.resId}>
@@ -30,9 +26,8 @@ class Content extends Component {
                             <img className="card-img-top" src={card.resImage} alt="Card image cap"/>
                             <div className="card-body">
                             <h5 className="card-title">{card.resName}</h5>
-                            {/* <span className="btn-grey rounded-pill">4.5</span> */}
-                            <h6>{card.resStreet}</h6>
-                            <p className="card-text">{resDesc}</p>
+                            <span className="btn-grey rounded-pill">4.5</span>
+                            <p className="card-text">{card.resDescription}</p>
                             </div>
                         </div>
                         </Link>
@@ -44,6 +39,9 @@ class Content extends Component {
         return (
             <div className="dashboard-content">
                 <div className="container-fluid">
+                    <div className="row text-center">
+                        <h2>Favorites</h2> 
+                    </div>
                     <div className="row">
                         {this.props.resData.map(res => this.renderResCard(res))}
                     </div>
@@ -54,4 +52,4 @@ class Content extends Component {
     
 }
 
-export default Content
+export default FavContent

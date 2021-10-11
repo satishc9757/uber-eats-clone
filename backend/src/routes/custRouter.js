@@ -22,9 +22,11 @@ router.post("/register", validateCustRegistration, custController.register_custo
 
 router.get("/id/:id", custController.getCustomerById);
 router.post("/login", validateCustLogin, custController.login_customer);
+router.post("/logout", custController.logout);
 router.put("/update", custUpload.single('custImage'), custController.updateCustomerProfile);
 
 router.post("/order/create", custController.createOrder)
+
 
 router.get("/order/address", custController.getDeliveryAddressesForUser);
 

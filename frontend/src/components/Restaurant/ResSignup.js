@@ -4,6 +4,9 @@ import { useHistory } from "react-router-dom";
 import errorAction from '../../redux/reduxActions/errorRedux';
 import {resSignup} from '../../redux/reduxActions/restaurant/signupRedux';
 import countryList from '../constants/countryList';
+import { SERVER_ENDPOINT } from '../constants/serverConfigs';
+import ShortFooter from '../ShortFooter';
+import ShortHeader from '../ShortHeader';
 const axios = require('axios');
 
 
@@ -46,10 +49,8 @@ const axios = require('axios');
         
         if(isValid){
            
-            
-       
-
-            const url = "http://localhost:8000/res/register";
+        
+            const url = SERVER_ENDPOINT+"/res/register";
             axios
                 .post(url, this.state)
                 .then(response => {
@@ -116,6 +117,8 @@ const axios = require('axios');
 
     render() {
         return (
+            <div>
+            <ShortHeader/>
             <div className="container">
                 <div className="row justify-content-center">
                     <div className="col-lg-7">
@@ -243,7 +246,8 @@ const axios = require('axios');
                                                 name="resDeliveryType"
                                                 value = {this.state.resDeliveryType}
                                                 onChange = {this.onChangeField}>
-                                                <option selected>Delivery and Pickup</option>
+                                                <option></option>    
+                                                <option >Delivery and Pickup</option>
                                                 <option>Delivery</option>
                                                 <option>Pickup</option>
                                             </select>
@@ -264,6 +268,8 @@ const axios = require('axios');
                         </div>
                     </div>
                 </div>
+            </div>
+            <ShortFooter/>
             </div>
         );
     }

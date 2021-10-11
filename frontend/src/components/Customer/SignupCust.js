@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { useHistory } from "react-router-dom";
 import {custSignup} from '../../redux/reduxActions/customer/signupRedux';
 import errorAction from '../../redux/reduxActions/errorRedux';
+import ShortFooter from '../ShortFooter';
+import ShortHeader from '../ShortHeader';
 const axios = require('axios');
 
 
@@ -145,6 +147,8 @@ const axios = require('axios');
 
     render() {
         return (
+            <div>
+            <ShortHeader/>
             <div className="container">
                 <p>{this.props.registered}</p>
                 <div className="row justify-content-center">
@@ -208,16 +212,18 @@ const axios = require('axios');
                                     </div>
                                     <div className="mt-4 mb-0">
                                         {/* <div className="d-grid"><a className="btn btn-primary btn-block">Create Account</a></div> */}
-                                        <button className="d-grid btn btn-primary" type="submit">Create Account</button>
+                                        <button className="d-grid btn btn-uber" type="submit">Create Account</button>
                                     </div>
                                 </form>
                             </div>
                             <div className="card-footer text-center py-3">
-                                <div className="small"><a href="login.html">Have an account? Go to login</a></div>
+                                <div className="small"><a href="/login">Have an account? Go to login</a></div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+            <ShortFooter/>
             </div>
         );
     }

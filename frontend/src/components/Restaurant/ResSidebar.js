@@ -1,10 +1,16 @@
+import axios from 'axios';
 import React, { Component } from 'react'
+import cookie from 'react-cookies'
+import { SERVER_ENDPOINT } from '../constants/serverConfigs';
 
 class ResSidebar extends Component{
     
     onSignout = async (event) => {
         event.preventDefault();
-        await this.props.logout();
+        const url = SERVER_ENDPOINT+"/res/logout";
+        const response = await axios.post(url);
+        
+        //cookie.remove('cookie', { path: '/' })
         this.props.navigateToLoginPage(); 
     }
 
@@ -68,6 +74,7 @@ class ResSidebar extends Component{
                     <li>
                         <a href="https://bootstrapious.com/p/bootstrap-sidebar" onClick={this.onSignout} className="article">Signout</a>
                     </li>
+                    
                 </ul>
             </nav>
 

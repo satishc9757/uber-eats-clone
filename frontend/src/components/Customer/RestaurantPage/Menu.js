@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import DishCard from './DishCard'
+import PopupModal from './PopupModal';
 
 class Menu extends Component {
     
@@ -38,7 +39,7 @@ class Menu extends Component {
                     <div className="row">
                         {this.props.dishData.map(res => this.renderDishCard(res))}
                     </div>
-                
+                    <PopupModal showPopup={this.props.showPopup} onNewOrder={() => {this.props.onNewOrder()}} onClosePopup={() => {this.props.onClosePopup()}}/>
             </div>   
         )
     }

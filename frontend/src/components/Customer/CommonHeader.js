@@ -8,7 +8,7 @@ import CartModal from './Cart/CartModal';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 
-class Header extends Component{
+class CommonHeader extends Component{
     
     state = {
         dishType: "Veg",
@@ -46,24 +46,7 @@ class Header extends Component{
             
             <div>
                 {redirectVar}
-                {/* <nav class="navbar navbar-inverse">
-                <div class="container-fluid">
-                    
-                    <div class="navbar-header">
-                    <button className="btn btn-light" onClick={this.props.toggleSidebar}> <FontAwesomeIcon icon={faBars} /></button>
-                    <a className=" navbar-brand ps-3" href="./home"><img src={uberLogo} alt="Uber Eats logo"/></a>
-                    </div>
-                    <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Home</a></li>
-                    <li><a href="#">Page 1</a></li>
-                    <li><a href="#">Page 2</a></li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                    <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-                    </ul>
-                </div> */}
-            
+                
 
                  <nav className="sb-topnav navbar navbar-expand-lg">
                 <div className="container-fluid">
@@ -73,30 +56,12 @@ class Header extends Component{
                         
                     </div>
                     
-                    <div class="switch-button">
-                            <input class="switch-button-checkbox" type="checkbox" onChange={this.onDeliveryTypeChange}></input>
-                            <label class="switch-button-label" for=""><span class="switch-button-label-span">Pickup</span></label>
-                    </div>
+                    
 
                     <div class="nav-location">
                         <button className="btn btn-grey rounded-pill"><FontAwesomeIcon icon={faMapMarkerAlt} />{custLocation}</button>
                     </div>
 
-                    {/* <div className="btn-group" data-toggle="buttons-radio">
-                        <button className="btn btn-uber" value="1" type="button" >1</button>
-                        <button className="btn btn-uber" value="2" type="button" >2</button>
-                    </div> */}
-
-                    <div class="btn-group">
-                        <input type="radio" class="btn-check" name="distType" id="resVeg" autocomplete="off" value="Veg" onChange={this.onDishTypChange}/>
-                        <label class="btn btn-outline-uber rounded-pill" for="resVeg">Veg</label>
-                    
-                        <input type="radio" class="btn-check" name="distType" id="resNonVeg" autocomplete="off" value="Non-Veg" onChange={this.onDishTypChange} />
-                        <label class="btn btn-outline-uber rounded-pill" for="resNonVeg">Non-Veg</label>
-                    
-                        <input type="radio" class="btn-check" name="distType" id="resVegan" autocomplete="off" value="Vegan" onChange={this.onDishTypChange} />
-                        <label class="btn btn-outline-uber rounded-pill" for="resVegan">Vegan</label>
-                    </div>
                     {/* <ul class="nav navbar-nav navbar-right">
                         {/* <li><span className="left-pan"><FontAwesomeIcon icon={faSearch} /></span></li> 
                         <li><button className="btn btn-grey rounded-pill"><FontAwesomeIcon icon={faSearch} />Veg</button></li>
@@ -137,4 +102,4 @@ class Header extends Component{
     }
 }
 
-export default Header
+export default CommonHeader

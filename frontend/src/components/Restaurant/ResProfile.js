@@ -3,6 +3,7 @@ import axios from 'axios';
 import { SERVER_ENDPOINT } from '../constants/serverConfigs';
 import countryList from '../constants/countryList';
 import cookie from 'react-cookies'
+import ResHeader from './ResHeader';
 
 class ResProfile extends Component {
     state = {
@@ -54,7 +55,7 @@ class ResProfile extends Component {
         const isValid = true;
         
         if(isValid){
-            const url = "http://localhost:8000/res/update";
+            const url = SERVER_ENDPOINT+"/res/update";
             axios
                 .put(url, formData)
                 .then(response => {
@@ -81,7 +82,10 @@ class ResProfile extends Component {
 
     render(){
         return (
+            <div>
+            <ResHeader toggleSidebar={this.handleViewSidebar}/>
             <div className="container">
+                
                 <div className="row justify-content-center">
                     <div className="col-lg-7">
                         <div className="card shadow-lg border-0 rounded-lg mt-5">
@@ -214,6 +218,7 @@ class ResProfile extends Component {
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
         )
     }

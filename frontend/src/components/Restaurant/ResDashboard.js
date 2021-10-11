@@ -16,7 +16,6 @@ class ResDashboard extends Component {
     }
     
     handleViewSidebar = () => {
-        console.log("I am here");
         this.setState({isSidebarOpen: !this.state.isSidebarOpen});
     }
 

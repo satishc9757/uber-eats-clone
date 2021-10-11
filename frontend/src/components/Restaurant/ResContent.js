@@ -38,7 +38,7 @@ class ResContent extends Component {
         let dishesData = [];
         if(this.state.dishes.length > 0){
             for(var index in this.state.dishes){
-                dishesData.push(<Link to={"/res/dish" + this.state.dishes[index].dishId}><li class="list-group-item">{this.state.dishes[index].dishName}</li></Link>);
+                dishesData.push(<Link to={"/res/dish/" + this.state.dishes[index].dishId}><li class="list-group-item">{this.state.dishes[index].dishName}</li></Link>);
             }
         } else {
             dishesData = <p>No Data</p>

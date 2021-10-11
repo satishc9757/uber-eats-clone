@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios';
 import { SERVER_ENDPOINT } from '../constants/serverConfigs';
+import ResHeader from './ResHeader';
 class ResDishUpdate extends Component {
 
 
@@ -15,7 +16,8 @@ class ResDishUpdate extends Component {
       dishPrice: "",
       dishDesc: "",
       dishCategory: "",
-      dishType:""
+      dishType:"",
+      dishImage:""
     }
 
     onChangeField = (event) => {
@@ -55,12 +57,12 @@ class ResDishUpdate extends Component {
         //console.log("isValid : "+ isValid);
         console.log("dishImage "+ this.state.dishImage);
         if(isValid){
-            const url = "http://localhost:8000/res/dish";
+            const url = SERVER_ENDPOINT+"/res/dish";
             axios
-                .put(url, formData)
+                .put(url, this.state)
                 .then(response => {
                     console.log(response);
-                    //this.props.history.push("./home");
+                    this.props.history.push("/res/home");
                 })
                 .catch(err => {
                     console.log(err);
@@ -72,12 +74,14 @@ class ResDishUpdate extends Component {
         return (
             
             <div className="dish_reg">
+                <ResHeader toggleSidebar={this.handleViewSidebar}/>
                 <div className="container">
                 <div className="row justify-content-center">
                     <div className="col-lg-7">
                         <div className="card shadow-lg border-0 rounded-lg mt-5">
                             <div className="card-header"><h3 className="text-center">Dish Update</h3></div>
                             <div className="card-body">
+                                <img src={this.state.dishImage} alt="..." className="img-thumbnail" />
                                 <form className="needs-validation" noValidate onSubmit={this.onFormSubmit}>
                                     
                                         <div className="form-floating mb-3">
@@ -100,14 +104,14 @@ class ResDishUpdate extends Component {
                                         {/* <div className="invalid">{this.state.custEmailError}</div> */}
                                     </div>
 
-                                    <div className="form-floating mb-3">
+                                    {/* <div className="form-floating mb-3">
                                         <input className="form-control" id="dishImage" type="file" 
                                             name="dishImage"
                                             onChange = {this.handleImageFile}
                                             />
                                         <label htmlFor="dishImage">Image</label>
-                                        {/* <div className="invalid">{this.state.custEmailError}</div> */}
-                                    </div>
+                                        {/* <div className="invalid">{this.state.custEmailError}</div> 
+                                    </div> */}
 
                                     <div className="form-floating mb-3">
                                         <textarea class="form-control" 

@@ -38,6 +38,8 @@ router.get("/id/:id", resController.getRestaurantById);
 //router.put("/update", resUpload.array('resImages', 5),resController.updateRestaurant);
 router.put("/update", resUpload.single('resImage'),resController.updateRestaurant); //single upload for now
 router.post("/login", validateResLogin, resController.res_login);
+router.post("/logout", resController.logout);
+
 
 router.get("/getDishByRes/:resId", resController.getDishByRes);
 router.get("/dish", resController.getAllDishes);

@@ -11,50 +11,24 @@ class ResturantView extends Component{
 
     state = {
         isSidebarOpen: false,
-        resData: {
-            resId: "2",
-            resImage : "http://localhost:8000/static/images/res1.jpeg",
-            resName: "LA Vic",
-            resDescription: "Of all the delivery spots in St. James Park, La Victoria Taqueria is among the 10 places with the most orders. If you're a fan of super burrito takeout like the rest of your city, you'll be happy to know it's offered at La Victoria",
-            resAddress: "140 E San Carlos St, San Jose, CA 95112 ",
-        },
-        resId: "2",
-        resImage : "http://localhost:8000/static/images/res1.jpeg",
-        resName: "LA Vic",
-        resDescription: "Of all the delivery spots in St. James Park, La Victoria Taqueria is among the 10 places with the most orders. If you're a fan of super burrito takeout like the rest of your city, you'll be happy to know it's offered at La Victoria",
-        resAddress: "140 E San Carlos St, San Jose, CA 95112 ",
-        resDishes : [{
-            dishId: 2,
-            dishImage: "http://localhost:8000/static/images/res1.jpeg",
-            dishName: "Sandwich",
-            dishMainIngredients: "Veggies, Sauces",
-            dishPrice: "10",
-            dishDesc: "Loaded with veggies",
-            dishType: "Veg"
-        },
-        {
-            dishId: 3,
-            dishImage: "http://localhost:8000/static/images/res1.jpeg",
-            dishName: "Sandwich",
-            dishMainIngredients: "Veggies, Sauces",
-            dishPrice: "10",
-            dishDesc: "Loaded with veggies",
-            dishType: "Veg"
-        },
-        {
-            dishId: 4,
-            dishImage: "http://localhost:8000/static/images/res1.jpeg",
-            dishName: "Sandwich",
-            dishMainIngredients: "Veggies, Sauces",
-            dishPrice: "10",
-            dishDesc: "Loaded with veggies",
-            dishType: "Veg"
-        }],
+        showPopup:false,
+        dataToBeAdded:"",
+        resData: {},
+        resId: "",
+        resImage : "",
+        resName: "",
+        resDescription: "",
+        resAddress: "",
+        resDishes : [],
     }
     
     handleViewSidebar = () => {
         this.setState({isSidebarOpen: !this.state.isSidebarOpen});
        
+    }
+
+    navigateToLoginPage = () => {
+        this.props.history.push("/login");
     }
 
     async componentDidMount(){
@@ -117,6 +91,13 @@ class ResturantView extends Component{
             console.log("from state "+ this.state.resData.resId);
             if(currentCartState.cartResId !== this.state.resData.resId){
                 console.log("you cannot add from another cart")
+                const newOrderData = {
+                    cartResId: this.state.resData.resId,
+                    cartResName: this.state.resData.resName,
+                    cartItems: [dish],
+                };
+                this.setState({dataToBeAdded: newOrderData});
+                this.setState({showPopup: true});
             } else {
                 currentCartState.cartItems.push(dish);
                 sessionStorage.setItem("custCart", JSON.stringify(currentCartState));
@@ -133,6 +114,14 @@ class ResturantView extends Component{
 
         }
         
+    }
+    onNewOrder = () =>{
+        sessionStorage.setItem("custCart", JSON.stringify(this.state.dataToBeAdded));
+        this.setState({showPopup: false});
+    }
+
+    onClosePopup = () => {
+        this.setState({showPopup: false});
     }
 
     render(){
@@ -156,7 +145,7 @@ class ResturantView extends Component{
                                 </div>
                             </div>
                         </div>
-                        <Menu onAddToCart={this.onAddToCart} dishData={this.state.resDishes} />
+                        <Menu showPopup={this.state.showPopup} onAddToCart={this.onAddToCart} dishData={this.state.resDishes} onNewOrder={this.onNewOrder} onClosePopup={this.onClosePopup}/>
                     </div> 
 
                     

@@ -90,6 +90,16 @@ exports.login_customer = function (req, res) {
 };
 
 
+exports.logout = function(req, res) {
+  res.cookie('cookie', 'none', {
+    expires: new Date(Date.now() + 1 * 1000),
+    httpOnly: true,
+  })
+  res
+    .status(200)
+    .json({ success: true, message: 'User logged out successfully' })
+  };
+
 exports.createOrder = async function(req, res) {
   const data = req.body;
   const address = data.deliveryAddress;

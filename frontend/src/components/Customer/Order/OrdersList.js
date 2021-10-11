@@ -3,10 +3,12 @@ import cookie  from 'react-cookies';
 import {SERVER_ENDPOINT} from '../../constants/serverConfigs'
 import axios from'axios';
 import OrderSummaryModal from './OrderSummaryModal';
+import CommonHeader from '../CommonHeader';
 
 class OrdersList extends  Component {
     
     state = {
+        isSidebarOpen: false,
         ordersData : [],
         ordersMainData: []
 
@@ -64,7 +66,9 @@ class OrdersList extends  Component {
     render(){
         return (
             <div className="ordersList">
-                <div className="header">
+                <CommonHeader toggleSidebar={this.handleViewSidebar} 
+                        />  
+                <div className="orders-header">
                         <h3>Past Orders</h3>
                         <div class="btn-group">
                                 <input type="radio" class="btn-check" name="ordersType" id="orderOn" autocomplete="off" value="Ongoing" onChange={this.onOrderTypeChange}/>
@@ -82,13 +86,7 @@ class OrdersList extends  Component {
 
                 {this.state.ordersData.map(this.renderOrder)}
 
-                    <div className="row">
-                        <h5>La Vic</h5>
-                        <br />
-                        <p className="text-muted">Dilivered on 22-Feb-2021 02:33 pm</p>
-                        <OrderSummaryModal />
-                        <hr />
-                    </div>
+                    
                 </div>
                 
 

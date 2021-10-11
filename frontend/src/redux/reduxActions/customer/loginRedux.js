@@ -1,9 +1,10 @@
 import axios from "axios";
+import { SERVER_ENDPOINT } from "../../../components/constants/serverConfigs";
 import { ERROR, LOGGED_IN, LOGGED_OUT } from "../actionTypes";
 
 export const custLogin = (data) => async dispatch => {
     console.log("Inside cust login redux ");  
-    await axios.post("http://localhost:8000/customer/login", data)
+    await axios.post(SERVER_ENDPOINT+"/customer/login", data)
     .then(response => {
         console.log("Response from login request ", response);
         

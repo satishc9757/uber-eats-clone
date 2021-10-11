@@ -4,16 +4,25 @@ import {SERVER_ENDPOINT} from '../../constants/serverConfigs'
 import axios from'axios';
 import OrderSummaryModal from './OrderSummaryModal';
 import UpdateStatusModal from './UpdateStatusModal';
+import ResHeader from '../ResHeader';
 
 class OrdersList extends  Component {
     
     state = {
         ordersData : [],
-        ordersMainData: []
+        ordersMainData: [],
+        isSidebarOpen: false
     }
 
+    handleViewSidebar = () => {
+        this.setState({isSidebarOpen: !this.state.isSidebarOpen});
+    }
 
-    async componentDidMount(){
+    onSuccessfulUpdate = () => {
+        this.refreshOrders();
+    }
+
+     refreshOrders = async() => {
         try{
             const resId = cookie.load("resId");
             
@@ -26,7 +35,22 @@ class OrdersList extends  Component {
         } catch(err){
             console.log(err);
         }
-     
+     }
+
+    async componentDidMount(){
+        // try{
+        //     const resId = cookie.load("resId");
+            
+        //     const url = SERVER_ENDPOINT + "/res/orders?resId="+resId;
+        //     const response = await axios.get(url);
+        //     const data = await response.data;
+        //     console.log("Res Orders data : "+JSON.stringify(data));
+        //     this.setState({ordersData: data});
+        //     this.setState({ordersMainData: data});
+        // } catch(err){
+        //     console.log(err);
+        // }
+        this.refreshOrders();
     }
 
     onOrderTypeChange = (event) => {
@@ -55,7 +79,7 @@ class OrdersList extends  Component {
                                 Order Status: {order.orderStatus}
                             </div>
                             <OrderSummaryModal total={order.orderTotal} deliveryAddress={order.street +","+ order.city +","+ order.state +","+ order.zipcode} orderId={order.orderId} />
-                            <UpdateStatusModal orderId={order.orderId}/>
+                            <UpdateStatusModal onSuccessfulUpdate={this.onSuccessfulUpdate}  orderId={order.orderId}/>
                             
                             <hr />
                         </div>
@@ -65,7 +89,9 @@ class OrdersList extends  Component {
     render(){
         return (
             <div className="ordersList">
-                <div className="header">
+                <ResHeader/>
+
+                <div className="orders-header">
                         <h3>Past Orders</h3>
                         <div class="btn-group">
                                 <input type="radio" class="btn-check" name="ordersType" id="orderOn" autocomplete="off" value="Ongoing" onChange={this.onOrderTypeChange}/>
@@ -78,16 +104,6 @@ class OrdersList extends  Component {
                         <br/><br/>
                     </div>
                 <div className="container">
-                    <div className="row">
-                        <h5>La Vic</h5>
-                        <br />
-                        <p className="text-muted">Order Placed on 22-Feb-2021 02:33 pm</p>
-                        <OrderSummaryModal />
-                        <UpdateStatusModal/>
-                        <hr />
-                    </div>
-
-
                     {this.state.ordersData.map(this.renderOrder)}
                 </div>
                 

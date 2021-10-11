@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import axios from 'axios';
 import cookie from 'react-cookies';
+import ResHeader from './ResHeader';
+import { SERVER_ENDPOINT } from '../constants/serverConfigs';
 
 class ResDishRegistration extends Component {
 
@@ -43,7 +45,7 @@ class ResDishRegistration extends Component {
         //console.log("isValid : "+ isValid);
         console.log("dishImage "+ this.state.dishImage);
         if(isValid){
-            const url = "http://localhost:8000/res/dish";
+            const url = SERVER_ENDPOINT+"/res/dish";
             axios
                 .post(url, formData)
                 .then(response => {
@@ -59,6 +61,7 @@ class ResDishRegistration extends Component {
     render(){
         return (
             <div className="dish_reg">
+                <ResHeader toggleSidebar={this.handleViewSidebar}/>
                 <div className="container">
                 <div className="row justify-content-center">
                     <div className="col-lg-7">

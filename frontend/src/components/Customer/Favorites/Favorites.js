@@ -11,6 +11,7 @@ import cookie from 'react-cookies';
 import Header from '../Header';
 import Sidebar from '../Sidebar';
 import Content from '../Dashboard/Content';
+import FavContent from './FavContent';
 
 class Favorites extends Component {
 
@@ -21,7 +22,7 @@ class Favorites extends Component {
     }
 
     navigateToLoginPage = () => {
-        this.props.history.push("./login");
+        this.props.history.push("/login");
     }
     
     handleViewSidebar = () => {
@@ -94,8 +95,9 @@ class Favorites extends Component {
                     <Sidebar isOpen={this.state.isSidebarOpen} 
                              logout={this.props.custLogout} 
                              navigateToLoginPage={this.navigateToLoginPage}/>
-                    <h3>Favorites</h3>         
-                    <Content resData={this.state.resData}/>
+                    
+                    <FavContent resData={this.state.resData}/>
+                    
                 </div>
             </div>
         )

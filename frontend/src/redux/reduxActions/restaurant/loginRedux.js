@@ -1,9 +1,10 @@
 import axios from "axios";
+import { SERVER_ENDPOINT } from "../../../components/constants/serverConfigs";
 import { ERROR, LOGGED_IN, LOGGED_OUT } from "../actionTypes";
 
 export const resLogin = (data) => async dispatch => {
     console.log("Inside res login redux ");  
-    await axios.post("http://localhost:8000/res/login", data)
+    await axios.post(SERVER_ENDPOINT+"/res/login", data)
     .then(response => {
         console.log("Response from login request ", response);
         //console.log("Store obj : "+reduxStore);

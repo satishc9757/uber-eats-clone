@@ -4,11 +4,12 @@ import DeliveryAddressModal from './DeliveryAddressModal';
 import axios from'axios';
 import {SERVER_ENDPOINT} from '../../constants/serverConfigs'
 import cookie  from 'react-cookies';
+import CommonHeader from '../CommonHeader';
 
 class CheckoutPage extends Component{
     
     state = {
-
+        isSidebarOpen: false,
         cartInfo: {
             cartResName: "",
             cartItems : []
@@ -40,6 +41,16 @@ class CheckoutPage extends Component{
         selectedDeliveryAddressIndex : 0,
         custId: ""
     }
+
+    navigateToLoginPage = () => {
+        this.props.history.push("/login");
+    }
+    
+    handleViewSidebar = () => {
+        
+        this.setState({isSidebarOpen: !this.state.isSidebarOpen});
+    }
+
 
     async componentDidMount(){
         const custId = cookie.load('custId');
@@ -151,7 +162,8 @@ class CheckoutPage extends Component{
     render(){
         return (
             <div className="checkoutPage">
-                
+             <CommonHeader toggleSidebar={this.handleViewSidebar} 
+                        />   
 
             <div class="container">
 		        {/* <div class="block-heading">

@@ -1,9 +1,10 @@
 import axios from "axios";
+import { SERVER_ENDPOINT } from "../../../components/constants/serverConfigs";
 import { ERROR, SIGN_UP } from "../actionTypes";
 
 
 export const resSignup = (data) => async dispatch => {
-    axios.post("http://localhost:8000/res/register", data)
+    axios.post(SERVER_ENDPOINT+"/res/register", data)
         .then(response => {
             console.log("Response from register request ", response);
             dispatch({

@@ -4,6 +4,9 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import {custLogin} from '../../redux/reduxActions/customer/loginRedux';
 import errorAction from '../../redux/reduxActions/errorRedux';
+import ShortHeader from '../ShortHeader';
+import ShortFooter from '../ShortFooter';
+import { SERVER_ENDPOINT } from '../constants/serverConfigs';
 
 class CustLogin extends Component {
 
@@ -45,7 +48,7 @@ class CustLogin extends Component {
         // }
 
         //custLogin(this.state);
-        const url = "http://localhost:8000/customer/login";
+        const url = SERVER_ENDPOINT+"/customer/login";
         
         axios
             .post(url, this.state)
@@ -70,7 +73,10 @@ class CustLogin extends Component {
 
     render(){
         return (
+            <div>
+            <ShortHeader/>
             <div className="container">
+                
                 <div className="row justify-content-center">
                     <div className="col-lg-5">
                         <div className="card shadow-lg border-0 rounded-lg mt-5">
@@ -93,7 +99,7 @@ class CustLogin extends Component {
                                     </div>
                                     <div className="d-flex align-items-center justify-content-between mt-4 mb-0">
                                         <a className="small" href="password.html">Forgot Password?</a>
-                                        <button className="d-grid btn btn-primary" type="submit">Login</button>
+                                        <button className="d-grid btn btn-uber" type="submit">Login</button>
                                     </div>
                                 </form>
                             </div>
@@ -103,6 +109,8 @@ class CustLogin extends Component {
                         </div>
                     </div>
                 </div>
+            </div>
+            <ShortFooter/>
             </div>
         )
     }    

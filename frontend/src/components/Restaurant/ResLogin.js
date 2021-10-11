@@ -3,6 +3,9 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import { resLogin } from '../../redux/reduxActions/restaurant/loginRedux';
 import errorAction from '../../redux/reduxActions/errorRedux';
+import ShortFooter from '../ShortFooter';
+import ShortHeader from '../ShortHeader';
+import { SERVER_ENDPOINT } from '../constants/serverConfigs';
 
 class ResLogin extends Component {
 
@@ -40,7 +43,7 @@ class ResLogin extends Component {
         
         
         //console.log("State inside login: "+this.state);
-        const url = "http://localhost:8000/res/login";
+        const url = SERVER_ENDPOINT+"/res/login";
         axios
             .post(url, this.state)
             .then(response => {
@@ -64,6 +67,8 @@ class ResLogin extends Component {
 
     render(){
         return (
+            <div>
+            <ShortHeader/>
             <div className="container">
                 <div className="row justify-content-center">
                     <div className="col-lg-5">
@@ -87,13 +92,10 @@ class ResLogin extends Component {
                                         onChange = {this.onChangeField}/>
                                         <label for="inputPassword">Password</label>
                                     </div>
-                                    <div className="form-check mb-3">
-                                        <input className="form-check-input" id="inputRememberPassword" type="checkbox" value="" />
-                                        <label className="form-check-label" for="inputRememberPassword">Remember Password</label>
-                                    </div>
+                                    
                                     <div className="d-flex align-items-center justify-content-between mt-4 mb-0">
                                         <a className="small" href="password.html">Forgot Password?</a>
-                                        <button className="d-grid btn btn-primary" type="submit">Login</button>
+                                        <button className="d-grid btn btn-uber" type="submit">Login</button>
                                     </div>
                                 </form>
                             </div>
@@ -103,6 +105,8 @@ class ResLogin extends Component {
                         </div>
                     </div>
                 </div>
+            </div>
+            <ShortFooter/>
             </div>
         )
     }    

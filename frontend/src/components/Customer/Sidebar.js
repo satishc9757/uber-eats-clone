@@ -1,12 +1,18 @@
+import axios from 'axios';
 import React, { Component } from 'react'
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
+import { SERVER_ENDPOINT } from '../constants/serverConfigs';
 
 class Sidebar extends Component{
     
     onSignout = async (event) => {
         event.preventDefault();
-        await this.props.logout();
+        //await this.props.logout();
+        const url = SERVER_ENDPOINT+"/customer/logout";
+        const response = await axios.post(url);
+        //cookie.remove('cookie', { path: '/' })
+        sessionStorage.clear();
         this.props.navigateToLoginPage(); 
     }
 
@@ -15,6 +21,7 @@ class Sidebar extends Component{
         console.log("Logout clicked");
         console.log("cookie data "+ cookie.load('cookie'));
         cookie.remove('cookie', { path: '/' })
+        sessionStorage.clear();
         this.props.navigateToLoginPage();
     }
 
@@ -36,7 +43,7 @@ class Sidebar extends Component{
                 <ul className="list-unstyled components">
                     {/* <p>Dummy Heading</p> */}
                     <li className="active">
-                        <a href="./home" data-toggle="collapse" aria-expanded="false">Dashboard</a>
+                        <a href="/home" data-toggle="collapse" aria-expanded="false">Dashboard</a>
                         {/* <ul className="collapse list-unstyled" id="homeSubmenu">
                             <li>
                                 <a href="/res/home">Home</a>
@@ -50,16 +57,16 @@ class Sidebar extends Component{
                         </ul> */}
                     </li>
                     <li>
-                        <a href="./profile">Profile</a>
+                        <a href="/profile">Profile</a>
                     </li>
                     <li>
-                        <a href="./orders">Orders</a>
+                        <a href="/orders">Orders</a>
                     </li>
                     <li>
-                        <a href="./checkout">Checkout</a>
+                        <a href="/checkout">Checkout</a>
                     </li>
                     <li>
-                        <a href="./favorites">Favorites</a>
+                        <a href="/favorites">Favorites</a>
                     </li>
                     {/* <li>
                         <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" className="dropdown-toggle">Pages</a>
@@ -89,7 +96,7 @@ class Sidebar extends Component{
                     </li> */}
                     <li>
                         {/* <button onClick={this.handleLogout} className="btn btn-uber">Signout</button>  */}
-                        <a href="" onClick={this.handleLogout} className="article">Signout</a>
+                        <a href="" onClick={this.onSignout} className="article">Signout</a>
                     </li>
                 </ul>
             </nav>
