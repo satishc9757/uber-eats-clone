@@ -8,7 +8,8 @@ const custRouter = require('./routes/custRouter');
 const resRouter = require('./routes/resRouter');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
-const FRONTEND_URL = "http://localhost:3000"
+//const FRONTEND_URL = "http://localhost:3000"
+const FRONTEND_URL = "http://18.119.29.239:3000"
 
 
 
