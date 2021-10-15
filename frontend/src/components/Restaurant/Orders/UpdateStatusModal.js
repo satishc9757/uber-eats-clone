@@ -73,6 +73,7 @@ class UpdateStatusModal  extends Component {
                                                     <option value="Preparing">Preparing</option>
                                                     <option value="On the way">On the way</option>
                                                     <option value="Delivered">Delivered</option>
+                                                    <option value="Cancelled">Cancel</option>
                                                 </select>
                                                     
                                                     {/* <div className="invalid">{this.state.custLastNameError}</div> */}

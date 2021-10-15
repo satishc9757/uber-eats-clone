@@ -14,8 +14,11 @@ class OrdersList extends  Component {
 
     }
 
-
     async componentDidMount(){
+        this.refreshOrdersData();
+    }
+
+    refreshOrdersData = async () => {
         try{
             const custId = cookie.load("custId");
             
@@ -28,7 +31,19 @@ class OrdersList extends  Component {
         } catch(err){
             console.log(err);
         }
-     
+    }
+
+    onCancelOrder = async (orderId) => {
+        try{
+            console.log("order id is : "+orderId)
+            const url = SERVER_ENDPOINT + "/customer/order/cancel";
+            const response = await axios.post(url, {orderId: orderId});
+            
+            console.log("Order cancelled  : "+JSON.stringify(response));
+            this.refreshOrdersData();
+        } catch(err){
+            console.log(err);
+        }
     }
 
     onOrderTypeChange = (event) => {
@@ -39,15 +54,24 @@ class OrdersList extends  Component {
             this.setState({ordersData: this.state.ordersMainData.filter(o => {
                 return o.orderStatus === "Delivered"
             })});
+        } else if(orderType === "Cancelled"){
+            this.setState({ordersData: this.state.ordersMainData.filter(o => {
+                return o.orderStatus === "Cancelled"
+            })});
         } else {
             this.setState({ordersData: this.state.ordersMainData.filter(o => {
-                return o.orderStatus !== "Delivered"
+                return o.orderStatus !== "Cancelled" &&  o.orderStatus !== "Delivered"
             })});
         }
     }
 
     renderOrder = (order) => {
                     const order_status_class = "alert order-status rounded-pill "+ (order.orderStatus === "Delivered"?  "alert-success": "alert-warning");
+                    let cancelButton = "";
+                    if(order.orderStatus === "Order Placed"){
+                        cancelButton = <button className="btn btn-uber rounded-pill" onClick={() => this.onCancelOrder(order.orderId)}>Cancel Order</button>
+                    }
+                    
                     return(
                     <div className="row" key={order.odId}>
                         <h5>{order.resName}</h5>
@@ -56,6 +80,12 @@ class OrdersList extends  Component {
                         <div class={order_status_class} role="alert">
                             Order Status: {order.orderStatus}
                         </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                {cancelButton}
+                            </div>
+                        </div>
+                        
                         
                         <OrderSummaryModal total={order.orderTotal} deliveryAddress={order.street +","+ order.city +","+ order.state +","+ order.zipcode} orderId={order.orderId} />
                         <hr />
@@ -76,6 +106,9 @@ class OrdersList extends  Component {
                             
                                 <input type="radio" class="btn-check" name="ordersType" id="orderDelivered" autocomplete="off" value="Delivered" onChange={this.onOrderTypeChange} />
                                 <label class="btn btn-outline-uber rounded-pill" for="orderDelivered">Delivered</label>
+
+                                <input type="radio" class="btn-check" name="ordersType" id="orderCancelled" autocomplete="off" value="Cancelled" onChange={this.onOrderTypeChange} />
+                                <label class="btn btn-outline-uber rounded-pill" for="orderCancelled">Cancelled</label>
                             
                         </div>
                         <br/><br/>

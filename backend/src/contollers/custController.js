@@ -158,6 +158,33 @@ exports.createOrder = async function(req, res) {
 
 }
 
+exports.cancelOrder = function (req, res) {
+  const data = req.body;
+  
+  let sql = "UPDATE orders SET order_status = 'Cancelled' " 
+                   + " WHERE order_id = ?"
+
+  con.query(
+    sql,
+    [
+      data.orderId,
+    ],
+    (err, result) => {
+      if (err) {
+        console.error("updateOrderStatus : " + err);
+        res
+          .status(500)
+          .send(JSON.stringify({ message: "Something went wrong!", err }));
+      } else {
+        //console.log("address inserted "+result);
+        res.send("Order Cancelled successfully");
+      }
+    }
+  );
+  
+};
+
+
 
 insertOrder = function(req, res, addId){
   const data = req.body;

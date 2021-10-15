@@ -61,9 +61,13 @@ class OrdersList extends  Component {
             this.setState({ordersData: this.state.ordersMainData.filter(o => {
                 return o.orderStatus === "Delivered"
             })});
+        } else if(orderType === "Cancelled"){
+            this.setState({ordersData: this.state.ordersMainData.filter(o => {
+                return o.orderStatus === "Cancelled"
+            })});
         } else {
             this.setState({ordersData: this.state.ordersMainData.filter(o => {
-                return o.orderStatus !== "Delivered"
+                return o.orderStatus !== "Cancelled" &&  o.orderStatus !== "Delivered"
             })});
         }
     }
@@ -99,6 +103,9 @@ class OrdersList extends  Component {
                             
                                 <input type="radio" class="btn-check" name="ordersType" id="orderDelivered" autocomplete="off" value="Delivered" onChange={this.onOrderTypeChange} />
                                 <label class="btn btn-outline-uber rounded-pill" for="orderDelivered">Delivered</label>
+                            
+                                <input type="radio" class="btn-check" name="ordersType" id="orderCancelled" autocomplete="off" value="Cancelled" onChange={this.onOrderTypeChange} />
+                                <label class="btn btn-outline-uber rounded-pill" for="orderCancelled">Cancelled</label>
                             
                         </div>
                         <br/><br/>

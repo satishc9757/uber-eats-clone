@@ -25,8 +25,8 @@ router.post("/login", validateCustLogin, custController.login_customer);
 router.post("/logout", custController.logout);
 router.put("/update", custUpload.single('custImage'), custController.updateCustomerProfile);
 
-router.post("/order/create", custController.createOrder)
-
+router.post("/order/create", custController.createOrder);
+router.post("/order/cancel", custController.cancelOrder);
 
 router.get("/order/address", custController.getDeliveryAddressesForUser);
 
