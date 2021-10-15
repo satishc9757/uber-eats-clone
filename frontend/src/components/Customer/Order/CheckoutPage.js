@@ -152,6 +152,7 @@ class CheckoutPage extends Component{
             }
             console.log("payload : "+JSON.stringify(payload));
             const response = await axios.post(url, payload);
+            sessionStorage.clear();
             //console.log("Response from order create : "+response.data);
             this.props.history.push("/orders");
         } catch(err){   
