@@ -3,9 +3,10 @@ import { connect } from 'react-redux';
 import { useHistory } from "react-router-dom";
 import {custSignup} from '../../redux/reduxActions/customer/signupRedux';
 import errorAction from '../../redux/reduxActions/errorRedux';
+import { SERVER_ENDPOINT } from '../constants/serverConfigs';
 import ShortFooter from '../ShortFooter';
 import ShortHeader from '../ShortHeader';
-const axios = require('axios');
+import axios from 'axios'
 
 
  class SignupCust extends Component {
@@ -25,7 +26,8 @@ const axios = require('axios');
         custLastNameError: "",
         custEmailError: "",
         custPasswordError: "",
-        custPasswordConfirmError: ""
+        custPasswordConfirmError: "",
+        signupErrorMessage: ""
     }
 
     redirectToSuccesPage(){
@@ -65,19 +67,42 @@ const axios = require('axios');
         if(isValid){
             
 
-            await this.props.custSignup(this.state);
+            // await this.props.custSignup(this.state);
             
-            this.props.history.push("./login");
+            // this.props.history.push("./login");
   
             
             // try{
-            //     const url = "http://localhost:8000/customer/register";
+            //     const url = SERVER_ENDPOINT+"/customer/register";
             //     const response = await axios.post(url, this.state);
-            //     this.props.custSignup(response.data);
+            //     this.props.history.push("./login");
+            //    // this.props.custSignup(response.data);
             // } catch(err){
-            //     this.props.errorAction(err);
+            //     if(err.response && err.response.status === 400){
+            //         this.setState({
+            //             signupErrorMessage: "Email id already exists!"
+            //         })
+            //     }
             //     console.log("Error : "+err)
             // }
+
+            const url = SERVER_ENDPOINT+"/customer/register";
+
+            axios
+            .post(url, this.state)
+            .then(response => {
+                console.log(response);
+                this.props.history.push("/login");
+                
+            })
+            .catch(err => {
+                if(err.response && err.response.status === 400){
+                    this.setState({
+                        signupErrorMessage: "Email id already exists!"
+                    })
+                }
+                console.log(err);
+            });
 
             // const url = "http://localhost:8000/customer/register";
             // axios
@@ -146,6 +171,10 @@ const axios = require('axios');
     }
 
     render() {
+        let signupError = "";
+        if(this.state.signupErrorMessage !== ""){
+            signupError = <div class="alert alert-danger text-center" role="alert">{this.state.signupErrorMessage}</div>
+        }
         return (
             <div>
             <ShortHeader/>
@@ -157,6 +186,7 @@ const axios = require('axios');
                             <div className="card-header"><h3 className="text-center font-weight-light my-4">Create Account</h3></div>
                             <div className="card-body">
                                 <form className="needs-validation" noValidate onSubmit={this.onSignUpSubmit}>
+                                    {signupError}
                                     <div className="row mb-3">
                                         <div className="col-md-6">
                                             <div className="form-floating mb-3 mb-md-0">

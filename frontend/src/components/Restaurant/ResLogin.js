@@ -11,7 +11,8 @@ class ResLogin extends Component {
 
     state = {
         resUsername: "",
-        resPassword: ""
+        resPassword: "",
+        errorMessage: ""
     }
 
     onChangeField =  (event) => {
@@ -52,6 +53,11 @@ class ResLogin extends Component {
                 this.props.history.push("./home");
             })
             .catch(err => {
+                if(err.response && err.response.status === 400){
+                    this.setState({
+                       errorMessage: "Invalid credentials"
+                    })
+                }
                 console.log(err);
         });
 
@@ -66,6 +72,10 @@ class ResLogin extends Component {
     }
 
     render(){
+        let loginError = "";
+        if(this.state.errorMessage !== ""){
+            loginError = <div class="alert alert-danger text-center" role="alert">{this.state.errorMessage}</div>
+        }
         return (
             <div>
             <ShortHeader/>
@@ -76,6 +86,7 @@ class ResLogin extends Component {
                             <div className="card-header"><h3 className="text-center font-weight-light my-4">Res Login</h3></div>
                             <div className="card-body">
                                 <form onSubmit={this.login}>
+                                    {loginError}
                                     <div className="form-floating mb-3">
                                         <input className="form-control" id="resUsername" type="email" 
                                         name = "resUsername"

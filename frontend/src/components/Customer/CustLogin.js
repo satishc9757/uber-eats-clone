@@ -12,7 +12,8 @@ class CustLogin extends Component {
 
     state = {
         custUsername: "",
-        custPassword: ""
+        custPassword: "",
+        errorMessage: ""
     }
 
     onChangecustUsername = (event) => {
@@ -58,6 +59,12 @@ class CustLogin extends Component {
                 
             })
             .catch(err => {
+                if(err.response && err.response.status === 400){
+                    this.setState({
+                        authFlag : false,
+                        errorMessage: "Invalid credentials"
+                    })
+                }
                 console.log(err);
             });
 
@@ -72,6 +79,10 @@ class CustLogin extends Component {
     }
 
     render(){
+        let loginError = "";
+        if(this.state.errorMessage !== ""){
+            loginError = <div class="alert alert-danger text-center" role="alert">{this.state.errorMessage}</div>
+        }
         return (
             <div>
             <ShortHeader/>
@@ -83,6 +94,7 @@ class CustLogin extends Component {
                             <div className="card-header"><h3 className="text-center font-weight-light my-4">Login</h3></div>
                             <div className="card-body">
                                 <form onSubmit={this.login}>
+                                    {loginError}
                                     <div className="form-floating mb-3">
                                         <input className="form-control" id="inputEmail" type="email" 
                                         placeholder="name@example.com" 

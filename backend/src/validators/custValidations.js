@@ -57,6 +57,7 @@ exports.validateCustRegistration = [
     .normalizeEmail()
     .custom(async username => {
         const isUsernameInUse = await isUsernamePresent(username);
+        console.log("Resposne from username validation is : "+isUsernameInUse);
         if(isUsernameInUse){
           throw new Error('Email already exists.');
         }

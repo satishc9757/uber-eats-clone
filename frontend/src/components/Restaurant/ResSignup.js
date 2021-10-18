@@ -27,7 +27,18 @@ const axios = require('axios');
         resState: "",
         resZipcode: "",
         resCountry: "",
-        resDeliveryType:""
+        resDeliveryType:"",
+        resNameError: "",
+        resEmailError: "",
+        resPasswordError: "",
+        resPasswordConfirmError: "",
+        resStreetError: "",
+        resCityError: "",
+        resStateError: "",
+        resZipcodeError: "",
+        resCountryError: "",
+        resDeliveryTypeError:"",
+        signupErrorMessage: ""
     
     }
 
@@ -44,7 +55,7 @@ const axios = require('axios');
         console.log("props"+ JSON.stringify(this.props));
         console.log("Here in the on submit "+ event);
         //const isValid = this.validateInputs(); --validation disabled for now
-        const isValid = true;
+        const isValid = this.validateInputs();
         console.log("isValid : "+ isValid);
         
         if(isValid){
@@ -67,42 +78,77 @@ const axios = require('axios');
 
     validateInputs(){
         let isValid = true;
-        if(this.state.custFirstName.match("^[a-zA-Z ]+$")){
-            this.setState({custFirstNameError: ""});
+        if(this.state.resName.match("^[a-zA-Z ]+$")){
+            this.setState({resNameError: ""});
         } else {
             isValid = false;
-            this.setState({custFirstNameError: "Invalid first name."});
+            this.setState({resNameError: "Invalid restaurant name."});
         }
 
-        if(this.state.custLastName.match("^[a-zA-Z ]+$")){
-            this.setState({custLastNameError: ""});
+        if(this.state.resEmail.match("^([\\w\\.\\-]+)@([\\w\\-]+)((\\.(\\w){2,3})+)$")){
+            this.setState({resEmailError: ""});
         } else {
             isValid = false;
-            this.setState({custLastNameError: "Invalid last name."});
+            this.setState({resEmailError: "Invalid email."});
         }
 
-        if(this.state.custEmail.match("^([\\w\\.\\-]+)@([\\w\\-]+)((\\.(\\w){2,3})+)$")){
-            this.setState({custEmailError: ""});
-        } else {
+        if(this.state.resPassword === ""){
             isValid = false;
-            this.setState({custEmailError: "Invalid email."});
+            this.setState({resPasswordError: "Password cannot be empty"});
+        } else {
+            this.setState({resPasswordError: ""});
         }
 
-        if(this.state.custPassword === ""){
+        if(this.state.resPasswordConfirm === ""){
             isValid = false;
-            this.setState({custPasswordError: "Password cannot be empty"});
+            this.setState({resPasswordConfirmError: "Confirm password cannot be empty"});
+        } else if(this.state.resPasswordConfirm !== this.state.resPassword){
+            isValid = false;
+            this.setState({resPasswordConfirmError: "Passwords don't match"});
         } else {
-            this.setState({custPasswordError: ""});
+            this.setState({resPasswordConfirmError: ""});
         }
 
-        if(this.state.custPasswordConfirm === ""){
-            isValid = false;
-            this.setState({custPasswordConfirmError: "Confirm password cannot be empty"});
-        } else if(this.state.custPasswordConfirm !== this.state.custPassword){
-            isValid = false;
-            this.setState({custPasswordConfirmError: "Passwords don't match"});
+        if(this.state.resStreet.match("^[a-zA-Z0-9 ]+$")){
+            this.setState({resStreetError: ""});
         } else {
-            this.setState({custPasswordConfirmError: ""});
+            isValid = false;
+            this.setState({resStreetError: "Invalid street name."});
+        }
+
+        if(this.state.resCity.match("^[a-zA-Z0-9 ]+$")){
+            this.setState({resCityError: ""});
+        } else {
+            isValid = false;
+            this.setState({resCityError: "Invalid city name."});
+        }
+
+        if(this.state.resState.match("^[a-zA-Z0-9 ]+$")){
+            this.setState({resStateError: ""});
+        } else {
+            isValid = false;
+            this.setState({resStateError: "Invalid state name."});
+        }
+
+        if(this.state.resZipcode.match("^[a-zA-Z0-9 ]+$")){
+            this.setState({resZipcodeError: ""});
+        } else {
+            isValid = false;
+            this.setState({resZipcodeError: "Invalid zipcode name."});
+        }
+
+        if(this.state.resCountry.match("^[a-zA-Z0-9 ]+$")){
+            this.setState({resCountryError: ""});
+        } else {
+            isValid = false;
+            this.setState({resCountryError: "Invalid country name."});
+        }
+
+        if(this.state.resDeliveryType.match("^[a-zA-Z ]+$")){
+            this.setState({resDeliveryTypeError: ""});
+        } else {
+            isValid = false;
+            this.setState({resDeliveryTypeError: "Invalid delivery type."});
         }
 
         console.log("error "+ isValid);
@@ -135,7 +181,7 @@ const axios = require('axios');
                                                     placeholder="Enter your restaurant name" 
                                                     required/>  
                                                 <label htmlFor="resName">Restaurant Name</label>
-                                                {/* <div className="invalid">{this.state.custFirstNameError}</div> */}
+                                                <div className="invalid">{this.state.resNameError}</div>
                                             </div>
                                     </div>    
                                    <div className="form-floating mb-3">
@@ -145,7 +191,7 @@ const axios = require('axios');
                                             onChange = {this.onChangeField}
                                             placeholder="name@example.com" />
                                         <label htmlFor="resEmail">Email address</label>
-                                        {/* <div className="invalid">{this.state.custEmailError}</div> */}
+                                        <div className="invalid">{this.state.resEmailError}</div>
                                     </div>
                                     <div className="row mb-3">
                                         <div className="col-md-6">
@@ -156,7 +202,7 @@ const axios = require('axios');
                                                     onChange = {this.onChangeField}
                                                     placeholder="Create a password" />
                                                 <label htmlFor="resPassword">Password</label>
-                                                {/* <div className="invalid">{this.state.custPasswordError}</div> */}
+                                                <div className="invalid">{this.state.resPasswordError}</div>
                                             </div>
                                         </div>
                                         <div className="col-md-6">
@@ -167,33 +213,33 @@ const axios = require('axios');
                                                     onChange = {this.onChangeCustConfirmPassword}
                                                     placeholder="Confirm password" />
                                                 <label htmlFor="resPasswordConfirm">Confirm Password</label>
-                                                {/* <div className="invalid">{this.state.custPasswordConfirmError}</div> */}
+                                                <div className="invalid">{this.state.resPasswordConfirmError}</div>
                                             </div>
                                         </div>
                                     </div>
                                     <div className="mb-3">
                                         <div className="form-floating mb-3 mb-md-0">
-                                                    <input className={"form-control" + (this.state.custFirstNameError ? " invalid-input": "")} id="resStreet" type="text" 
+                                                    <input className={"form-control" + (this.state.resStreetError ? " invalid-input": "")} id="resStreet" type="text" 
                                                         name="resStreet"
                                                         value = {this.state.resStreet}
                                                         onChange = {this.onChangeField}
                                                         placeholder="Street address" 
                                                         required/>  
                                                     <label htmlFor="resStreet">Street address</label>
-                                                    {/* <div className="invalid">{this.state.custFirstNameError}</div> */}
+                                                    <div className="invalid">{this.state.resStreetError}</div>
                                         </div>
                                     </div>
                                     <div className="row mb-3">
                                         <div className="col-md-6">
                                             <div className="form-floating mb-3 mb-md-0">
-                                                <input className={"form-control" + (this.state.custFirstNameError ? " invalid-input": "")} id="resCity" type="text" 
+                                                <input className={"form-control" + (this.state.resCityError ? " invalid-input": "")} id="resCity" type="text" 
                                                     name="resCity"
                                                     value = {this.state.resCity}
                                                     onChange = {this.onChangeField}
                                                     placeholder="Enter City" 
                                                     required/>  
                                                 <label htmlFor="resCity">City</label>
-                                                {/* <div className="invalid">{this.state.custFirstNameError}</div> */}
+                                                <div className="invalid">{this.state.resCityError}</div>
                                             </div>
                                         </div>
                                         
@@ -205,7 +251,7 @@ const axios = require('axios');
                                                     onChange = {this.onChangeField}
                                                     placeholder="Select State" />
                                                 <label htmlFor="resState">State</label>
-                                                {/* <div className="invalid">{this.state.custLastNameError}</div> */}
+                                                <div className="invalid">{this.state.resStateError}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -218,7 +264,7 @@ const axios = require('axios');
                                                     onChange = {this.onChangeField}
                                                     placeholder="Enter Zipcode" />
                                                 <label htmlFor="resZipcode">Zipcode</label>
-                                                {/* <div className="invalid">{this.state.custLastNameError}</div> */}
+                                                <div className="invalid">{this.state.resZipcodeError}</div>
                                             </div>
                                         </div>
 
@@ -233,7 +279,7 @@ const axios = require('axios');
                                                     return (<option value={c}>{c}</option>)})}
                                             </select>
                                                 <label htmlFor="resCountry">Country</label>
-                                                {/* <div className="invalid">{this.state.custLastNameError}</div> */}
+                                                <div className="invalid">{this.state.resCountryError}</div>
                                             </div>
                                         </div>
 
@@ -252,7 +298,7 @@ const axios = require('axios');
                                                 <option>Pickup</option>
                                             </select>
                                                 <label htmlFor="custCountry">Delivery Type</label>
-                                                {/* <div className="invalid">{this.state.custLastNameError}</div> */}
+                                                <div className="invalid">{this.state.resDeliveryTypeError}</div>
                                             </div>
                                         </div>
 
