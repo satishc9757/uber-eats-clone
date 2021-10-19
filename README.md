@@ -29,6 +29,7 @@ $ cd ./src/frontend
 $ npm install
 $ npm start
 ```
+This will start frontend server on port 3000.
 
 For Backend:
 ```
@@ -36,5 +37,5 @@ $ cd ./src/backend
 $ npm install
 $ npm start
 ```
-
+This will start backend server on port 8000.
 
