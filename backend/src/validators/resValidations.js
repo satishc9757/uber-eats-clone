@@ -89,6 +89,7 @@ exports.validateResRegistration = [
     .normalizeEmail()
     .custom(async username => {
         const isUsernameInUse = await isUsernamePresent(username);
+        console.log("isUsernameInUse : "+isUsernameInUse);
         if(isUsernameInUse){
           throw new Error('Email already exists.');
         }

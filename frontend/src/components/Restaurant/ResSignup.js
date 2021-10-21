@@ -7,7 +7,7 @@ import countryList from '../constants/countryList';
 import { SERVER_ENDPOINT } from '../constants/serverConfigs';
 import ShortFooter from '../ShortFooter';
 import ShortHeader from '../ShortHeader';
-const axios = require('axios');
+import axios from 'axios';
 
 
  class ResSignup extends Component {
@@ -69,6 +69,11 @@ const axios = require('axios');
                     this.props.history.push("./login");
                 })
                 .catch(err => {
+                    if(err.response && err.response.status === 400){
+                        this.setState({
+                            signupErrorMessage: "Email id already exists!"
+                        })
+                    }
                     console.log(err);
                 });
                 
@@ -76,7 +81,7 @@ const axios = require('axios');
     }
 
 
-    validateInputs(){
+    validateInputs() {
         let isValid = true;
         if(this.state.resName.match("^[a-zA-Z ]+$")){
             this.setState({resNameError: ""});
@@ -152,16 +157,37 @@ const axios = require('axios');
         }
 
         console.log("error "+ isValid);
-        // return this.state.custFirstNameError === "" 
-        //         && this.state.custLastNameError === "" 
-        //         && this.state.custEmailError === "" 
-        //         && this.state.custPasswordError === "" 
-        //         && this.state.custPasswordConfirmError === ""; 
+        // console.log(this.state.resNameError)
+        //         console.log( this.state.resEmailError)
+        //         console.log( this.state.resPasswordError)
+        //         console.log( this.state.resPasswordConfirmError)
+        //         console.log( this.state.resStreetError )
+        //         console.log( this.state.resCityError )
+        //         console.log( this.state.resStateError )
+        //         console.log( this.state.resZipcodeError )
+        //         console.log( this.state.resCountryError )
+        //         console.log( this.state.resDeliveryTypeError );
+        
+        // return this.state.resNameError == "" 
+        //         && this.state.resEmailError === "" 
+        //         && this.state.resPasswordError === "" 
+        //         && this.state.resPasswordConfirmError === "" 
+        //         && this.state.resStreetError === ""
+        //         && this.state.resCityError === ""
+        //         && this.state.resStateError === ""
+        //         && this.state.resZipcodeError == ""
+        //         && this.state.resCountryError === ""
+        //         && this.state.resDeliveryTypeError === ""
+        
         return isValid;
 
     }
 
     render() {
+        let signupError = "";
+        if(this.state.signupErrorMessage !== ""){
+            signupError = <div class="alert alert-danger text-center" role="alert">{this.state.signupErrorMessage}</div>
+        }
         return (
             <div>
             <ShortHeader/>
@@ -172,6 +198,7 @@ const axios = require('axios');
                             <div className="card-header"><h3 className="text-center font-weight-light my-4">Create Account</h3></div>
                             <div className="card-body">
                                 <form className="needs-validation" noValidate onSubmit={this.onSignUpSubmit}>
+                                    {signupError}
                                     <div className="mb-3">
                                         <div className="form-floating mb-3 mb-md-0">
                                                 <input className={"form-control" + (this.state.custFirstNameError ? " invalid-input": "")} id="resName" type="text" 
@@ -209,8 +236,8 @@ const axios = require('axios');
                                             <div className="form-floating mb-3 mb-md-0">
                                                 <input className="form-control" id="resPasswordConfirm" type="password" 
                                                     name="resPasswordConfirm"
-                                                    value = {this.state.custPasswordConfirm}
-                                                    onChange = {this.onChangeCustConfirmPassword}
+                                                    value = {this.state.resPasswordConfirm}
+                                                    onChange = {this.onChangeField}
                                                     placeholder="Confirm password" />
                                                 <label htmlFor="resPasswordConfirm">Confirm Password</label>
                                                 <div className="invalid">{this.state.resPasswordConfirmError}</div>

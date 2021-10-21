@@ -8,6 +8,7 @@ const custRouter = require('./routes/custRouter');
 const resRouter = require('./routes/resRouter');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
+const { connect } = require('mongoose');
 const FRONTEND_URL = "http://localhost:3000"
 //const FRONTEND_URL = "http://18.119.29.239:3000"
 
@@ -40,10 +41,27 @@ app.use(function(req, res, next) {
     next();
   });
 
-  
+const { mongoConnectionURL } = require('./database/mongoConnection');
+const mongoose = require('mongoose');
+
+const mongoDbOptions = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  maxPoolSize: 100
+}
+
+mongoose.connect(mongoConnectionURL, mongoDbOptions, (err, result) => {
+    if(err){
+      console.log("Error while connecting to mongoDB : "+err);
+    } else {
+      console.log("Connected to Mongo DB!");
+    }
+});
+
 console.log("dir_name "+__dirname);
 app.use(express.json());
 app.use("/", indexRouter);
 app.use("/customer", custRouter);
 app.use("/res", resRouter);
+
 //app.use(cookieParser);

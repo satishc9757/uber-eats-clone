@@ -179,7 +179,7 @@ import axios from 'axios'
             <div>
             <ShortHeader/>
             <div className="container">
-                <p>{this.props.registered}</p>
+                
                 <div className="row justify-content-center">
                     <div className="col-lg-7">
                         <div className="card shadow-lg border-0 rounded-lg mt-5">
