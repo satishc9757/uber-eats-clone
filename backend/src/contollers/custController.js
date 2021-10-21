@@ -52,7 +52,7 @@ exports.login_customer = function (req, res) {
     } else {
       console.log(result);
       // if (result[0].count == 0) {
-      if (result.length == 0) {  
+      if (result.length == 0) {
         console.log("Login failed");
         res
           .status(400)
@@ -107,9 +107,9 @@ exports.createOrder = async function(req, res) {
   console.log("add_id "+address.add_id);
   if(address.add_id === null || address.add_id === ''){
     let addressSql = "INSERT INTO address (add_street, add_city, add_state, add_zipcode, add_country) VALUES (?, ?, ?, ?, ?)";
-    con.query(addressSql, 
+    con.query(addressSql,
       [address.street, address.city, address.state, address.zipcode, address.country], (err, result1) => {
-        
+
         if (err) {
           console.error("createOrder 1 : " + err);
           res
@@ -118,8 +118,8 @@ exports.createOrder = async function(req, res) {
         } else {
       //     console.log(result1);
       //     let ordersSql = "INSERT INTO orders (order_cust_id, order_restaurant_id, order_address_id, order_delivery_fee, order_service_fee, order_timestamp, order_status) VALUES (?, ?, ?,?, ?, now(), 'Order Placed')";
-          
-      //     con.query(ordersSql, 
+
+      //     con.query(ordersSql,
       //       [data.custId, data.resId, result1.insertId, data.deliveryFee, data.serviceFee], (err, result2) => {
       //         if (err) {
       //           console.error("createOrder 2 : " + err);
@@ -129,9 +129,9 @@ exports.createOrder = async function(req, res) {
       //         } else {
       //           let orderDetailsSql = "INSERT INTO order_details(od_order_id, od_dish_id, od_quantity, od_item_price) VALUES ?";
       //           console.log("Order items : "+items);
-                
+
       //           let inputArr = [];
-    
+
       //           items.forEach(item => inputArr.push([result2.insertId, item.dishId, item.dishQty, item.dishPrice]));
       //           console.log("input arr: "+inputArr);
       //           con.query(orderDetailsSql, [inputArr], (err, result3) => {
@@ -145,11 +145,11 @@ exports.createOrder = async function(req, res) {
       //             }
       //         });
       //       }
-          
-      
+
+
       // });
             return insertOrder(req, res, result1.insertId);
-  
+
     }});
   } else {
       console.log("Address skipped!")
@@ -160,8 +160,8 @@ exports.createOrder = async function(req, res) {
 
 exports.cancelOrder = function (req, res) {
   const data = req.body;
-  
-  let sql = "UPDATE orders SET order_status = 'Cancelled' " 
+
+  let sql = "UPDATE orders SET order_status = 'Cancelled' "
                    + " WHERE order_id = ?"
 
   con.query(
@@ -181,7 +181,7 @@ exports.cancelOrder = function (req, res) {
       }
     }
   );
-  
+
 };
 
 
@@ -190,8 +190,8 @@ insertOrder = function(req, res, addId){
   const data = req.body;
   //console.log(result1);
   let ordersSql = "INSERT INTO orders (order_cust_id, order_restaurant_id, order_address_id, order_delivery_fee, order_service_fee, order_timestamp, order_status, order_total) VALUES (?, ?, ?,?, ?, now(), 'Order Placed', ?)";
-  
-  con.query(ordersSql, 
+
+  con.query(ordersSql,
     [data.custId, data.resId, addId, data.deliveryFee, data.serviceFee, data.cartTotal], (err, result2) => {
       if (err) {
         console.error("insertOrder : " + err);
@@ -201,7 +201,7 @@ insertOrder = function(req, res, addId){
       } else {
         return insertOrderDetails(req, res, result2.insertId);
     }
-  
+
 
 });
 }
@@ -212,7 +212,7 @@ insertOrderDetails = function(req, res, orderId){
   const items = data.cartItems;
   let orderDetailsSql = "INSERT INTO order_details(od_order_id, od_dish_id, od_quantity, od_item_price) VALUES ?";
         console.log("Order items : "+items);
-        
+
         let inputArr = [];
 
         items.forEach(item => inputArr.push([orderId, item.dishId, item.dishQuantity, item.dishPrice]));
@@ -230,13 +230,13 @@ insertOrderDetails = function(req, res, orderId){
 }
 
 exports.getCustomerById = async function(req, res){
-  
-  const custId = req.params.id;  
-  
+
+  const custId = req.params.id;
+
   let sql = "select cust_id as custId, cust_first_name as custFirstName, cust_last_name as custLastName, cust_email as custEmail, cust_phone as custPhone, cust_dob as custDob, IFNULL(cust_nickname, '') as custNickname, cust_about as custAbout, cust_profile_image_link as custImage, add_street as custStreet, add_city as custCity, add_state as custState, add_zipcode as custZipcode, add_country as custCountry, add_id as custAddId "
-            +" from customers as c LEFT JOIN address as a ON c.cust_address_id = a.add_id" 
+            +" from customers as c LEFT JOIN address as a ON c.cust_address_id = a.add_id"
             +" where c.cust_id = ? ";
-  
+
   con.query(sql, [custId], (err, result) => {
     if (err) {
       console.error("getCustomerById : " + err);
@@ -248,21 +248,21 @@ exports.getCustomerById = async function(req, res){
       data = result;
       res.send(JSON.stringify(result));
     }
-  }); 
+  });
 
 };
 
 exports.getOrdersByCustomer = function(req, res){
-  
-  const custId = req.query.custId;  
-  
-  let sql = "select o.order_id as orderId, o.order_total as orderTotal, r.res_name as resName, a.add_street as street, a.add_city as city, a.add_state as state, a.add_zipcode as zipcode," 
+
+  const custId = req.query.custId;
+
+  let sql = "select o.order_id as orderId, o.order_total as orderTotal, r.res_name as resName, a.add_street as street, a.add_city as city, a.add_state as state, a.add_zipcode as zipcode,"
             +" DATE_FORMAT(order_timestamp, '%Y-%m-%d %H:%i:%s') as orderTimestamp, order_status as orderStatus, order_delivery_fee as orderDeliveryFee, order_service_fee as orderServiceFee "
             +" from orders as o, restaurants as r, address as a "
             +" where o.order_restaurant_id = r.res_id "
             +" and o.order_address_id = a.add_id "
             +" and o.order_cust_id = ? "
-  
+
   con.query(sql, [custId], (err, result) => {
     if (err) {
       console.error("getOrdersByCustomer : " + err);
@@ -273,19 +273,19 @@ exports.getOrdersByCustomer = function(req, res){
         console.log("orders fetched : "+result);
         res.send(result);
     }
-  }); 
+  });
 
 };
 
 exports.getOrderDetailsByOrderId = function(req, res){
-  
-  const orderId = req.query.orderId;  
-  
+
+  const orderId = req.query.orderId;
+
   let sql = "select o.od_id as odId, d.dish_name as dishName, o.od_quantity as odQuantity, o.od_item_price as odPrice"
             +" from order_details as o, dishes as d"
             +" where o.od_dish_id = d.dish_id"
             +" and o.od_order_id = ? "
-  
+
   con.query(sql, [orderId], (err, result) => {
     if (err) {
       console.error("getOrderDetailsByOrderId : " + err);
@@ -296,20 +296,20 @@ exports.getOrderDetailsByOrderId = function(req, res){
         console.log(result);
         res.send(result);
     }
-  }); 
+  });
 
 };
 
 exports.getDeliveryAddressesForUser = function(req, res){
-  
-  const custId = req.query.custId;  
-  
+
+  const custId = req.query.custId;
+
   let sql = "select a.add_id, a.add_street as street, a.add_city as city, a.add_state as state, a.add_zipcode as zipcode, a.add_country as country"
             +" from address as a "
             +" where a.add_id in (select distinct order_address_id "
             +" from orders as o "
             +" where o.order_cust_id = ?)";
-  
+
   con.query(sql, [custId], (err, result) => {
     if (err) {
       console.error("getRestaurantById : " + err);
@@ -320,21 +320,21 @@ exports.getDeliveryAddressesForUser = function(req, res){
         console.log(result);
         res.send(result);
     }
-  }); 
+  });
 
 };
 
 exports.updateCustomerProfile = async function (req, res) {
   const data = req.body;
   const file = req.file;
-  
+
   console.log("file "+ JSON.stringify(file));
   console.log("data "+ JSON.stringify(data));
- 
+
   const fileKey = file.destination +"/"+ data.custId +"_"+file.filename;
-  
-  const fileUploadRes = await uploadFile(file, fileKey);  
-  
+
+  const fileUploadRes = await uploadFile(file, fileKey);
+
   console.log("file uploaed to s3 " +JSON.stringify(fileUploadRes));
 
   try {
@@ -366,8 +366,8 @@ exports.updateCustomerProfile = async function (req, res) {
           updateCustData(req, res, result.insertId, fileUploadRes.Location);
         }
       });
-      
-    
+
+
     } else {
       let addressUpdateSql = "UPDATE address SET add_street = ?, add_city = ?, add_state = ?, add_zipcode = ?, add_country = ? "
       +" WHERE add_id = ?"
@@ -390,7 +390,7 @@ exports.updateCustomerProfile = async function (req, res) {
           updateCustData(req, res, data.addId, fileUploadRes.Location);
         }
       });
-    
+
     }
 
     // let custUpdateSql = "UPDATE customers SET cust_first_name = ?, cust_last_name = ?, cust_email = ?, cust_about = ?, cust_phone = ?, cust_dob = ?, cust_nickname = ?, cust_profile_image_link = ?, cust_address_id = ?, cust_update_timestamp = now()"
@@ -409,12 +409,12 @@ exports.updateCustomerProfile = async function (req, res) {
     //                         data.custId
     //                       ]);
 
-    // console.log(resResult); 
+    // console.log(resResult);
     // res.send(JSON.stringify({ message: "Customer updated" }));
-    
 
-  
-  
+
+
+
 };
 
 
@@ -437,13 +437,13 @@ updateCustData = async function(req, res, addId, imageLink){
                             data.custId
                           ]);
 
-    console.log(resResult); 
+    console.log(resResult);
     res.send(JSON.stringify({ message: "Customer updated" }));
 }
 
 exports.addFavoriteRes = function (req, res) {
   const data = req.body;
-  
+
   let sql = "INSERT into favorites(fav_res_id, fav_cust_id) values(?, ?)"
 
   con.query(
@@ -464,7 +464,7 @@ exports.addFavoriteRes = function (req, res) {
       }
     }
   );
-  
+
 };
 
 

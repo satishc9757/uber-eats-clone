@@ -1,5 +1,6 @@
 var custController = require('../contollers/custController');
 var { validateCustLogin, validateCustRegistration } = require('../validators/custValidations');
+const custControllerMongo = require('../contollers/custControllerMongo');
 const CUST_IMAGE_PATH = "images/customer";
 const multer  = require('multer')
 
@@ -18,10 +19,10 @@ const custUpload = multer({ storage: custFileStorage });
 var express = require('express');
 var router = express.Router();
 
-router.post("/register", validateCustRegistration, custController.register_customer);
+router.post("/register", validateCustRegistration, custControllerMongo.registerCustomer);
 
 router.get("/id/:id", custController.getCustomerById);
-router.post("/login", validateCustLogin, custController.login_customer);
+router.post("/login", custControllerMongo.loginCustomer);
 router.post("/logout", custController.logout);
 router.put("/update", custUpload.single('custImage'), custController.updateCustomerProfile);
 
