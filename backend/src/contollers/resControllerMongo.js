@@ -1,6 +1,7 @@
 const {uploadFile} = require('../aws/s3/FileUpload')
 const { unlinkSync } = require('fs');
 const Restaurant = require('../models/RestaurantModel');
+const Dish = require('../models/DishModel');
 
 
 exports.registerRes = function (req, res) {
@@ -60,7 +61,6 @@ exports.updateRestaurant = async function (req, res) {
               $set: {
                 resName: data.resName,
                 resEmail: data.resEmail,
-                resPassword: data.resPassword,
                 resAddress: {
                     street: data.resStreet,
                     city: data.resCity,
@@ -129,10 +129,9 @@ exports.updateRestaurant = async function (req, res) {
     // }
 
 
-  };
+};
 
-
-  exports.getRestaurantById = async function(req, res){
+exports.getRestaurantById = async function(req, res){
 
     const resId = req.params.id;
     console.log("Inside getRes using mongo id"+resId);
@@ -167,24 +166,7 @@ exports.updateRestaurant = async function (req, res) {
               .send(JSON.stringify({ message: "Something went wrong!", err }));
     }
 
-  }
-
-    // let sql = "select res_id as resId, res_name as resName, res_email as resEmail, res_description as resDescription, res_phone as resPhone, add_street as resStreet, add_city as resCity, add_state as resState, add_zipcode as resZipcode, res_delivery_time as resDeliveryTime, res_image as resImage "
-    //           +" from restaurants as r, address as a"
-    //           +" where r.res_address_id = a.add_id and res_id = ?";
-
-    // con.query(sql, [resId], (err, result) => {
-    //   if (err) {
-    //     console.error("getRestaurantById : " + err);
-    //     res
-    //       .status(500)
-    //       .send(JSON.stringify({ message: "Something went wrong!", err }));
-    //   } else {
-    //     console.log(result);
-    //     data = result;
-    //     res.send(data[0]);
-    //   }
-    // });
+};
 
 exports.res_login = async function (req, res) {
   const data = req.body;
@@ -222,5 +204,71 @@ exports.res_login = async function (req, res) {
   } catch(err){
 
   }
+
+};
+
+exports.addDish = async function (req, res) {
+  const data = req.body;
+  const file = req.file;
+  console.log("file "+ JSON.stringify(file));
+
+  let dish = new Dish({
+    dishName: data.dishName,
+    dishResId: data.resId,
+    dishMainIngredients: data.dishMainIngredients,
+    dishImageLink: file.originalname,
+    dishPrice: data.dishPrice,
+    dishDesc: data.dishDesc,
+    dishCategory: data.dishCategory,
+    dishType: data.dishType,
+  });
+
+dish.save(async (err, result) => {
+    if(err){
+        console.log("Error while saving dish data")
+        res
+        .status(500)
+        .send(JSON.stringify({ message: "Something went wrong!", err }));
+    } else {
+      const fileKey = file.destination +"/"+ result.insertedId +"_"+file.filename;
+      const fileUploadRes = await uploadFile(file, fileKey);
+      console.log("file uploaded to s3 " +JSON.stringify(fileUploadRes));
+      console.log("The result is : "+  JSON.stringify(result));
+      dish.updateOne({
+        $set: {
+          dishImageLink: fileUploadRes.Location,
+        }
+      }, (err, result) => {
+        if (err) {
+          console.error("add_dish : " + err);
+          res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+        } else {
+          res.send(JSON.stringify({ message: "Dish added successfully." }));
+        }
+      });
+    }
+});
+
+  //res.send(JSON.stringify({ message: "Dish added successfully." }));
+};
+
+
+exports.getDishByRes =  function(req, res){
+  const resId = req.params.resId;
+  console.log("Here in the get res by id "+ resId);
+  const dishes = Dish.find({dishResId: resId}, (err, result) => {
+    if (err) {
+      console.error("getDishByRes : " + err);
+      res
+        .status(500)
+        .send(JSON.stringify({ message: "Something went wrong!", err }));
+    } else {
+      console.log(result);
+      res.send(JSON.stringify(result));
+    }
+  });
+
 
 };

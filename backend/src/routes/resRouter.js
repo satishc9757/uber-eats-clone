@@ -42,10 +42,10 @@ router.post("/login", validateResLogin, resControllerMongo.res_login);
 router.post("/logout", resController.logout);
 
 
-router.get("/getDishByRes/:resId", resController.getDishByRes);
+router.get("/getDishByRes/:resId", resControllerMongo.getDishByRes);
 router.get("/dish", resController.getAllDishes);
 
-router.post("/dish", dishUpload.single('dishImage'), resController.addDish);
+router.post("/dish", dishUpload.single('dishImage'), resControllerMongo.addDish);
 router.get("/dish/:id", resController.getDish);
 router.put("/dish", resController.updateDish);
 router.delete("/dish", resController.deleteDish);
