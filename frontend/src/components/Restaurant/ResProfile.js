@@ -34,7 +34,7 @@ class ResProfile extends Component {
         event.preventDefault();
         let formData = new FormData();
         //formData.append("dishImage", this.state.dishImage);
-        
+
         for (var key in this.state) {
             formData.append(key, this.state[key]);
         }
@@ -47,13 +47,13 @@ class ResProfile extends Component {
         //     } else {
         //         formData.append(key, this.state[key]);
         //     }
-            
+
         // }
 
         console.log("props"+ JSON.stringify(this.props));
         console.log("Here in the on submit "+ event);
         const isValid = true;
-        
+
         if(isValid){
             const url = SERVER_ENDPOINT+"/res/update";
             axios
@@ -85,7 +85,7 @@ class ResProfile extends Component {
             <div>
             <ResHeader toggleSidebar={this.handleViewSidebar}/>
             <div className="container">
-                
+
                 <div className="row justify-content-center">
                     <div className="col-lg-7">
                         <div className="card shadow-lg border-0 rounded-lg mt-5">
@@ -94,18 +94,18 @@ class ResProfile extends Component {
                                 <form className="needs-validation" noValidate onSubmit={this.onFormSubmit}>
                                     <div className="mb-3">
                                         <div className="form-floating mb-3 mb-md-0">
-                                                <input className={"form-control" + (this.state.custFirstNameError ? " invalid-input": "")} id="resName" type="text" 
+                                                <input className={"form-control" + (this.state.custFirstNameError ? " invalid-input": "")} id="resName" type="text"
                                                     name="resName"
                                                     value = {this.state.resName}
                                                     onChange = {this.onChangeField}
-                                                    placeholder="Enter your restaurant name" 
-                                                    required/>  
+                                                    placeholder="Enter your restaurant name"
+                                                    required/>
                                                 <label htmlFor="resName">Restaurant Name</label>
                                                 {/* <div className="invalid">{this.state.custFirstNameError}</div> */}
                                             </div>
-                                    </div>    
+                                    </div>
                                    <div className="form-floating mb-3">
-                                        <input className="form-control" id="resEmail" type="email" 
+                                        <input className="form-control" id="resEmail" type="email"
                                             name="resEmail"
                                             value = {this.state.resEmail}
                                             onChange = {this.onChangeField}
@@ -113,28 +113,28 @@ class ResProfile extends Component {
                                         <label htmlFor="resEmail">Email address</label>
                                         {/* <div className="invalid">{this.state.custEmailError}</div> */}
                                     </div>
-                                    
+
                                     <div className="form-floating mb-3">
-                                        <input className="form-control" id="resImage" type="file" 
+                                        <input className="form-control" id="resImage" type="file"
                                             name="resImage"
                                             onChange = {this.handleImageFile}
-                                            
+
                                             />
                                         <label htmlFor="resImage">Images</label>
                                         {/* <div className="invalid">{this.state.custEmailError}</div> */}
                                     </div>
                                     <div className="form-floating mb-3">
-                                        <textarea class="form-control" 
+                                        <textarea class="form-control"
                                             name="resDescription"
                                             id="resDescription"
                                             value = {this.state.resDescription}
-                                            onChange = {this.onChangeField} 
+                                            onChange = {this.onChangeField}
                                             rows="4"></textarea>
                                             <label htmlFor="resDescription">Description</label>
                                             {/* <div className="invalid">{this.state.custEmailError}</div> */}
                                     </div>
                                     <div className="form-floating mb-3">
-                                        <input type="tel" className="form-control" id="resPhone" type="text" 
+                                        <input type="tel" className="form-control" id="resPhone" type="text"
                                             name="resPhone"
                                             value = {this.state.resPhone}
                                             onChange = {this.onChangeField}
@@ -144,12 +144,12 @@ class ResProfile extends Component {
                                     </div>
                                     <div className="mb-3">
                                         <div className="form-floating mb-3 mb-md-0">
-                                                    <input className={"form-control" + (this.state.custFirstNameError ? " invalid-input": "")} id="resStreet" type="text" 
+                                                    <input className={"form-control" + (this.state.custFirstNameError ? " invalid-input": "")} id="resStreet" type="text"
                                                         name="resStreet"
                                                         value = {this.state.resStreet}
                                                         onChange = {this.onChangeField}
-                                                        placeholder="Street address" 
-                                                        required/>  
+                                                        placeholder="Street address"
+                                                        required/>
                                                     <label htmlFor="resStreet">Street address</label>
                                                     {/* <div className="invalid">{this.state.custFirstNameError}</div> */}
                                         </div>
@@ -157,20 +157,20 @@ class ResProfile extends Component {
                                     <div className="row mb-3">
                                         <div className="col-md-6">
                                             <div className="form-floating mb-3 mb-md-0">
-                                                <input className={"form-control" + (this.state.custFirstNameError ? " invalid-input": "")} id="resCity" type="text" 
+                                                <input className={"form-control" + (this.state.custFirstNameError ? " invalid-input": "")} id="resCity" type="text"
                                                     name="resCity"
                                                     value = {this.state.resCity}
                                                     onChange = {this.onChangeField}
-                                                    placeholder="Enter City" 
-                                                    required/>  
+                                                    placeholder="Enter City"
+                                                    required/>
                                                 <label htmlFor="resCity">City</label>
                                                 {/* <div className="invalid">{this.state.custFirstNameError}</div> */}
                                             </div>
                                         </div>
-                                        
+
                                         <div className="col-md-6">
                                             <div className="form-floating">
-                                                <input className="form-control" id="resState" type="text" 
+                                                <input className="form-control" id="resState" type="text"
                                                     name="resState"
                                                     value = {this.state.resState}
                                                     onChange = {this.onChangeField}
@@ -183,7 +183,7 @@ class ResProfile extends Component {
                                     <div className="row mb-3">
                                         <div className="col-md-6">
                                             <div className="form-floating">
-                                                <input className="form-control" id="resZipcode" type="text" 
+                                                <input className="form-control" id="resZipcode" type="text"
                                                     name="resZipcode"
                                                     value = {this.state.resZipcode}
                                                     onChange = {this.onChangeField}
@@ -194,7 +194,7 @@ class ResProfile extends Component {
                                         </div>
                                         <div className="col-md-6">
                                             <div className="form-floating">
-                                            <select className="form-control form-select" 
+                                            <select className="form-control form-select"
                                                 name="resCountry"
                                                 value = {this.state.resCountry}
                                                 onChange = {this.onChangeField}>
@@ -207,7 +207,7 @@ class ResProfile extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <div className="mt-4 mb-0">
                                         {/* <div className="d-grid"><a className="btn btn-primary btn-block">Create Account</a></div> */}
                                         <button className="d-grid btn btn-uber" type="submit">Update Account</button>
@@ -222,7 +222,7 @@ class ResProfile extends Component {
             </div>
         )
     }
-    
+
 }
 
 export default ResProfile

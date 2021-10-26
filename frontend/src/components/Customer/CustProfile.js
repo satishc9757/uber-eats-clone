@@ -38,7 +38,6 @@ import cookie from 'react-cookies';
 
     handleViewSidebar = () => {
         this.setState({isSidebarOpen: !this.state.isSidebarOpen});
-       
     }
 
     navigateToLoginPage = () => {
@@ -58,8 +57,8 @@ import cookie from 'react-cookies';
         console.log("Files are "+event.target.files[0]);
         this.setState({custImage: event.target.files[0]});
     }
-   
-    
+
+
     async componentDidMount(){
         try {
             const custId = cookie.load('custId');
@@ -79,20 +78,20 @@ import cookie from 'react-cookies';
         const isValid = this.validateInputs();
         console.log("isValid : "+ isValid);
         if(isValid){
-            
+
 
             event.preventDefault();
             let formData = new FormData();
             //formData.append("dishImage", this.state.dishImage);
-            
+
             for (var key in this.state) {
                 formData.append(key, this.state[key]);
             }
-    
+
             console.log("props"+ JSON.stringify(this.props));
             console.log("Here in the on submit "+ event);
             const isValid = true;
-            
+
             if(isValid){
                 const url = SERVER_ENDPOINT+"/customer/update";
                 axios
@@ -105,10 +104,10 @@ import cookie from 'react-cookies';
                         console.log(err);
                     });
             }
-  
-            
-           
-                
+
+
+
+
         }
     }
 
@@ -153,11 +152,11 @@ import cookie from 'react-cookies';
         }
 
         console.log("error "+ isValid);
-        // return this.state.custFirstNameError === "" 
-        //         && this.state.custLastNameError === "" 
-        //         && this.state.custEmailError === "" 
-        //         && this.state.custPasswordError === "" 
-        //         && this.state.custPasswordConfirmError === ""; 
+        // return this.state.custFirstNameError === ""
+        //         && this.state.custLastNameError === ""
+        //         && this.state.custEmailError === ""
+        //         && this.state.custPasswordError === ""
+        //         && this.state.custPasswordConfirmError === "";
         return isValid;
 
     }
@@ -167,11 +166,11 @@ import cookie from 'react-cookies';
             <div>
             <CommonHeader toggleSidebar={this.handleViewSidebar} onResSearch={this.onResSearch}/>
                 <p>{this.props.registered}</p>
-                    {/* <Sidebar isOpen={this.state.isSidebarOpen} 
+                    {/* <Sidebar isOpen={this.state.isSidebarOpen}
                              navigateToLoginPage={this.navigateToLoginPage}/> */}
             <div className="container">
-                
-               
+
+
                 <div className="row justify-content-center">
                     <div className="col-lg-7">
                         <div className="card shadow-lg border-0 rounded-lg mt-5">
@@ -181,80 +180,80 @@ import cookie from 'react-cookies';
                                     <div className="row mb-3">
                                         <div className="col-md-6">
                                             <div className="form-floating mb-3 mb-md-0">
-                                                <input className={"form-control" } id="custFirstName" type="text" 
+                                                <input className={"form-control" } id="custFirstName" type="text"
                                                     value = {this.state.custFirstName}
                                                     onChange = {this.onChangeField}
-                                                    placeholder="Enter your first name" 
-                                                    required/>  
+                                                    placeholder="Enter your first name"
+                                                    required/>
                                                 <label htmlFor="custFirstName">First name</label>
-                                                
+
                                             </div>
                                         </div>
                                         <div className="col-md-6">
                                             <div className="form-floating">
-                                                <input className="form-control" id="custLastName" type="text" 
+                                                <input className="form-control" id="custLastName" type="text"
                                                     value = {this.state.custLastName}
                                                     onChange = {this.onChangeField}
                                                     placeholder="Enter your last name" />
                                                 <label htmlFor="custLastName">Last name</label>
-                                                
+
                                             </div>
                                         </div>
                                     </div>
                                     <div className="form-floating mb-3">
-                                        <input className="form-control" id="custEmail" type="email" 
+                                        <input className="form-control" id="custEmail" type="email"
                                             value = {this.state.custEmail}
                                             onChange = {this.onChangeField}
                                             placeholder="name@example.com" />
                                         <label htmlFor="custEmail">Email address</label>
-                                        
+
                                     </div>
                                     <div className="row mb-3">
                                         <div className="col-md-6">
                                             <div className="form-floating mb-3 mb-md-0">
-                                                <input className="form-control" id="custDob" type="date" 
+                                                <input className="form-control" id="custDob" type="date"
                                                     value = {this.state.custDob}
                                                     onChange = {this.onChangeField}
                                                     placeholder="Create a password" />
                                                 <label htmlFor="custDob">Date of birth</label>
-                                                
+
                                             </div>
                                         </div>
                                         <div className="col-md-6">
                                             <div className="form-floating mb-3 mb-md-0">
-                                                <input className="form-control" id="custNickname" type="text" 
+                                                <input className="form-control" id="custNickname" type="text"
                                                     name="custNickname"
                                                     value = {this.state.custNickname}
                                                     onChange = {this.onChangeField}
                                                     placeholder="Nickname" />
                                                 <label htmlFor="custNickname">Nickname</label>
-                                                
+
                                             </div>
                                         </div>
-                                        
+
                                     </div>
                                     <div className="form-floating mb-3">
-                                        <input className="form-control" id="custImage" type="file" 
+                                        <input className="form-control" id="custImage" type="file"
                                             name="custImage"
                                             onChange = {this.handleImageFile}
                                             />
                                         <label htmlFor="resImages">Profile picture</label>
                                         {/* <div className="invalid">{this.state.custEmailError}</div> */}
                                     </div>
-                                    
+
                                     <div className="form-floating mb-3">
-                                        <textarea class="form-control" 
+                                        <textarea class="form-control"
                                             name="custAbout"
                                             id="custAbout"
                                             value = {this.state.custAbout}
-                                            onChange = {this.onChangeField} 
+                                            onChange = {this.onChangeField}
                                             rows="4"></textarea>
                                             <label htmlFor="custAbout">About you</label>
                                             {/* <div className="invalid">{this.state.custEmailError}</div> */}
                                     </div>
 
                                     <div className="form-floating mb-3">
-                                        <input type="tel" className="form-control" id="custPhone" type="text" 
+                                        <input type="tel" className="form-control" id="custPhone" type="text"
                                             name="custPhone"
                                             value = {this.state.custPhone}
                                             onChange = {this.onChangeField}
@@ -264,12 +263,12 @@ import cookie from 'react-cookies';
                                     </div>
                                     <div className="mb-3">
                                         <div className="form-floating mb-3 mb-md-0">
-                                                    <input className={"form-control" + (this.state.custFirstNameError ? " invalid-input": "")} id="custStreet" type="text" 
+                                                    <input className={"form-control" + (this.state.custFirstNameError ? " invalid-input": "")} id="custStreet" type="text"
                                                         name="custStreet"
                                                         value = {this.state.custStreet}
                                                         onChange = {this.onChangeField}
-                                                        placeholder="Street address" 
-                                                        required/>  
+                                                        placeholder="Street address"
+                                                        required/>
                                                     <label htmlFor="custStreet">Street address</label>
                                                     {/* <div className="invalid">{this.state.custFirstNameError}</div> */}
                                         </div>
@@ -277,20 +276,20 @@ import cookie from 'react-cookies';
                                     <div className="row mb-3">
                                         <div className="col-md-6">
                                             <div className="form-floating mb-3 mb-md-0">
-                                                <input className={"form-control" } id="custCity" type="text" 
+                                                <input className={"form-control" } id="custCity" type="text"
                                                     name="custCity"
                                                     value = {this.state.custCity}
                                                     onChange = {this.onChangeField}
-                                                    placeholder="Enter City" 
-                                                    required/>  
+                                                    placeholder="Enter City"
+                                                    required/>
                                                 <label htmlFor="custCity">City</label>
                                                 {/* <div className="invalid">{this.state.custFirstNameError}</div> */}
                                             </div>
                                         </div>
-                                        
+
                                         <div className="col-md-6">
                                             <div className="form-floating">
-                                                <input className="form-control" id="custState" type="text" 
+                                                <input className="form-control" id="custState" type="text"
                                                     name="custState"
                                                     value = {this.state.custState}
                                                     onChange = {this.onChangeField}
@@ -303,7 +302,7 @@ import cookie from 'react-cookies';
                                     <div className="row mb-3">
                                         <div className="col-md-6">
                                             <div className="form-floating">
-                                                <input className="form-control" id="custZipcode" type="text" 
+                                                <input className="form-control" id="custZipcode" type="text"
                                                     name="custZipcode"
                                                     value = {this.state.custZipcode}
                                                     onChange = {this.onChangeField}
@@ -314,7 +313,7 @@ import cookie from 'react-cookies';
                                         </div>
                                         <div className="col-md-6">
                                             <div className="form-floating">
-                                            <select className="form-control form-select" 
+                                            <select className="form-control form-select"
                                                 name="custCountry"
                                                 value = {this.state.custCountry}
                                                 onChange = {this.onChangeField}>
@@ -326,7 +325,7 @@ import cookie from 'react-cookies';
                                                 {/* <div className="invalid">{this.state.custLastNameError}</div> */}
                                             </div>
                                         </div>
-                                     </div>   
+                                     </div>
                                     <div className="mt-4 mb-0">
                                         {/* <div className="d-grid"><a className="btn btn-primary btn-block">Create Account</a></div> */}
                                         <button className="d-grid btn btn-uber" type="submit">Update</button>
@@ -336,7 +335,7 @@ import cookie from 'react-cookies';
                         </div>
                     </div>
                 </div>
-               </div> 
+               </div>
                </div>
         );
     }

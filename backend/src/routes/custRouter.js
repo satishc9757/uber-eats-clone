@@ -22,7 +22,7 @@ var router = express.Router();
 router.post("/register", validateCustRegistration, custControllerMongo.registerCustomer);
 
 router.get("/id/:id", custController.getCustomerById);
-router.post("/login", custControllerMongo.loginCustomer);
+router.post("/login", validateCustLogin, custControllerMongo.loginCustomer);
 router.post("/logout", custController.logout);
 router.put("/update", custUpload.single('custImage'), custController.updateCustomerProfile);
 

@@ -61,8 +61,7 @@ class CustLogin extends Component {
             .catch(err => {
                 if(err.response && err.response.status === 400){
                     this.setState({
-                        authFlag : false,
-                        errorMessage: "Invalid credentials"
+                       errorMessage: "Invalid credentials"
                     })
                 }
                 console.log(err);

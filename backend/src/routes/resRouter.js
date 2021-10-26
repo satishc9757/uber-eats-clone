@@ -2,6 +2,7 @@
 const DISH_IMAGE_PATH = "images/dishes";
 const RES_IMAGE_PATH = "images/restaurants";
 var resController = require('../contollers/resController');
+var resControllerMongo = require('../contollers/resControllerMongo');
 var express = require('express');
 const { validateResRegistration, validateResLogin, validateDishRegistration } = require('../validators/resValidations');
 const multer  = require('multer')
@@ -32,12 +33,12 @@ var router = express.Router();
 
 router.get("/favorites", resController.getFavRestaurantsByCustId);
 router.get("/query", resController.getRestaurantByQueryString);
-router.post("/register", validateResRegistration, resController.register_res);
-router.get("/id/:id", resController.getRestaurantById);
+router.post("/register", validateResRegistration, resControllerMongo.registerRes);
+router.get("/id/:id", resControllerMongo.getRestaurantById);
 
 //router.put("/update", resUpload.array('resImages', 5),resController.updateRestaurant);
-router.put("/update", resUpload.single('resImage'),resController.updateRestaurant); //single upload for now
-router.post("/login", validateResLogin, resController.res_login);
+router.put("/update", resUpload.single('resImage'),resControllerMongo.updateRestaurant); //single upload for now
+router.post("/login", validateResLogin, resControllerMongo.res_login);
 router.post("/logout", resController.logout);
 
 

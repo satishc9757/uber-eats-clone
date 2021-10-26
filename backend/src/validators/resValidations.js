@@ -1,5 +1,7 @@
 const {check, validationResult} = require('express-validator');
 var con = require('../database/mysqlConnection');
+const Customer = require('../models/CustomerModel');
+const Restaurant = require('../models/RestaurantModel');
 
 exports.validateResLogin = [
   check('resUsername')
@@ -9,7 +11,7 @@ exports.validateResLogin = [
     .bail()
     .withMessage('Invalid email address!')
     .custom(async username => {
-        const isUsernameInUse = await isUsernamePresent(username);
+        const isUsernameInUse = await isUsernamePresentMongo(username);
         if(!isUsernameInUse){
           throw new Error('Username does not exist.');
         }
@@ -20,7 +22,7 @@ exports.validateResLogin = [
     .not()
     .isEmpty()
     .withMessage('Password cannot be empty')
-    .bail(),  
+    .bail(),
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty())
@@ -88,7 +90,7 @@ exports.validateResRegistration = [
     .bail()
     .normalizeEmail()
     .custom(async username => {
-        const isUsernameInUse = await isUsernamePresent(username);
+        const isUsernameInUse = await isUsernamePresentMongo(username);
         console.log("isUsernameInUse : "+isUsernameInUse);
         if(isUsernameInUse){
           throw new Error('Email already exists.');
@@ -100,7 +102,7 @@ exports.validateResRegistration = [
     .not()
     .isEmpty()
     .withMessage('Password cannot be empty')
-    .bail(),  
+    .bail(),
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty())
@@ -110,7 +112,7 @@ exports.validateResRegistration = [
 ];
 
 function isUsernamePresent(username){
-  
+
   return new Promise((resolve, reject) => {
       con.query('SELECT COUNT(*) AS count FROM restaurants WHERE res_email = ?', [username], function (error, results, fields) {
           if(!error){
@@ -122,6 +124,17 @@ function isUsernamePresent(username){
         }
       );
   });
+}
+
+async function isUsernamePresentMongo(username){
+
+  const restaurant = await Restaurant.findOne({resEmail: username});
+  if(restaurant){
+    console.log("restaurant : "+restaurant);
+    return true;
+  }
+  console.log("restaurant out: "+restaurant);
+  return false;
 }
 
 exports.validateDishRegistration = [
@@ -172,7 +185,7 @@ exports.validateDishRegistration = [
     .trim()
     .matches(/^[a-zA-Z ,.'-]+$/)
     .withMessage('Invalid dish description.')
-    .bail(), 
+    .bail(),
   check('dishCategory')
     .not()
     .isEmpty()
@@ -188,7 +201,7 @@ exports.validateDishRegistration = [
     .trim()
     .matches(/^[a-zA-Z ,.'-]+$/)
     .withMessage('Invalid dish type.')
-    .bail(), 
+    .bail(),
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty())

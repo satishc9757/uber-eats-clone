@@ -1,5 +1,7 @@
 const {check, validationResult} = require('express-validator');
 var con = require('../database/mysqlConnection');
+const Customer = require('../models/CustomerModel');
+
 
 exports.validateCustLogin = [
   check('custUsername')
@@ -9,7 +11,7 @@ exports.validateCustLogin = [
     .bail()
     .withMessage('Invalid email address!')
     .custom(async username => {
-        const isUsernameInUse = await isUsernamePresent(username);
+        const isUsernameInUse = await isUsernamePresentMongo(username);
         if(!isUsernameInUse){
           throw new Error('Username does not exist.');
         }
@@ -20,7 +22,7 @@ exports.validateCustLogin = [
     .not()
     .isEmpty()
     .withMessage('Password cannot be empty')
-    .bail(),  
+    .bail(),
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty())
@@ -45,7 +47,7 @@ exports.validateCustRegistration = [
     .trim()
     .matches(/^[a-zA-Z ,.'-]+$/)
     .withMessage('Invalid last name.')
-    .bail(),  
+    .bail(),
   check('custEmail')
     .not()
     .isEmpty()
@@ -56,7 +58,7 @@ exports.validateCustRegistration = [
     .bail()
     .normalizeEmail()
     .custom(async username => {
-        const isUsernameInUse = await isUsernamePresent(username);
+        const isUsernameInUse =  await isUsernamePresentMongo(username);
         console.log("Resposne from username validation is : "+isUsernameInUse);
         if(isUsernameInUse){
           throw new Error('Email already exists.');
@@ -68,7 +70,7 @@ exports.validateCustRegistration = [
     .not()
     .isEmpty()
     .withMessage('Password cannot be empty')
-    .bail(),  
+    .bail(),
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty())
@@ -78,7 +80,7 @@ exports.validateCustRegistration = [
 ];
 
 function isUsernamePresent(username){
-  
+
   return new Promise((resolve, reject) => {
       con.query('SELECT COUNT(*) AS count FROM customers WHERE cust_email = ?', [username], function (error, results, fields) {
           if(!error){
@@ -90,4 +92,16 @@ function isUsernamePresent(username){
         }
       );
   });
+}
+
+
+async function isUsernamePresentMongo(username){
+  //console.log("isUsernamePresentMongo : ");
+  const customer = await Customer.findOne({custEmail: username});
+  if(customer){
+    //console.log("cusotmer : "+customer);
+    return true;
+  }
+  //console.log("cusotmer out: "+customer);
+  return false;
 }

@@ -41,19 +41,19 @@ exports.registerCustomer = function (req, res) {
         console.log("Result from compare: "+result);
         if(result){
             console.log("Login successful");
-            // res.cookie('cookie',"customer",{maxAge: 900000, httpOnly: false, path : '/'});
-            // res.cookie('custId',result[0].custId,{maxAge: 900000, httpOnly: false, path : '/'});
-            // res.cookie('custEmail',result[0].custEmail,{maxAge: 900000, httpOnly: false, path : '/'});
-            // res.cookie('custFirstName',result[0].custFirstName,{maxAge: 900000, httpOnly: false, path : '/'});
-            // res.cookie('custLastName',result[0].custLastName,{maxAge: 900000, httpOnly: false, path : '/'});
-            // res.cookie('custImageLink',result[0].custImageLink,{maxAge: 900000, httpOnly: false, path : '/'});
-            // res.cookie('custLocation',result[0].custLocation,{maxAge: 900000, httpOnly: false, path : '/'});
-            // req.session.user = {
-            // custId: result[0].custId,
-            // custEmail: result[0].custEmail,
-            // custFirstName: result[0].custFirstName,
-            // custLastName: result[0].custLastName,
-            // };
+            res.cookie('cookie',"customer",{maxAge: 900000, httpOnly: false, path : '/'});
+            res.cookie('custId',customer.custId,{maxAge: 900000, httpOnly: false, path : '/'});
+            res.cookie('custEmail',customer.custEmail,{maxAge: 900000, httpOnly: false, path : '/'});
+            res.cookie('custFirstName',customer.custFirstName,{maxAge: 900000, httpOnly: false, path : '/'});
+            res.cookie('custLastName',customer.custLastName,{maxAge: 900000, httpOnly: false, path : '/'});
+            res.cookie('custImageLink',customer.custImageLink,{maxAge: 900000, httpOnly: false, path : '/'});
+            res.cookie('custLocation',customer.custLocation,{maxAge: 900000, httpOnly: false, path : '/'});
+            req.session.user = {
+                custId: customer.custId,
+                custEmail: customer.custEmail,
+                custFirstName: customer.custFirstName,
+                custLastName: customer.custLastName,
+            };
 
             console.log("req session : "+JSON.stringify(req.session.user));
             res.writeHead(200,{
