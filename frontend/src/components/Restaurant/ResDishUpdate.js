@@ -35,7 +35,7 @@ class ResDishUpdate extends Component {
             const response = await axios.get(SERVER_ENDPOINT + "/res/dish/"+ this.props.match.params.dishId);
             const data = await response.data;
             console.log("Dish data : "+JSON.stringify(data))
-            this.setState(data["data"][0]);
+            this.setState(data);
         } catch(err){
             console.log(err);
         }
@@ -45,7 +45,7 @@ class ResDishUpdate extends Component {
         event.preventDefault();
         let formData = new FormData();
         //formData.append("dishImage", this.state.dishImage);
-        
+
         for (var key in this.state) {
             formData.append(key, this.state[key]);
         }
@@ -72,7 +72,7 @@ class ResDishUpdate extends Component {
 
     render(){
         return (
-            
+
             <div className="dish_reg">
                 <ResHeader toggleSidebar={this.handleViewSidebar}/>
                 <div className="container">
@@ -83,19 +83,19 @@ class ResDishUpdate extends Component {
                             <div className="card-body">
                                 <img src={this.state.dishImage} alt="..." className="img-thumbnail" />
                                 <form className="needs-validation" noValidate onSubmit={this.onFormSubmit}>
-                                    
+
                                         <div className="form-floating mb-3">
-                                                <input className={"form-control" + (this.state.custFirstNameError ? " invalid-input": "")} id="dishName" type="text" 
+                                                <input className={"form-control" + (this.state.custFirstNameError ? " invalid-input": "")} id="dishName" type="text"
                                                     name="dishName"
                                                     value = {this.state.dishName}
                                                     onChange = {this.onChangeField}
-                                                    required/>  
+                                                    required/>
                                                 <label htmlFor="dishName">Dish Name</label>
                                                 {/* <div className="invalid">{this.state.custFirstNameError}</div> */}
                                             </div>
-                                  
+
                                    <div className="form-floating mb-3">
-                                        <input className="form-control" id="dishMainIngredients" type="text" 
+                                        <input className="form-control" id="dishMainIngredients" type="text"
                                             name="dishMainIngredients"
                                             value = {this.state.dishMainIngredients}
                                             onChange = {this.onChangeField}
@@ -105,27 +105,27 @@ class ResDishUpdate extends Component {
                                     </div>
 
                                     {/* <div className="form-floating mb-3">
-                                        <input className="form-control" id="dishImage" type="file" 
+                                        <input className="form-control" id="dishImage" type="file"
                                             name="dishImage"
                                             onChange = {this.handleImageFile}
                                             />
                                         <label htmlFor="dishImage">Image</label>
-                                        {/* <div className="invalid">{this.state.custEmailError}</div> 
+                                        {/* <div className="invalid">{this.state.custEmailError}</div>
                                     </div> */}
 
                                     <div className="form-floating mb-3">
-                                        <textarea class="form-control" 
+                                        <textarea class="form-control"
                                             name="dishDesc"
                                             id="dishDesc"
                                             value = {this.state.dishDesc}
-                                            onChange = {this.onChangeField} 
+                                            onChange = {this.onChangeField}
                                             rows="4"></textarea>
                                             <label htmlFor="dishDesc">Description</label>
                                             {/* <div className="invalid">{this.state.custEmailError}</div> */}
                                     </div>
 
                                     <div className="form-floating mb-3">
-                                        <input className="form-control" id="dishCategory" type="text" 
+                                        <input className="form-control" id="dishCategory" type="text"
                                             name="dishCategory"
                                             value = {this.state.dishCategory}
                                             onChange = {this.onChangeField}
@@ -133,11 +133,11 @@ class ResDishUpdate extends Component {
                                         <label htmlFor="dishCategory">Category</label>
                                         {/* <div className="invalid">{this.state.custEmailError}</div> */}
                                     </div>
-                                    
+
                                     <div className="row mb-3">
                                         <div className="col-md-6">
                                             <div className="form-floating">
-                                                <input className="form-control" id="dishPrice" type="number" 
+                                                <input className="form-control" id="dishPrice" type="number"
                                                     name="dishPrice"
                                                     value = {this.state.dishPrice}
                                                     onChange = {this.onChangeField}
@@ -148,7 +148,7 @@ class ResDishUpdate extends Component {
                                         </div>
                                         <div className="col-md-6">
                                             <div className="form-floating">
-                                            <select className="form-control form-select" 
+                                            <select className="form-control form-select"
                                                 name="dishType"
                                                 value = {this.state.dishType}
                                                 onChange = {this.onChangeField}>
@@ -162,14 +162,14 @@ class ResDishUpdate extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <div className="mt-4 mb-0">
                                         {/* <div className="d-grid"><a className="btn btn-primary btn-block">Create Account</a></div> */}
                                         <button className="d-grid btn btn-uber" type="submit">Update</button>
                                     </div>
                                 </form>
                             </div>
-                            
+
                         </div>
                     </div>
                 </div>
@@ -177,7 +177,7 @@ class ResDishUpdate extends Component {
             </div>
         )
     }
-    
+
 }
 
 export default ResDishUpdate

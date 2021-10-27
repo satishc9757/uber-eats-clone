@@ -134,7 +134,7 @@ exports.updateRestaurant = async function (req, res) {
 exports.getRestaurantById = async function(req, res){
 
     const resId = req.params.id;
-    console.log("Inside getRes using mongo id"+resId);
+    //console.log("Inside getRes using mongo id"+resId);
 
     try{
         let restaurant  = await Restaurant.findById(resId);
@@ -216,7 +216,7 @@ exports.addDish = async function (req, res) {
     dishName: data.dishName,
     dishResId: data.resId,
     dishMainIngredients: data.dishMainIngredients,
-    dishImageLink: file.originalname,
+    dishImage: file.originalname,
     dishPrice: data.dishPrice,
     dishDesc: data.dishDesc,
     dishCategory: data.dishCategory,
@@ -230,13 +230,14 @@ dish.save(async (err, result) => {
         .status(500)
         .send(JSON.stringify({ message: "Something went wrong!", err }));
     } else {
-      const fileKey = file.destination +"/"+ result.insertedId +"_"+file.filename;
+      console.log("Result data : "+JSON.stringify(result));
+      const fileKey = file.destination +"/"+ result._id +"_"+file.filename;
       const fileUploadRes = await uploadFile(file, fileKey);
       console.log("file uploaded to s3 " +JSON.stringify(fileUploadRes));
       console.log("The result is : "+  JSON.stringify(result));
       dish.updateOne({
         $set: {
-          dishImageLink: fileUploadRes.Location,
+          dishImage: fileUploadRes.Location,
         }
       }, (err, result) => {
         if (err) {
@@ -255,9 +256,35 @@ dish.save(async (err, result) => {
 };
 
 
+exports.updateDish = function (req, res) {
+  const data = req.body;
+  Dish.updateOne(
+    {_id: data._id},
+    {
+        $set: {
+          dishName: data.dishName,
+          dishMainIngredients: data.dishMainIngredients,
+          dishPrice: data.dishPrice,
+          dishDesc: data.dishDesc,
+          dishCategory: data.dishCategory,
+          dishType: data.dishType,
+        }
+    },
+    (err, result) => {
+        if(err){
+          console.error("Err in updateDish : " + err);
+          res
+              .status(500)
+              .send(JSON.stringify({ message: "Something went wrong!", err }));
+        } else {
+            res.send(JSON.stringify({ message: "Dish updated successfully" }));
+        }
+    });
+}
+
 exports.getDishByRes =  function(req, res){
   const resId = req.params.resId;
-  console.log("Here in the get res by id "+ resId);
+  //console.log("Here in the get res by id "+ resId);
   const dishes = Dish.find({dishResId: resId}, (err, result) => {
     if (err) {
       console.error("getDishByRes : " + err);
@@ -270,5 +297,24 @@ exports.getDishByRes =  function(req, res){
     }
   });
 
+
+};
+
+exports.getDish =  async function(req, res){
+  const dishId = req.params.id;
+  //console.log("In am here in the get dish")
+  try{
+    let dish  = await Dish.findById(dishId);
+    if(dish){
+      res.send(dish);
+    } else {
+      res.send({});
+    }
+  } catch(err){
+    console.error("getDish : " + err);
+        res
+          .status(500)
+          .send(JSON.stringify({ message: "Something went wrong!", err }));
+  }
 
 };
