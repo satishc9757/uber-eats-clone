@@ -69,8 +69,8 @@ exports.logout = function(req, res) {
   };
 
 exports.updateRestaurant = async function (req, res) {
-  
-  
+
+
   try{
 
     const data = req.body;
@@ -79,9 +79,9 @@ exports.updateRestaurant = async function (req, res) {
     console.log("data "+ JSON.stringify(data));
     //console.log("dishName : "+ data.dishName);
     const fileKey = file.destination +"/"+ data.resId +"_"+file.filename;
-    
-    const fileUploadRes = await uploadFile(file, fileKey);  
-    
+
+    const fileUploadRes = await uploadFile(file, fileKey);
+
     console.log("file uploaed to s3 " +JSON.stringify(fileUploadRes));
 
     let addressUpdateSql = "UPDATE address SET add_street = ?, add_city = ?, add_state = ?, add_zipcode = ?, add_country = ? "
@@ -109,15 +109,15 @@ exports.updateRestaurant = async function (req, res) {
                             data.resId
                           ]);
 
-    console.log(resResult); 
-    
+    console.log(resResult);
+
     unlinkSync(file.path);
     console.log('successfully deleted after upload');
 
     res.send(JSON.stringify({ message: "Restaurant updated" }));
-    /*const delQuery = "DELETE FROM res_images WHERE img_res_id = ?";                      
+    /*const delQuery = "DELETE FROM res_images WHERE img_res_id = ?";
     const delRes = await con.query(delQuery, [data.resId]);
-    console.log("after delete " +delRes); 
+    console.log("after delete " +delRes);
 
     const insertImgQuery = "INSERT INTO res_images(img_res_id, img_name, img_link) VALUES ? "
     console.log("files : "+files);
@@ -127,26 +127,26 @@ exports.updateRestaurant = async function (req, res) {
     console.log("input arr: "+inputArr);
     const imageInsertRes = await con.query(insertImgQuery, [inputArr]);
 
-    console.log("after image insert "+imageInsertRes);   */                     
+    console.log("after image insert "+imageInsertRes);   */
   } catch(err){
       console.error("updateRes : " + err);
       res
           .status(500)
           .send(JSON.stringify({ message: "Something went wrong!", err }));
   }
-  
-  
+
+
 };
 
 
 exports.getRestaurantById = function(req, res){
-  
-  const resId = req.params.id;  
-  
+
+  const resId = req.params.id;
+
   let sql = "select res_id as resId, res_name as resName, res_email as resEmail, res_description as resDescription, res_phone as resPhone, add_street as resStreet, add_city as resCity, add_state as resState, add_zipcode as resZipcode, res_delivery_time as resDeliveryTime, res_image as resImage "
-            +" from restaurants as r, address as a" 
+            +" from restaurants as r, address as a"
             +" where r.res_address_id = a.add_id and res_id = ?";
-  
+
   con.query(sql, [resId], (err, result) => {
     if (err) {
       console.error("getRestaurantById : " + err);
@@ -158,21 +158,21 @@ exports.getRestaurantById = function(req, res){
       data = result;
       res.send(data[0]);
     }
-  }); 
+  });
 
 };
 
 exports.getRestaurantByQueryString = function(req, res){
-    const searchText = req.query.searchText;  
+    const searchText = req.query.searchText;
     console.log(" searchString : "+searchText);
     let sql = "select res_id as resId, res_name as resName, res_image as resImage ,res_email as resEmail, res_description as resDescription, res_phone as resPhone, add_street as resStreet, add_city as resCity, add_state as resState, add_zipcode as resZipcode, "
               +" res_delivery_type as resDeliveryType, "
               +" (select GROUP_CONCAT(distinct(dish_type)) from dishes where dish_res_id = r.res_id) as dishTypes"
-              +" from restaurants as r, address as a " 
-              +" where r.res_address_id = a.add_id " 
+              +" from restaurants as r, address as a "
+              +" where r.res_address_id = a.add_id "
               +" and (lower(a.add_city) = lower(?)"
               +" or r.res_id = (select d.dish_res_id from dishes as d where lower(d.dish_name) = lower(?)))";
-    
+
     con.query(sql, [searchText, searchText], (err, result) => {
       if (err) {
         console.error("getRestaurantById : " + err);
@@ -184,7 +184,7 @@ exports.getRestaurantByQueryString = function(req, res){
         data = result;
         res.send(JSON.stringify(result));
       }
-    }); 
+    });
 }
 
 exports.res_login = function (req, res) {
@@ -212,12 +212,12 @@ exports.res_login = function (req, res) {
         res.cookie('resId',result[0].resId,{maxAge: 900000, httpOnly: false, path : '/'});
         res.cookie('resEmail',result[0].resEmail,{maxAge: 900000, httpOnly: false, path : '/'});
         res.cookie('resName',result[0].resName,{maxAge: 900000, httpOnly: false, path : '/'});
-        
+
         req.session.user = {
           resId: result[0].resId,
           resEmail: result[0].resEmail,
           resName: result[0].resName,
-          
+
         };
 
         console.log("req session : "+JSON.stringify(req.session.user));
@@ -238,7 +238,7 @@ exports.addDish = async function (req, res) {
   const file = req.file;
   console.log("file "+ JSON.stringify(file));
   console.log("dishName : "+ data.dishName);
-  let addressSql = "INSERT INTO dishes (dish_res_id, dish_name, dish_main_ingredients, dish_image_link, dish_price, dish_desc, dish_category, dish_type, dish_create_timestamp, dish_update_timestamp) " 
+  let addressSql = "INSERT INTO dishes (dish_res_id, dish_name, dish_main_ingredients, dish_image_link, dish_price, dish_desc, dish_category, dish_type, dish_create_timestamp, dish_update_timestamp) "
                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, now(), now())"
 
   con.query(
@@ -260,11 +260,11 @@ exports.addDish = async function (req, res) {
           .status(500)
           .send(JSON.stringify({ message: "Something went wrong!", err }));
       } else {
-        
+
         const fileKey = file.destination +"/"+ result.insertId +"_"+file.filename;
-        const fileUploadRes = await uploadFile(file, fileKey);  
+        const fileUploadRes = await uploadFile(file, fileKey);
         console.log("file uploaed to s3 " +JSON.stringify(fileUploadRes));
-        
+
         const updateImageSql = "Update dishes set dish_image_link = ? where dish_id = ? "
         con.query(updateImageSql, [fileUploadRes.Location, result.insertId],
           (err, result) => {
@@ -277,7 +277,7 @@ exports.addDish = async function (req, res) {
               res.send(JSON.stringify({ message: "Dish added successfully." }));
             }
           });
-        
+
       }
     }
   );
@@ -289,7 +289,7 @@ exports.updateDish = function (req, res) {
   //const file = req.file;
   //console.log("file "+ JSON.stringify(file));
   console.log("dishName : "+ data.dishName);
-  let sql = "UPDATE dishes SET dish_name = ?, dish_main_ingredients = ? , dish_price = ?, dish_desc = ?, dish_category = ?, dish_type = ?, dish_update_timestamp = now() " 
+  let sql = "UPDATE dishes SET dish_name = ?, dish_main_ingredients = ? , dish_price = ?, dish_desc = ?, dish_category = ?, dish_type = ?, dish_update_timestamp = now() "
                    + " WHERE dish_id = ?"
 
   con.query(
@@ -315,7 +315,7 @@ exports.updateDish = function (req, res) {
       }
     }
   );
-  
+
 };
 
 exports.getAllDishes =  function(req, res){
@@ -330,10 +330,10 @@ exports.getAllDishes =  function(req, res){
     } else {
       console.log(result);
       data = result;
-      
+
       res.send(JSON.stringify({ dishes: result }));
     }
-  }); 
+  });
 
 };
 
@@ -350,18 +350,18 @@ exports.getDishByRes =  function(req, res){
     } else {
       console.log(result);
       data = result;
-      
+
       res.send(JSON.stringify(result));
     }
-  }); 
+  });
 
 };
 
 exports.getDish =  function(req, res){
-  const dishId = req.params.id;  
+  const dishId = req.params.id;
   console.log("In am here in the get dishes")
   let sql = "select dish_id as dishId, dish_res_id as dishResId, dish_name as dishName, dish_main_ingredients as dishMainIngredients, dish_image_link as dishImage, dish_price as dishPrice, dish_desc as dishDesc, dish_category as dishCategory, dish_type as dishType  from dishes where dish_id = ?";
-  
+
   con.query(sql, [dishId], (err, result) => {
     if (err) {
       console.error("getDish : " + err);
@@ -371,19 +371,19 @@ exports.getDish =  function(req, res){
     } else {
       console.log(result);
       data = result;
-      
+
       res.send(JSON.stringify({ data: result }));
     }
-  }); 
+  });
 
 };
 
 
 exports.deleteDish =  function(req, res){
-  const dishId = req.body.dishId;  
-  
+  const dishId = req.body.dishId;
+
   let sql = "DELETE FROM dishes WHERE dish_id = ?";
-  
+
   con.query(sql, [dishId], (err, result) => {
     if (err) {
       console.error("deleteDish : " + err);
@@ -393,26 +393,26 @@ exports.deleteDish =  function(req, res){
     } else {
       console.log(result);
       data = result;
-      
+
       res.send(JSON.stringify({ message: "Dish deleted successfully!" }));
     }
-  }); 
+  });
 
 };
 
 
 exports.getOrdersByRes = function(req, res){
-  
-  const resId = req.query.resId;  
-  
-  let sql = "select o.order_id as orderId, o.order_total as orderTotal, c.cust_first_name as custFirstName, c.cust_last_name as custLastName, c.cust_id as custId, a.add_street as street, a.add_city as city, a.add_state as state, a.add_zipcode as zipcode," 
+
+  const resId = req.query.resId;
+
+  let sql = "select o.order_id as orderId, o.order_total as orderTotal, c.cust_first_name as custFirstName, c.cust_last_name as custLastName, c.cust_id as custId, a.add_street as street, a.add_city as city, a.add_state as state, a.add_zipcode as zipcode,"
             +" DATE_FORMAT(order_timestamp, '%Y-%m-%d %H:%i:%s') as orderTimestamp, order_status as orderStatus, order_delivery_fee as orderDeliveryFee, order_service_fee as orderServiceFee "
             +" from orders as o, restaurants as r, address as a, customers as c "
             +" where o.order_restaurant_id = r.res_id "
             +" and o.order_address_id = a.add_id "
             + " and o.order_cust_id = c.cust_id"
             +" and o.order_restaurant_id = ? "
-  
+
   con.query(sql, [resId], (err, result) => {
     if (err) {
       console.error("getOrdersByRes : " + err);
@@ -423,19 +423,19 @@ exports.getOrdersByRes = function(req, res){
         console.log(result);
         res.send(result);
     }
-  }); 
+  });
 
 };
 
 exports.getOrderDetailsByOrderId = function(req, res){
-  
-  const orderId = req.query.orderId;  
-  
+
+  const orderId = req.query.orderId;
+
   let sql = "select o.od_id as odId, d.dish_name as dishName, o.od_quantity as odQuantity, o.od_item_price as odPrice"
             +" from order_details as o, dishes as d"
             +" where o.od_dish_id = d.dish_id"
             +" and o.od_order_id = ? "
-  
+
   con.query(sql, [orderId], (err, result) => {
     if (err) {
       console.error("getOrderDetailsByOrderId : " + err);
@@ -446,15 +446,15 @@ exports.getOrderDetailsByOrderId = function(req, res){
         console.log(result);
         res.send(result);
     }
-  }); 
+  });
 
 };
 
 
 exports.updateOrderStatus = function (req, res) {
   const data = req.body;
-  
-  let sql = "UPDATE orders SET order_status = ? " 
+
+  let sql = "UPDATE orders SET order_status = ? "
                    + " WHERE order_id = ?"
 
   con.query(
@@ -475,21 +475,21 @@ exports.updateOrderStatus = function (req, res) {
       }
     }
   );
-  
+
 };
 
 
 exports.getFavRestaurantsByCustId = function(req, res){
-  const custId = req.query.custId;  
-  
+  const custId = req.query.custId;
+
   let sql = "select res_id as resId, res_name as resName, res_image as resImage ,res_email as resEmail, res_description as resDescription, res_phone as resPhone, add_street as resStreet, add_city as resCity, add_state as resState, add_zipcode as resZipcode, "
             +" res_delivery_type as resDeliveryType, "
             +" (select GROUP_CONCAT(distinct(dish_type)) from dishes where dish_res_id = r.res_id) as dishTypes"
-            +" from restaurants as r, address as a, favorites as f " 
-            +" where r.res_address_id = a.add_id " 
+            +" from restaurants as r, address as a, favorites as f "
+            +" where r.res_address_id = a.add_id "
             +" and r.res_id = f.fav_res_id"
            +" and f.fav_cust_id = ?";
-  
+
   con.query(sql, [custId], (err, result) => {
     if (err) {
       console.error("getFavRestaurantsByCustId : " + err);
@@ -501,7 +501,5 @@ exports.getFavRestaurantsByCustId = function(req, res){
       data = result;
       res.send(JSON.stringify(result));
     }
-  }); 
+  });
 }
-
-

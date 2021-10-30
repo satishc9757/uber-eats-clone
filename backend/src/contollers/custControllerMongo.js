@@ -1,7 +1,7 @@
 const {uploadFile} = require('../aws/s3/FileUpload')
 const { unlinkSync } = require('fs');
 const Customer = require('../models/CustomerModel');
-
+var kafka = require('../kafka/client');
 
 exports.registerCustomer = function (req, res) {
     const data = req.body;
@@ -29,7 +29,7 @@ exports.registerCustomer = function (req, res) {
     });
 };
 
-  exports.loginCustomer = async function (req, res) {
+exports.loginCustomer = async function (req, res) {
     const data = req.body;
 
     console.log(data);
@@ -71,6 +71,35 @@ exports.registerCustomer = function (req, res) {
     } catch(err){
 
     }
+
+
+
+  };
+
+exports.loginCustomerKafka = async function (req, res) {
+    const data = req.body;
+
+    console.log(data);
+
+    kafka.make_request('cust_login',req.body, function(err,results){
+        console.log('in result');
+        console.log(results);
+        if (err){
+            console.log("Inside err");
+            res.json({
+                status:"error",
+                msg:"System Error, Try Again."
+            })
+        }else{
+            console.log("Inside else");
+                res.json({
+                    results
+                });
+
+                res.end();
+            }
+
+    });
 
 
 
