@@ -2,9 +2,10 @@ var connection =  new require('./kafka/Connection');
 //topics files
 //var signin = require('./services/signin.js');
 //var Books = require('./services/books.js');
-var CustLogin = require('./services/cust_login');
-
-
+var CustLogin = require('./services/customer/cust_login');
+var CustReg = require('./services/customer/cust_registration');
+var CustData = require('./services/customer/cust_data');
+var CustUpdate = require('./services/customer/cust_update');
 
 const { mongoConnectionURL } = require('./database/mongoConnection');
 const mongoose = require('mongoose');
@@ -57,3 +58,6 @@ mongoose.connect(mongoConnectionURL, mongoDbOptions, (err, result) => {
 //first argument is topic name
 //second argument is a function that will handle this topic request
 handleTopicRequest("cust_login", CustLogin);
+handleTopicRequest("cust_registration", CustReg);
+handleTopicRequest("cust_data", CustData);
+handleTopicRequest("cust_update", CustUpdate);

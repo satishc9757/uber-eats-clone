@@ -7,9 +7,9 @@ var con = mysql.createConnection({
   database: "uber-eats"
 });
 
-con.connect(function(err) {
-  if (err) throw err;
-  console.log("Connected!");
-});
+// con.connect(function(err) {
+//   if (err) throw err;
+//   console.log("Connected!");
+// });
 
 module.exports = con;

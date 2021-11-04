@@ -29,6 +29,35 @@ exports.registerCustomer = function (req, res) {
     });
 };
 
+
+exports.registerCustomerKafka = function (req, res) {
+    const data = req.body;
+
+    kafka.make_request('cust_registration',req.body, function(err,results){
+        console.log('in result');
+        console.log(results);
+        if (err){
+            res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+
+        } else if(results.response_code == 200){
+
+            res.send(JSON.stringify({
+                custFirstName: data.custFirstName,
+                custLastName: data.custLastName,
+                custEmail: data.custEmail,
+              }));
+        } else {
+            res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+        }
+
+    });
+
+};
+
 exports.loginCustomer = async function (req, res) {
     const data = req.body;
 
@@ -90,17 +119,106 @@ exports.loginCustomerKafka = async function (req, res) {
                 status:"error",
                 msg:"System Error, Try Again."
             })
-        }else{
+        } else if(results.response_code == 200){
+
+
+            const customer = results.response_data;
+
+            console.log("Login successful");
+            res.cookie('cookie',"customer",{maxAge: 900000, httpOnly: false, path : '/'});
+            res.cookie('custId',customer._id,{maxAge: 900000, httpOnly: false, path : '/'});
+            res.cookie('custEmail',customer.custEmail,{maxAge: 900000, httpOnly: false, path : '/'});
+            res.cookie('custFirstName',customer.custFirstName,{maxAge: 900000, httpOnly: false, path : '/'});
+            res.cookie('custLastName',customer.custLastName,{maxAge: 900000, httpOnly: false, path : '/'});
+            res.cookie('custImageLink',customer.custImage,{maxAge: 900000, httpOnly: false, path : '/'});
+            res.cookie('custLocation',customer.custLocation,{maxAge: 900000, httpOnly: false, path : '/'});
+            req.session.user = {
+                custId: customer._id,
+                custEmail: customer.custEmail,
+                custFirstName: customer.custFirstName,
+                custLastName: customer.custLastName,
+            };
+
             console.log("Inside else");
-                res.json({
-                    results
-                });
+                res.json(
+                    customer
+                );
 
                 res.end();
-            }
+        } else if(results.response_code == 400){
+            res
+                .status(400)
+                .send(JSON.stringify({ message: "Invalid login credentials." }));
+        } else {
+            res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+        }
 
     });
 
 
+
+  };
+
+
+  exports.customerUpdateKafka = async function (req, res) {
+    const data = req.body;
+    const file = req.file;
+
+    console.log("file "+ JSON.stringify(file));
+    console.log("data "+ JSON.stringify(data));
+
+    const fileKey = file.destination +"/"+ data.custId +"_"+file.filename;
+
+    const fileUploadRes = await uploadFile(file, fileKey);
+
+    console.log("file uploaed to s3 " +JSON.stringify(fileUploadRes));
+
+    kafka.make_request('cust_update',{...data, custImage: fileUploadRes.Location}, function(err,results){
+        console.log('in result');
+        console.log(results);
+        if (err){
+            res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+
+        } else if(results.response_code == 200){
+            unlinkSync(file.path);
+            console.log('successfully deleted after upload');
+            res.send(JSON.stringify(results.response_data));
+        } else {
+            res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+        }
+
+    });
+
+};
+
+exports.getCustomerById = async function(req, res){
+
+    const custId = req.params.id;
+
+    kafka.make_request('cust_data',{custId: custId}, function(err,results){
+        console.log('in result');
+        console.log(results);
+        if (err){
+            res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+
+        } else if(results.response_code == 200){
+
+            console.log('successfully deleted after upload');
+            res.send(JSON.stringify(results.response_data));
+        } else {
+            res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+        }
+
+    });
 
   };

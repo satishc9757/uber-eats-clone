@@ -65,7 +65,7 @@ import cookie from 'react-cookies';
             const response = await axios.get(SERVER_ENDPOINT + "/customer/id/"+custId);
             const data = await response.data;
             console.log("Cust data : "+JSON.stringify(data))
-            this.setState(data[0]);
+            this.setState(data);
         } catch(err){
             console.log(err);
         }
@@ -134,22 +134,22 @@ import cookie from 'react-cookies';
             this.setState({custEmailError: "Invalid email."});
         }
 
-        if(this.state.custPassword === ""){
-            isValid = false;
-            this.setState({custPasswordError: "Password cannot be empty"});
-        } else {
-            this.setState({custPasswordError: ""});
-        }
+        // if(this.state.custPassword === ""){
+        //     isValid = false;
+        //     this.setState({custPasswordError: "Password cannot be empty"});
+        // } else {
+        //     this.setState({custPasswordError: ""});
+        // }
 
-        if(this.state.custPasswordConfirm === ""){
-            isValid = false;
-            this.setState({custPasswordConfirmError: "Confirm password cannot be empty"});
-        } else if(this.state.custPasswordConfirm !== this.state.custPassword){
-            isValid = false;
-            this.setState({custPasswordConfirmError: "Passwords don't match"});
-        } else {
-            this.setState({custPasswordConfirmError: ""});
-        }
+        // if(this.state.custPasswordConfirm === ""){
+        //     isValid = false;
+        //     this.setState({custPasswordConfirmError: "Confirm password cannot be empty"});
+        // } else if(this.state.custPasswordConfirm !== this.state.custPassword){
+        //     isValid = false;
+        //     this.setState({custPasswordConfirmError: "Passwords don't match"});
+        // } else {
+        //     this.setState({custPasswordConfirmError: ""});
+        // }
 
         console.log("error "+ isValid);
         // return this.state.custFirstNameError === ""
