@@ -222,3 +222,125 @@ exports.getCustomerById = async function(req, res){
     });
 
   };
+
+  exports.createOrder = async function(req, res) {
+    const data = req.body;
+
+    console.log("data "+ JSON.stringify(data));
+
+    kafka.make_request('create_order',data, function(err,results){
+        console.log(results);
+        if (err){
+            res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+
+        } else if(results.response_code == 200){
+            res.send(JSON.stringify(results.response_data));
+        } else {
+            res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+        }
+
+    });
+ }
+
+
+ exports.getOrdersByCustomer = function(req, res){
+
+    const custId = req.query.custId;
+
+    kafka.make_request('cust_orders',{custId: custId}, function(err,results){
+        console.log('in result');
+        console.log(results);
+        if (err){
+            res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+
+        } else if(results.response_code == 200){
+
+            res.send(JSON.stringify(results.response_data));
+        } else {
+            res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+        }
+
+    });
+
+ };
+
+  exports.getOrderDetailsByOrderId = function(req, res){
+
+    const orderId = req.query.orderId;
+
+    kafka.make_request('order_details',{orderId: orderId}, function(err,results){
+        console.log(results);
+        if (err){
+            res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+
+        } else if(results.response_code == 200){
+
+            res.send(JSON.stringify(results.response_data));
+        } else {
+            res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+        }
+
+    });
+
+  };
+
+
+  exports.cancelOrder = function (req, res) {
+    const data = req.body;
+
+    kafka.make_request('cancel_order',{orderId: data.orderId}, function(err,results){
+        console.log(results);
+        if (err){
+            res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+
+        } else if(results.response_code == 200){
+
+            res.send(JSON.stringify(results.response_data));
+        } else {
+            res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+        }
+
+    });
+
+  };
+
+
+exports.getDeliveryAddressesForUser = function(req, res){
+
+    const custId = req.query.custId;
+
+    kafka.make_request('cust_delivery_address',{custId: custId}, function(err,results){
+        console.log(results);
+        if (err){
+            res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+
+        } else if(results.response_code == 200){
+
+            res.send(JSON.stringify(results.response_data));
+        } else {
+            res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+        }
+
+    });
+
+ };

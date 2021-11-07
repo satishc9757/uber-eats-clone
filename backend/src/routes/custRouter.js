@@ -28,14 +28,14 @@ router.post("/logout", custController.logout);
 // router.put("/update", custUpload.single('custImage'), custController.updateCustomerProfile);
 router.put("/update", custUpload.single('custImage'), custControllerMongo.customerUpdateKafka);
 
-router.post("/order/create", custController.createOrder);
-router.post("/order/cancel", custController.cancelOrder);
+router.post("/order/create", custControllerMongo.createOrder);
+router.post("/order/cancel", custControllerMongo.cancelOrder);
 
-router.get("/order/address", custController.getDeliveryAddressesForUser);
+router.get("/order/address", custControllerMongo.getDeliveryAddressesForUser);
 
-router.get("/orders", custController.getOrdersByCustomer);
+router.get("/orders", custControllerMongo.getOrdersByCustomer);
 
-router.get("/orderdetails", custController.getOrderDetailsByOrderId);
+router.get("/orderdetails", custControllerMongo.getOrderDetailsByOrderId);
 
 router.post("/favorite", custController.addFavoriteRes)
 
