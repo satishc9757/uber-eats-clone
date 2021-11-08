@@ -33,27 +33,28 @@ var router = express.Router();
 
 router.get("/favorites", resController.getFavRestaurantsByCustId);
 router.get("/query", resController.getRestaurantByQueryString);
-router.post("/register", validateResRegistration, resControllerMongo.registerRes);
+router.post("/register", resControllerMongo.registerRes);
+//router.post("/register", validateResRegistration, resControllerMongo.registerRes);
 router.get("/id/:id", resControllerMongo.getRestaurantById);
 
 //router.put("/update", resUpload.array('resImages', 5),resController.updateRestaurant);
 router.put("/update", resUpload.single('resImage'),resControllerMongo.updateRestaurant); //single upload for now
-router.post("/login", validateResLogin, resControllerMongo.res_login);
+router.post("/login", resControllerMongo.res_login);
 router.post("/logout", resController.logout);
 
 
 router.get("/getDishByRes/:resId", resControllerMongo.getDishByRes);
 router.get("/dish", resController.getAllDishes);
 
-router.post("/dish", dishUpload.single('dishImage'), resControllerMongo.addDish);
+router.post("/dish", dishUpload.single('dishImage'), resControllerMongo.addDishKafka);
 router.get("/dish/:id", resControllerMongo.getDish);
 router.put("/dish", resControllerMongo.updateDish);
 router.delete("/dish", resController.deleteDish);
 
-router.get("/orders", resController.getOrdersByRes);
+router.get("/orders", resControllerMongo.getOrdersByRes);
 router.get("/orderdetails", resController.getOrderDetailsByOrderId);
 
-router.put("/order/status", resController.updateOrderStatus);
+router.put("/order/status", resControllerMongo.updateOrderStatus);
 
 
 

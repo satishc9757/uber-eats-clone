@@ -344,3 +344,25 @@ exports.getDeliveryAddressesForUser = function(req, res){
     });
 
  };
+
+
+ exports.addFavoriteRes = function (req, res) {
+    const data = req.body;
+
+    kafka.make_request('cust_favs', data, function(err,results){
+        if (err){
+            res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+
+        } else if(results.response_code == 200){
+            res.send(JSON.stringify(results.response_data));
+        } else {
+            res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+        }
+
+    });
+
+  };

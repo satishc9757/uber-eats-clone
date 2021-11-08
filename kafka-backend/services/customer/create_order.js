@@ -8,7 +8,7 @@ async function handle_request(msg, callback){
     const data = msg;
     const address = data.deliveryAddress;
     const items = data.cartItems;
-
+    console.log("address "+ JSON.stringify(address));
     const orderItems = items.map(item => {
         return {
             itemName: item.dishName,
@@ -20,13 +20,7 @@ async function handle_request(msg, callback){
     let order = new Order({
         orderCustId: ObjectId(data.custId),
         orderRestaurantId: ObjectId(data.resId),
-        orderAddress: {
-            street: address.custStreet,
-            city: address.custCity,
-            state: address.custState,
-            zipcode: address.custZipcode,
-            country: address.custCountry,
-        },
+        orderAddress: address,
         orderItems: orderItems,
         orderTimestamp: new Date(),
         orderStatus: "Order Placed",

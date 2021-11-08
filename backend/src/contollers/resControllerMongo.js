@@ -2,39 +2,29 @@ const {uploadFile} = require('../aws/s3/FileUpload')
 const { unlinkSync } = require('fs');
 const Restaurant = require('../models/RestaurantModel');
 const Dish = require('../models/DishModel');
+var kafka = require('../kafka/client');
 
 
 exports.registerRes = function (req, res) {
     const data = req.body;
 
-    let restaurant = new Restaurant({
-        resName: data.resName,
-        resEmail: data.resEmail,
-        resPassword: data.resPassword,
-        resAddress: {
-            street: data.resStreet,
-            city: data.resCity,
-            state: data.resState,
-            zipcode: data.resZipcode,
-            country: data.resCountry,
-        },
+    kafka.make_request('res_registration',req.body, function(err,results){
+      console.log('in result');
+      console.log(results);
+      if (err){
+          res
+          .status(500)
+          .send(JSON.stringify({ message: "Something went wrong!", err }));
 
-    });
+      } else if(results.response_code == 200){
+          res.send(results.response_data);
+      } else {
+          res
+          .status(500)
+          .send(JSON.stringify({ message: "Something went wrong!", err }));
+      }
 
-    restaurant.save((err, result) => {
-        if(err){
-            console.log("Error while saving restaurant data")
-            res
-            .status(500)
-            .send(JSON.stringify({ message: "Something went wrong!", err }));
-        } else {
-            res.send({
-                resName: data.resName,
-                resEmail: data.resEmail,
-                resCity: data.resCity,
-              });
-        }
-    });
+  });
 
 };
 
@@ -53,40 +43,27 @@ exports.updateRestaurant = async function (req, res) {
 
       console.log("file uploaded to s3 " +JSON.stringify(fileUploadRes));
 
+      kafka.make_request('update_res',{...data, resImage: fileUploadRes.Location}, function(err,results){
+        console.log('in result');
+        console.log(results);
+        if (err){
+            res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
 
+        } else if(results.response_code == 200){
+            unlinkSync(file.path);
+            console.log('successfully deleted after upload');
+            res.send(JSON.stringify(results.response_data));
+        } else {
+            res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+        }
+
+    });
       //update by mongo
-      Restaurant.updateOne(
-          {_id: data.resId},
-          {
-              $set: {
-                resName: data.resName,
-                resEmail: data.resEmail,
-                resAddress: {
-                    street: data.resStreet,
-                    city: data.resCity,
-                    state: data.resState,
-                    zipcode: data.resZipcode,
-                    country: data.resCountry,
-                },
-                resDescription: data.resDescription,
-                resPhone: data.resPhone,
-                resImage: fileUploadRes.Location
-              }
-          },
-          (err, result) => {
-              if(err){
-                console.error("updateRes : " + err);
-                res
-                    .status(500)
-                    .send(JSON.stringify({ message: "Something went wrong!", err }));
-              } else {
-                unlinkSync(file.path);
-                console.log('successfully deleted after upload');
 
-                res.send(JSON.stringify({ message: "Restaurant updated" }));
-              }
-          }
-          );
       //end
 
 
@@ -133,62 +110,51 @@ exports.updateRestaurant = async function (req, res) {
 
 exports.getRestaurantById = async function(req, res){
 
-    const resId = req.params.id;
-    //console.log("Inside getRes using mongo id"+resId);
+  const resId = req.params.id;
 
-    try{
-        let restaurant  = await Restaurant.findById(resId);
-            // data = result;
+  kafka.make_request('res_data',{resId: resId}, function(err,results){
+      console.log('in result');
+      console.log(results);
+      if (err){
+          res
+          .status(500)
+          .send(JSON.stringify({ message: "Something went wrong!", err }));
 
-        if(restaurant){
-            res.send({
-                resId: restaurant._id,
-                resName: restaurant.resName,
-                resEmail: restaurant.resEmail,
-                resStreet: restaurant.resAddress.street,
-                resCity: restaurant.resAddress.city,
-                resStreet: restaurant.resAddress.street,
-                resState: restaurant.resAddress.state,
-                resZipcode: restaurant.resAddress.zipcode,
-                resImage: restaurant.resImage,
-                resDescription: restaurant.resDescription,
-                resPhone: restaurant.resPhone,
-            });
-        } else{
-            res.send(restaurant);
-        }
+      } else if(results.response_code == 200){
 
+          res.send(JSON.stringify(results.response_data));
+      } else {
+          res
+          .status(500)
+          .send(JSON.stringify({ message: "Something went wrong!", err }));
+      }
 
-    } catch(err){
-        console.error("getRestaurantById : " + err);
-            res
-              .status(500)
-              .send(JSON.stringify({ message: "Something went wrong!", err }));
-    }
+  });
 
 };
 
 exports.res_login = async function (req, res) {
   const data = req.body;
 
-  console.log(data);
-  try{
-    const restaurant = await Restaurant.findOne({resEmail: data.resUsername});
-    console.log("customer "+restaurant);
-    const result = await restaurant.comparePassword(data.resPassword);
-    console.log("Result from compare: "+result);
-
-    let restId = restaurant._id.toString();
-    console.log("res Id  "+restId);
-    if(result){
+  kafka.make_request('res_login',req.body, function(err,results){
+    console.log('in result');
+    console.log(results);
+    if (err){
+        console.log("Inside err");
+        res.json({
+            status:"error",
+            msg:"System Error, Try Again."
+        })
+    } else if(results.response_code == 200){
+        const restaurant = results.response_data;
         console.log("Login successful");
         res.cookie('cookie',"restaurant",{maxAge: 900000, httpOnly: false, path : '/'});
-        res.cookie('resId',restId,{maxAge: 900000, httpOnly: false, path : '/'});
+        res.cookie('resId',restaurant._id,{maxAge: 900000, httpOnly: false, path : '/'});
         res.cookie('resEmail',restaurant.resEmail,{maxAge: 900000, httpOnly: false, path : '/'});
         res.cookie('resName',restaurant.resName,{maxAge: 900000, httpOnly: false, path : '/'});
 
         req.session.user = {
-          resId: restId,
+          resId: restaurant._id,
           resEmail: restaurant.resEmail,
           resName: restaurant.resName,
         };
@@ -198,12 +164,16 @@ exports.res_login = async function (req, res) {
           'Content-Type' : 'text/plain'
         })
         res.end("Successful Login");
+    } else if(results.response_code == 400){
+      res
+          .status(400)
+          .send(JSON.stringify({ message: "Invalid login credentials." }));
     } else {
-
+        res
+        .status(500)
+        .send(JSON.stringify({ message: "Something went wrong!", err }));
     }
-  } catch(err){
-
-  }
+  });
 
 };
 
@@ -256,45 +226,96 @@ dish.save(async (err, result) => {
 };
 
 
-exports.updateDish = function (req, res) {
+exports.addDishKafka = async function (req, res) {
   const data = req.body;
-  Dish.updateOne(
-    {_id: data._id},
-    {
-        $set: {
-          dishName: data.dishName,
-          dishMainIngredients: data.dishMainIngredients,
-          dishPrice: data.dishPrice,
-          dishDesc: data.dishDesc,
-          dishCategory: data.dishCategory,
-          dishType: data.dishType,
-        }
-    },
-    (err, result) => {
-        if(err){
-          console.error("Err in updateDish : " + err);
-          res
+  const file = req.file;
+  console.log("file "+ JSON.stringify(file));
+
+
+  kafka.make_request('create_dish', data, async function(err,results){
+    console.log('in result');
+    console.log(results);
+    if (err){
+        res
+        .status(500)
+        .send(JSON.stringify({ message: "Something went wrong!", err }));
+
+    } else if(results.response_code == 200){
+        const result = results.response_data;
+        console.log("Result data : "+JSON.stringify(result));
+        const fileKey = file.destination +"/"+ result._id +"_"+file.filename;
+        const fileUploadRes = await uploadFile(file, fileKey);
+        console.log("file uploaded to s3 " +JSON.stringify(fileUploadRes));
+        console.log("The result is : "+  JSON.stringify(result));
+        result["dishImage"] = fileUploadRes.Location;
+        kafka.make_request('dish_image_update',result, async function(error,updateResults){
+          if (error){
+              res
               .status(500)
               .send(JSON.stringify({ message: "Something went wrong!", err }));
-        } else {
-            res.send(JSON.stringify({ message: "Dish updated successfully" }));
-        }
-    });
+
+          } else if(updateResults.response_code == 200){
+              res.send(JSON.stringify({ message: "Dish added successfully." }));
+          } else {
+              res
+                .status(500)
+                .send(JSON.stringify({ message: "Something went wrong!", err }));
+          }
+        });
+
+    } else {
+        res
+        .status(500)
+        .send(JSON.stringify({ message: "Something went wrong!", err }));
+    }
+
+  });
+
+};
+
+
+exports.updateDish = function (req, res) {
+  const data = req.body;
+
+  kafka.make_request('dish_update', data, function(err,results){
+      console.log('in result');
+      console.log(results);
+      if (err){
+          res
+          .status(500)
+          .send(JSON.stringify({ message: "Something went wrong!", err }));
+
+      } else if(results.response_code == 200){
+
+          res.send(JSON.stringify(results.response_data));
+      } else {
+          res
+          .status(500)
+          .send(JSON.stringify({ message: "Something went wrong!", err }));
+      }
+
+  });
 }
 
 exports.getDishByRes =  function(req, res){
   const resId = req.params.resId;
-  //console.log("Here in the get res by id "+ resId);
-  const dishes = Dish.find({dishResId: resId}, (err, result) => {
-    if (err) {
-      console.error("getDishByRes : " + err);
-      res
-        .status(500)
-        .send(JSON.stringify({ message: "Something went wrong!", err }));
-    } else {
-      console.log(result);
-      res.send(JSON.stringify(result));
-    }
+
+  kafka.make_request('dish_data',{resId: resId}, function(err,results){
+      console.log(results);
+      if (err){
+          res
+          .status(500)
+          .send(JSON.stringify({ message: "Something went wrong!", err }));
+
+      } else if(results.response_code == 200){
+
+          res.send(JSON.stringify(results.response_data));
+      } else {
+          res
+          .status(500)
+          .send(JSON.stringify({ message: "Something went wrong!", err }));
+      }
+
   });
 
 
@@ -316,5 +337,79 @@ exports.getDish =  async function(req, res){
           .status(500)
           .send(JSON.stringify({ message: "Something went wrong!", err }));
   }
+
+};
+
+
+exports.getOrdersByRes = function(req, res){
+
+  const resId = req.query.resId;
+
+
+    kafka.make_request('res_orders',{resId: resId}, function(err,results){
+        console.log('in result');
+        console.log(results);
+        if (err){
+            res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+
+        } else if(results.response_code == 200){
+
+            res.send(JSON.stringify(results.response_data));
+        } else {
+            res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+        }
+
+    });
+
+};
+
+exports.getOrderDetailsByOrderId = function(req, res){
+
+  const orderId = req.query.orderId;
+
+    kafka.make_request('order_details',{orderId: orderId}, function(err,results){
+        console.log(results);
+        if (err){
+            res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+
+        } else if(results.response_code == 200){
+
+            res.send(JSON.stringify(results.response_data));
+        } else {
+            res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+        }
+
+    });
+
+};
+
+exports.updateOrderStatus = function (req, res) {
+  const data = req.body;
+
+  kafka.make_request('order_status_update', data, function(err,results){
+      console.log(results);
+      if (err){
+          res
+          .status(500)
+          .send(JSON.stringify({ message: "Something went wrong!", err }));
+
+      } else if(results.response_code == 200){
+
+          res.send(JSON.stringify(results.response_data));
+      } else {
+          res
+          .status(500)
+          .send(JSON.stringify({ message: "Something went wrong!", err }));
+      }
+
+  });
 
 };
