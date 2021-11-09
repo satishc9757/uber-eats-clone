@@ -2,6 +2,10 @@ const {uploadFile} = require('../aws/s3/FileUpload')
 const { unlinkSync } = require('fs');
 const Customer = require('../models/CustomerModel');
 var kafka = require('../kafka/client');
+const jwt = require('jsonwebtoken');
+const { secret } = require('../jwt/config');
+const { auth } = require("../jwt/passport");
+auth();
 
 exports.registerCustomer = function (req, res) {
     const data = req.body;
@@ -101,8 +105,6 @@ exports.loginCustomer = async function (req, res) {
 
     }
 
-
-
   };
 
 exports.loginCustomerKafka = async function (req, res) {
@@ -140,11 +142,19 @@ exports.loginCustomerKafka = async function (req, res) {
             };
 
             console.log("Inside else");
-                res.json(
-                    customer
-                );
+                // res.json(
+                //     customer
+                // );
 
-                res.end();
+                // res.end();
+
+                if (customer) {
+                    const payload = { _id: customer._id, username: customer.custEmail};
+                    const token = jwt.sign(payload, secret, {
+                        expiresIn: 1008000
+                    });
+                    res.status(200).end("JWT " + token);
+                }
         } else if(results.response_code == 400){
             res
                 .status(400)

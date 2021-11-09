@@ -3,6 +3,7 @@ var { validateCustLogin, validateCustRegistration } = require('../validators/cus
 const custControllerMongo = require('../contollers/custControllerMongo');
 const CUST_IMAGE_PATH = "images/customer";
 const multer  = require('multer')
+const {checkAuth} = require('../jwt/passport')
 
 //file upload setup
 const custFileStorage = multer.diskStorage({
@@ -19,7 +20,7 @@ const custUpload = multer({ storage: custFileStorage });
 var express = require('express');
 var router = express.Router();
 
-router.post("/register", custControllerMongo.registerCustomerKafka);
+router.post("/register", checkAuth, custControllerMongo.registerCustomerKafka);
 
 router.get("/id/:id", custControllerMongo.getCustomerById);
 //router.post("/login", validateCustLogin, custControllerMongo.loginCustomer);

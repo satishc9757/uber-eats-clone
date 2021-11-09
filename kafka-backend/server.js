@@ -12,6 +12,8 @@ var OrderDetails = require('./services/customer/order_details');
 var CancelOrder = require('./services/customer/cancel_order');
 var OrderDeliveryAddress = require('./services/customer/cust_delivery_address');
 var CustFavs = require('./services/customer/cust_favs');
+var ValidateCust = require('./services/customer/validate_cust');
+
 var ResRegistration = require('./services/restaurant/res_registration');
 var ResLogin = require('./services/restaurant/res_login');
 var ResData = require('./services/restaurant/res_data');
@@ -84,6 +86,7 @@ handleTopicRequest("cancel_order", CancelOrder);
 handleTopicRequest("cust_delivery_address", OrderDeliveryAddress);
 handleTopicRequest("cust_delivery_address", OrderDeliveryAddress);
 handleTopicRequest("cust_favs", CustFavs);
+handleTopicRequest("validate_cust", ValidateCust);
 
 handleTopicRequest("res_registration", ResRegistration);
 handleTopicRequest("res_login", ResLogin);
