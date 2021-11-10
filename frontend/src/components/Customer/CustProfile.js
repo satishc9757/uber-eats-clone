@@ -94,6 +94,7 @@ import cookie from 'react-cookies';
 
             if(isValid){
                 const url = SERVER_ENDPOINT+"/customer/update";
+                axios.defaults.headers.common['authorization'] = localStorage.getItem('cust_token');
                 axios
                     .put(url, formData)
                     .then(response => {

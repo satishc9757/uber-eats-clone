@@ -3,7 +3,10 @@ const { unlinkSync } = require('fs');
 const Restaurant = require('../models/RestaurantModel');
 const Dish = require('../models/DishModel');
 var kafka = require('../kafka/client');
-
+const jwt = require('jsonwebtoken');
+const { secret } = require('../jwt/config');
+const { auth } = require("../jwt/res_passport");
+auth();
 
 exports.registerRes = function (req, res) {
     const data = req.body;
@@ -160,10 +163,13 @@ exports.res_login = async function (req, res) {
         };
 
         //console.log("req session : "+JSON.stringify(req.session.user));
-        res.writeHead(200,{
-          'Content-Type' : 'text/plain'
-        })
-        res.end("Successful Login");
+        if (restaurant) {
+          const payload = { _id: restaurant._id, username: restaurant.resEmail};
+          const token = jwt.sign(payload, secret, {
+              expiresIn: 1008000
+          });
+          res.status(200).end("JWT " + token);
+      }
     } else if(results.response_code == 400){
       res
           .status(400)

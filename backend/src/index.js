@@ -11,7 +11,8 @@ const cookieParser = require('cookie-parser');
 const { connect } = require('mongoose');
 const FRONTEND_URL = "http://localhost:3000"
 //const FRONTEND_URL = "http://18.119.29.239:3000"
-
+const {auth, passport} = require('./jwt/passport');
+const {passport_res} = require('./jwt/res_passport');
 
 
 //listening
@@ -57,9 +58,11 @@ const mongoDbOptions = {
 //       console.log("Connected to Mongo DB!");
 //     }
 // });
-
+// auth();
 console.log("dir_name "+__dirname);
 app.use(express.json());
+app.use(passport.initialize());
+app.use(passport_res.initialize());
 app.use("/", indexRouter);
 app.use("/customer", custRouter);
 app.use("/res", resRouter);

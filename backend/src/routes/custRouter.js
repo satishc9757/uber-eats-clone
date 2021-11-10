@@ -20,14 +20,14 @@ const custUpload = multer({ storage: custFileStorage });
 var express = require('express');
 var router = express.Router();
 
-router.post("/register", checkAuth, custControllerMongo.registerCustomerKafka);
+router.post("/register", custControllerMongo.registerCustomerKafka);
 
 router.get("/id/:id", custControllerMongo.getCustomerById);
 //router.post("/login", validateCustLogin, custControllerMongo.loginCustomer);
 router.post("/login", custControllerMongo.loginCustomerKafka);
 router.post("/logout", custController.logout);
 // router.put("/update", custUpload.single('custImage'), custController.updateCustomerProfile);
-router.put("/update", custUpload.single('custImage'), custControllerMongo.customerUpdateKafka);
+router.put("/update", checkAuth, custUpload.single('custImage'), custControllerMongo.customerUpdateKafka);
 
 router.post("/order/create", custControllerMongo.createOrder);
 router.post("/order/cancel", custControllerMongo.cancelOrder);

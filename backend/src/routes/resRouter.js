@@ -6,6 +6,7 @@ var resControllerMongo = require('../contollers/resControllerMongo');
 var express = require('express');
 const { validateResRegistration, validateResLogin, validateDishRegistration } = require('../validators/resValidations');
 const multer  = require('multer')
+const {checkAuth} = require('../jwt/res_passport')
 
 //file upload setup
 const resFileStorage = multer.diskStorage({
@@ -38,7 +39,7 @@ router.post("/register", resControllerMongo.registerRes);
 router.get("/id/:id", resControllerMongo.getRestaurantById);
 
 //router.put("/update", resUpload.array('resImages', 5),resController.updateRestaurant);
-router.put("/update", resUpload.single('resImage'),resControllerMongo.updateRestaurant); //single upload for now
+router.put("/update", checkAuth, resUpload.single('resImage'),resControllerMongo.updateRestaurant); //single upload for now
 router.post("/login", resControllerMongo.res_login);
 router.post("/logout", resController.logout);
 

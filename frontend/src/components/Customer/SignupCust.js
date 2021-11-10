@@ -65,13 +65,13 @@ import axios from 'axios'
         const isValid = this.validateInputs();
         console.log("isValid : "+ isValid);
         if(isValid){
-            
+
 
             // await this.props.custSignup(this.state);
-            
+
             // this.props.history.push("./login");
-  
-            
+
+
             // try{
             //     const url = SERVER_ENDPOINT+"/customer/register";
             //     const response = await axios.post(url, this.state);
@@ -87,13 +87,14 @@ import axios from 'axios'
             // }
 
             const url = SERVER_ENDPOINT+"/customer/register";
+            axios.defaults.headers.common['authorization'] = localStorage.getItem('cust_token');
 
             axios
             .post(url, this.state)
             .then(response => {
                 console.log(response);
                 this.props.history.push("/login");
-                
+
             })
             .catch(err => {
                 if(err.response && err.response.status === 400){
@@ -110,12 +111,12 @@ import axios from 'axios'
             //     .then(response => {
             //         console.log(response);
             //         this.props.history.push("/login");
-                    
+
             //     })
             //     .catch(err => {
             //         console.log(err);
             //     });
-                
+
         }
     }
 
@@ -161,11 +162,11 @@ import axios from 'axios'
         }
 
         console.log("error "+ isValid);
-        // return this.state.custFirstNameError === "" 
-        //         && this.state.custLastNameError === "" 
-        //         && this.state.custEmailError === "" 
-        //         && this.state.custPasswordError === "" 
-        //         && this.state.custPasswordConfirmError === ""; 
+        // return this.state.custFirstNameError === ""
+        //         && this.state.custLastNameError === ""
+        //         && this.state.custEmailError === ""
+        //         && this.state.custPasswordError === ""
+        //         && this.state.custPasswordConfirmError === "";
         return isValid;
 
     }
@@ -179,7 +180,7 @@ import axios from 'axios'
             <div>
             <ShortHeader/>
             <div className="container">
-                
+
                 <div className="row justify-content-center">
                     <div className="col-lg-7">
                         <div className="card shadow-lg border-0 rounded-lg mt-5">
@@ -190,18 +191,18 @@ import axios from 'axios'
                                     <div className="row mb-3">
                                         <div className="col-md-6">
                                             <div className="form-floating mb-3 mb-md-0">
-                                                <input className={"form-control" + (this.state.custFirstNameError ? " invalid-input": "")} id="custFirstName" type="text" 
+                                                <input className={"form-control" + (this.state.custFirstNameError ? " invalid-input": "")} id="custFirstName" type="text"
                                                     value = {this.state.custFirstName}
                                                     onChange = {this.onChangeCustFirstName}
-                                                    placeholder="Enter your first name" 
-                                                    required/>  
+                                                    placeholder="Enter your first name"
+                                                    required/>
                                                 <label htmlFor="custFirstName">First name</label>
                                                 <div className="invalid">{this.state.custFirstNameError}</div>
                                             </div>
                                         </div>
                                         <div className="col-md-6">
                                             <div className="form-floating">
-                                                <input className="form-control" id="custLastName" type="text" 
+                                                <input className="form-control" id="custLastName" type="text"
                                                     value = {this.state.custLastName}
                                                     onChange = {this.onChangeCustLastName}
                                                     placeholder="Enter your last name" />
@@ -211,7 +212,7 @@ import axios from 'axios'
                                         </div>
                                     </div>
                                     <div className="form-floating mb-3">
-                                        <input className="form-control" id="custEmail" type="email" 
+                                        <input className="form-control" id="custEmail" type="email"
                                             value = {this.state.custEmail}
                                             onChange = {this.onChangeCustEmail}
                                             placeholder="name@example.com" />
@@ -221,7 +222,7 @@ import axios from 'axios'
                                     <div className="row mb-3">
                                         <div className="col-md-6">
                                             <div className="form-floating mb-3 mb-md-0">
-                                                <input className="form-control" id="custPassword" type="password" 
+                                                <input className="form-control" id="custPassword" type="password"
                                                     value = {this.state.custPassword}
                                                     onChange = {this.onChangeCustPassword}
                                                     placeholder="Create a password" />
@@ -231,7 +232,7 @@ import axios from 'axios'
                                         </div>
                                         <div className="col-md-6">
                                             <div className="form-floating mb-3 mb-md-0">
-                                                <input className="form-control" id="custPasswordConfirm" type="password" 
+                                                <input className="form-control" id="custPasswordConfirm" type="password"
                                                     value = {this.state.custPasswordConfirm}
                                                     onChange = {this.onChangeCustConfirmPassword}
                                                     placeholder="Confirm password" />

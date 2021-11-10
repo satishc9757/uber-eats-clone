@@ -55,6 +55,7 @@ class ResProfile extends Component {
         const isValid = true;
 
         if(isValid){
+            axios.defaults.headers.common['authorization'] = localStorage.getItem('res_token');
             const url = SERVER_ENDPOINT+"/res/update";
             axios
                 .put(url, formData)

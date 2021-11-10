@@ -7,13 +7,15 @@ import errorAction from '../../redux/reduxActions/errorRedux';
 import ShortHeader from '../ShortHeader';
 import ShortFooter from '../ShortFooter';
 import { SERVER_ENDPOINT } from '../constants/serverConfigs';
+import jwt_decode from 'jwt-decode';
 
 class CustLogin extends Component {
 
     state = {
         custUsername: "",
         custPassword: "",
-        errorMessage: ""
+        errorMessage: "",
+        token: ""
     }
 
     onChangecustUsername = (event) => {
@@ -27,16 +29,16 @@ class CustLogin extends Component {
 
     login = async (event) => {
         event.preventDefault();
-        
+
         // await this.props.custLogin(this.state);
-        
+
         // this.props.history.push("./home");
 
         //set the with credentials to true
         axios.defaults.withCredentials = true;
-
+        axios.defaults.headers.common['authorization'] = localStorage.getItem('cust_token');
         // try{
-            
+
 
         //     const url = "http://localhost:8000/customer/login";
         //     const response = await axios.post(url, this.state);
@@ -50,13 +52,14 @@ class CustLogin extends Component {
 
         //custLogin(this.state);
         const url = SERVER_ENDPOINT+"/customer/login";
-        
+
         axios
             .post(url, this.state)
             .then(response => {
                 console.log(response);
+                this.setState({token: response.data});
                 this.props.history.push("/home");
-                
+
             })
             .catch(err => {
                 if(err.response && err.response.status === 400){
@@ -72,12 +75,22 @@ class CustLogin extends Component {
         //     .then(user => {
         //         // store user details and jwt token in local storage to keep user logged in between page refreshes
         //         localStorage.setItem('user', JSON.stringify(user));
-    
+
         //         return user;
         //     });
     }
 
     render(){
+
+        if(this.state.token.length > 0){
+            localStorage.setItem("cust_token", this.state.token);
+
+            let decoded = jwt_decode(this.state.token.split(' ')[1]);
+            localStorage.setItem("cust_user_id", decoded._id);
+            localStorage.setItem("cust_username", decoded.username);
+        }
+
+
         let loginError = "";
         if(this.state.errorMessage !== ""){
             loginError = <div class="alert alert-danger text-center" role="alert">{this.state.errorMessage}</div>
@@ -86,7 +99,7 @@ class CustLogin extends Component {
             <div>
             <ShortHeader/>
             <div className="container">
-                
+
                 <div className="row justify-content-center">
                     <div className="col-lg-5">
                         <div className="card shadow-lg border-0 rounded-lg mt-5">
@@ -95,15 +108,15 @@ class CustLogin extends Component {
                                 <form onSubmit={this.login}>
                                     {loginError}
                                     <div className="form-floating mb-3">
-                                        <input className="form-control" id="inputEmail" type="email" 
-                                        placeholder="name@example.com" 
+                                        <input className="form-control" id="inputEmail" type="email"
+                                        placeholder="name@example.com"
                                         value = {this.state.custUsername}
                                         onChange = {this.onChangecustUsername}/>
                                         <label for="inputEmail">Email address</label>
                                     </div>
                                     <div className="form-floating mb-3">
-                                        <input className="form-control" id="inputPassword" type="password" 
-                                        placeholder="Password" 
+                                        <input className="form-control" id="inputPassword" type="password"
+                                        placeholder="Password"
                                         value = {this.state.custPassword}
                                         onChange = {this.onChangeCustPassword}/>
                                         <label for="inputPassword">Password</label>
@@ -124,7 +137,7 @@ class CustLogin extends Component {
             <ShortFooter/>
             </div>
         )
-    }    
+    }
 }
 
 const mapStateToProps = state => {
