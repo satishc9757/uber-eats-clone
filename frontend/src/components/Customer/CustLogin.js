@@ -30,13 +30,16 @@ class CustLogin extends Component {
     login = async (event) => {
         event.preventDefault();
 
-        // await this.props.custLogin(this.state);
-
-        // this.props.history.push("./home");
+        await this.props.custLogin(this.state);
+        this.setState({token: this.props.token});
+        // console.log("Props value: "+JSON.stringify(this.props))
+        // console.log("Props token"+JSON.stringify(this.props.token));
+        // console.log("State token "+JSON.stringify(this.state.token));
+        this.props.history.push("./home");
 
         //set the with credentials to true
-        axios.defaults.withCredentials = true;
-        axios.defaults.headers.common['authorization'] = localStorage.getItem('cust_token');
+        // axios.defaults.withCredentials = true;
+        // axios.defaults.headers.common['authorization'] = localStorage.getItem('cust_token');
         // try{
 
 
@@ -51,33 +54,27 @@ class CustLogin extends Component {
         // }
 
         //custLogin(this.state);
-        const url = SERVER_ENDPOINT+"/customer/login";
 
-        axios
-            .post(url, this.state)
-            .then(response => {
-                console.log(response);
-                this.setState({token: response.data});
-                this.props.history.push("/home");
+        //working one
+        // const url = SERVER_ENDPOINT+"/customer/login";
 
-            })
-            .catch(err => {
-                if(err.response && err.response.status === 400){
-                    this.setState({
-                       errorMessage: "Invalid credentials"
-                    })
-                }
-                console.log(err);
-            });
+        // axios
+        //     .post(url, this.state)
+        //     .then(response => {
+        //         console.log(response);
+        //         this.setState({token: response.data});
+        //         this.props.history.push("/home");
 
-        // return fetch(`${config.apiUrl}/users/authenticate`, requestOptions)
-        //     .then(handleResponse)
-        //     .then(user => {
-        //         // store user details and jwt token in local storage to keep user logged in between page refreshes
-        //         localStorage.setItem('user', JSON.stringify(user));
-
-        //         return user;
+        //     })
+        //     .catch(err => {
+        //         if(err.response && err.response.status === 400){
+        //             this.setState({
+        //                errorMessage: "Invalid credentials"
+        //             })
+        //         }
+        //         console.log(err);
         //     });
+        //
     }
 
     render(){
@@ -142,8 +139,9 @@ class CustLogin extends Component {
 
 const mapStateToProps = state => {
     return {
-        loggedIn : state.loggedIn,
-        user: state.user
+        loggedIn : state.login.loggedIn,
+        user: state.login.user,
+        token: state.login.token
     }
 }
 

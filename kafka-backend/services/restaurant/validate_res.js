@@ -2,9 +2,17 @@ const Restaurant = require('../../models/RestaurantModel');
 
 
 async function handle_request(msg, callback){
-    console.log("Inside validate cust msg : "+msg.resId)
+    console.log("Inside validate res msg : "+msg.resId)
+    const resId = msg.resId;
+    const resUsername = msg.resEmail;
     try{
-        const restaurant = await Restaurant.findById(msg.resId);
+        let restaurant = await Restaurant.findById(resId);
+
+        // if(resId){
+        //     restaurant = await Restaurant.findById(resId);
+        // } else if(resUsername){
+        //     restaurant = await Restaurant.findOne({resEmail: resUsername});
+        // }
         console.log("restaurant "+restaurant);
 
         if(restaurant){

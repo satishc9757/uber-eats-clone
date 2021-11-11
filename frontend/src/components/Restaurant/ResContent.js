@@ -5,6 +5,8 @@ import axios from 'axios';
 import { SERVER_ENDPOINT } from '../constants/serverConfigs';
 import { Link } from 'react-router-dom';
 import cookie from 'react-cookies';
+import { connect } from 'react-redux';
+import { getDishesData } from '../../redux/reduxActions/restaurant/dishesDataRedux';
 
 class ResContent extends Component {
     state = {
@@ -14,6 +16,14 @@ class ResContent extends Component {
         resId:"",
         dishes: []
     }
+
+    refreshData = async ()=> {
+        const resId = cookie.load("resId");
+        const response = await axios.get(SERVER_ENDPOINT + "/res/getDishByRes/"+resId);
+        const data = await response.data;
+        console.log("Dishes data : "+JSON.stringify(data))
+        this.setState({dishes: data});
+}
 
     async componentDidMount(){
         try {
@@ -25,14 +35,19 @@ class ResContent extends Component {
             this.setState(resData);
 
             //dishes
-            const response = await axios.get(SERVER_ENDPOINT + "/res/getDishByRes/"+resId);
-            const data = await response.data;
-            console.log("Dishes data : "+JSON.stringify(data))
-            this.setState({dishes: data});
+            // const response = await axios.get(SERVER_ENDPOINT + "/res/getDishByRes/"+resId);
+            // const data = await response.data;
+            // console.log("Dishes data : "+JSON.stringify(data))
+            // this.setState({dishes: data});
+            //console.log("Did Mount called!!!!!!");
+            await this.props.getDishesData(resId);
+            this.setState({dishes: this.props.dishesData});
+            this.refreshData()
         } catch(err){
             console.log(err);
         }
     }
+
 
     render(){
         let dishesData = [];
@@ -125,4 +140,12 @@ class ResContent extends Component {
     }
 }
 
-export default ResContent
+const mapStateToProps = state => {
+    return {
+        dishesData : state.dishes.dishesData,
+
+    }
+}
+//export default ResContent;
+
+export default connect(mapStateToProps, {getDishesData})(ResContent);

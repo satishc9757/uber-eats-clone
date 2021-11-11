@@ -6,7 +6,7 @@ var resControllerMongo = require('../contollers/resControllerMongo');
 var express = require('express');
 const { validateResRegistration, validateResLogin, validateDishRegistration } = require('../validators/resValidations');
 const multer  = require('multer')
-const {checkAuth} = require('../jwt/res_passport')
+const {checkAuth} = require('../jwt/passport')
 
 //file upload setup
 const resFileStorage = multer.diskStorage({

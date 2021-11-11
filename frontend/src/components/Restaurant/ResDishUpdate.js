@@ -2,6 +2,10 @@ import React, { Component } from 'react'
 import axios from 'axios';
 import { SERVER_ENDPOINT } from '../constants/serverConfigs';
 import ResHeader from './ResHeader';
+import { connect } from 'react-redux';
+import { dishUpdate } from '../../redux/reduxActions/restaurant/updateDishRedux';
+
+
 class ResDishUpdate extends Component {
 
 
@@ -41,7 +45,7 @@ class ResDishUpdate extends Component {
         }
     }
 
-    onFormSubmit = (event) => {
+    onFormSubmit = async (event) => {
         event.preventDefault();
         let formData = new FormData();
         //formData.append("dishImage", this.state.dishImage);
@@ -55,19 +59,23 @@ class ResDishUpdate extends Component {
         //const isValid = this.validateInputs(); --validation disabled for now
         const isValid = true;
         //console.log("isValid : "+ isValid);
-        console.log("dishImage "+ this.state.dishImage);
-        if(isValid){
-            const url = SERVER_ENDPOINT+"/res/dish";
-            axios
-                .put(url, this.state)
-                .then(response => {
-                    console.log(response);
-                    this.props.history.push("/res/home");
-                })
-                .catch(err => {
-                    console.log(err);
-                });
-        }
+
+        await this.props.dishUpdate(this.state);
+        this.props.history.push("/res/home");
+
+        // console.log("dishImage "+ this.state.dishImage);
+        // if(isValid){
+        //     const url = SERVER_ENDPOINT+"/res/dish";
+        //     axios
+        //         .put(url, this.state)
+        //         .then(response => {
+        //             console.log(response);
+        //             this.props.history.push("/res/home");
+        //         })
+        //         .catch(err => {
+        //             console.log(err);
+        //         });
+        // }
     }
 
     render(){
@@ -180,4 +188,11 @@ class ResDishUpdate extends Component {
 
 }
 
-export default ResDishUpdate
+const mapStateToProps = state => {
+    return {
+        dishUpdated: state.dishUpdated
+    }
+}
+
+export default connect(mapStateToProps, {dishUpdate})(ResDishUpdate);
+//export default ResDishUpdate

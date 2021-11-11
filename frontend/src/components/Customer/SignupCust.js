@@ -67,9 +67,15 @@ import axios from 'axios'
         if(isValid){
 
 
-            // await this.props.custSignup(this.state);
+            await this.props.custSignup(this.state);
+            if(this.props.errorMessage){
+                console.log("errorMessage : "+this.props.errorMessage);
+                //this.setState({signupErrorMessage: this.props.errorMessage});
+            } else {
+                this.props.history.push("./login");
+            }
 
-            // this.props.history.push("./login");
+
 
 
             // try{
@@ -87,7 +93,7 @@ import axios from 'axios'
             // }
 
             const url = SERVER_ENDPOINT+"/customer/register";
-            axios.defaults.headers.common['authorization'] = localStorage.getItem('cust_token');
+            //axios.defaults.headers.common['authorization'] = localStorage.getItem('cust_token');
 
             axios
             .post(url, this.state)
@@ -264,7 +270,8 @@ import axios from 'axios'
 const mapStateToProps = state => {
     return {
         registered : state.registered,
-        user: state.user
+        user: state.user,
+        errorMessage: state.error
     }
 }
 

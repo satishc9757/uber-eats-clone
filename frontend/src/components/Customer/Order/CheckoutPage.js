@@ -5,9 +5,12 @@ import axios from'axios';
 import {SERVER_ENDPOINT} from '../../constants/serverConfigs'
 import cookie  from 'react-cookies';
 import CommonHeader from '../CommonHeader';
+import { connect } from 'react-redux';
+import { placeOrder } from '../../../redux/reduxActions/customer/placeOrders'
+ //redux/reduxActions/restaurant/getOrdersRedux';
 
 class CheckoutPage extends Component{
-    
+
     state = {
         isSidebarOpen: false,
         cartInfo: {
@@ -45,9 +48,9 @@ class CheckoutPage extends Component{
     navigateToLoginPage = () => {
         this.props.history.push("/login");
     }
-    
+
     handleViewSidebar = () => {
-        
+
         this.setState({isSidebarOpen: !this.state.isSidebarOpen});
     }
 
@@ -121,13 +124,13 @@ class CheckoutPage extends Component{
                     <div class="col-md-9">{item.dishName}</div>
                     <div class="col-md-2">${this.decimalFormat(item.dishPrice)}</div>
                 </div>
-            </li>  
-        ) 
+            </li>
+        )
     }
 
     renderDeliveryAddress = (address, index) => {
 
-        return(             
+        return(
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="deliveryAddress" id={index} value={index} onChange={this.onChangeDeliveryAddress}/>
                                 <label class="form-check-label" for={index}>
@@ -146,25 +149,29 @@ class CheckoutPage extends Component{
                 deliveryAddress: this.state.deliveryAddresses[this.state.selectedDeliveryAddressIndex],
                 deliveryFee: this.state.deliveryFee,
                 serviceFee: this.state.serviceFee,
-                custId: this.state.custId, 
+                custId: this.state.custId,
                 resId: this.state.cartInfo.cartResId,
                 cartTotal: this.decimalFormat(this.totalAmount())
             }
             console.log("payload : "+JSON.stringify(payload));
-            const response = await axios.post(url, payload);
+
+            //const response = await axios.post(url, payload);
+
+            await this.props.placeOrder(payload);
+
             sessionStorage.clear();
             //console.log("Response from order create : "+response.data);
             this.props.history.push("/orders");
-        } catch(err){   
+        } catch(err){
             console.log("Error from order create : "+err);
         }
     }
-    
+
     render(){
         return (
             <div className="checkoutPage">
-             <CommonHeader toggleSidebar={this.handleViewSidebar} 
-                        />   
+             <CommonHeader toggleSidebar={this.handleViewSidebar}
+                        />
 
             <div class="container">
 		        {/* <div class="block-heading">
@@ -174,7 +181,7 @@ class CheckoutPage extends Component{
 		        <div class="content">
                     <div class="row">
 	 					<div class="col-md-12 col-lg-8">
-                             <h4>Your items</h4> 
+                             <h4>Your items</h4>
 	 						<div class="items">
                              <div class="card">
                                 <div class="card-header">
@@ -201,7 +208,7 @@ class CheckoutPage extends Component{
 			 					<button type="button" class="btn btn-success btn-lg" onClick={this.onPlaceOrder}>Place order</button>
 				 			</div>
 			 			</div>
-		 			</div> 
+		 			</div>
 		 		</div>
 	 		</div>
 
@@ -209,7 +216,17 @@ class CheckoutPage extends Component{
             </div>
         )
     }
-    
+
 }
 
-export default CheckoutPage
+
+const mapStateToProps = state => {
+    return {
+        orderPlaced : state.place_order.orderPlaced,
+
+    }
+}
+
+export default connect(mapStateToProps, {placeOrder})(CheckoutPage);
+
+//export default CheckoutPage

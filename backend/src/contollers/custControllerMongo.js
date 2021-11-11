@@ -149,7 +149,7 @@ exports.loginCustomerKafka = async function (req, res) {
                 // res.end();
 
                 if (customer) {
-                    const payload = { _id: customer._id, username: customer.custEmail};
+                    const payload = { _id: customer._id, username: customer.custEmail, userType:"customer"};
                     const token = jwt.sign(payload, secret, {
                         expiresIn: 1008000
                     });

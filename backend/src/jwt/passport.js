@@ -14,27 +14,44 @@ function auth() {
     };
     passport.use(
         new JwtStrategy(opts, (jwt_payload, callback) => {
-            console.log("auth called "+JSON.stringify(jwt_payload));
+            console.log("auth called cust "+JSON.stringify(jwt_payload));
             const user_id = jwt_payload._id;
+            const userType = jwt_payload.userType;
+            if(userType == "customer"){
+                kafka.make_request('validate_cust',{custId: user_id}, function(err,results){
+                    console.log(results);
+                    if (err) {
+                        console.log("Failure 1")
+                        return callback(err, false);
+                    } else if(results.response_code == 200){
+                        console.log("Verification success")
+                        callback(null, results.response_data);
+                    } else if(results.response_code == 400){
+                        console.log("Failure 2")
+                        callback(null, false);
+                    } else {
+                        console.log("Failure 3")
+                        callback(null, false);
+                    }
 
-            kafka.make_request('validate_cust',{custId: user_id}, function(err,results){
-                console.log('in result #####');
-                console.log(results);
-                if (err) {
-                    console.log("Failure 1")
-                    return callback(err, false);
-                } else if(results.response_code == 200){
-                    console.log("Verification success")
-                    callback(null, results.response_data);
-                } else if(results.response_code == 400){
-                    console.log("Failure 2")
-                    callback(null, false);
-                } else {
-                    console.log("Failure 3")
-                    callback(null, false);
-                }
+                });
+            } else {
+                kafka.make_request('validate_res',{resId: user_id}, function(err,results){
+                    console.log(results);
+                    if (err) {
+                        return callback(err, false);
+                    } else if(results.response_code == 200){
+                        console.log("Verification success")
+                        callback(null, results.response_data);
+                    } else if(results.response_code == 400){
+                        callback(null, false);
+                    } else {
+                        callback(null, false);
+                    }
 
-            });
+                });
+            }
+
 
         })
     )

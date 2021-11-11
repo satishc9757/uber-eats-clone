@@ -30,8 +30,9 @@ class ResLogin extends Component {
         };
 
         axios.defaults.withCredentials = true;
-        //await this.props.resLogin(this.state);
-        //this.props.history.push("./home");
+        await this.props.resLogin(this.state);
+        this.setState({token: this.props.token});
+        this.props.history.push("./home");
 
 
          // try{
@@ -46,6 +47,7 @@ class ResLogin extends Component {
 
 
         //console.log("State inside login: "+this.state);
+        //working one
         const url = SERVER_ENDPOINT+"/res/login";
         axios
             .post(url, this.state)
@@ -63,7 +65,7 @@ class ResLogin extends Component {
                 }
                 console.log(err);
         });
-
+        ////
         // return fetch(`${config.apiUrl}/users/authenticate`, requestOptions)
         //     .then(handleResponse)
         //     .then(user => {
@@ -138,7 +140,8 @@ class ResLogin extends Component {
 const mapStateToProps = state => {
     return {
         loggedIn : state.loggedIn,
-        user: state.user
+        user: state.user,
+        token: state.login.token
     }
 }
 

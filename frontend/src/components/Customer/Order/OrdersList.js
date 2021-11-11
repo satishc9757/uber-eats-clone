@@ -4,9 +4,11 @@ import {SERVER_ENDPOINT} from '../../constants/serverConfigs'
 import axios from'axios';
 import OrderSummaryModal from './OrderSummaryModal';
 import CommonHeader from '../CommonHeader';
+import { connect } from 'react-redux';
+import { getOrders } from '../../../redux/reduxActions/restaurant/getOrdersRedux';
 
 class OrdersList extends  Component {
-    
+
     state = {
         isSidebarOpen: false,
         ordersData : [],
@@ -15,13 +17,17 @@ class OrdersList extends  Component {
     }
 
     async componentDidMount(){
+        const custId = cookie.load("custId");
+        await this.props.getOrders(custId);
+        this.setState({ordersData: this.props.orders});
+        this.setState({ordersMainData: this.props.orders});
         this.refreshOrdersData();
     }
 
     refreshOrdersData = async () => {
         try{
             const custId = cookie.load("custId");
-            
+
             const url = SERVER_ENDPOINT + "/customer/orders?custId="+custId;
             const response = await axios.get(url);
             const data = await response.data;
@@ -38,7 +44,7 @@ class OrdersList extends  Component {
             console.log("order id is : "+orderId)
             const url = SERVER_ENDPOINT + "/customer/order/cancel";
             const response = await axios.post(url, {orderId: orderId});
-            
+
             console.log("Order cancelled  : "+JSON.stringify(response));
             this.refreshOrdersData();
         } catch(err){
@@ -47,7 +53,7 @@ class OrdersList extends  Component {
     }
 
     onOrderTypeChange = (event) => {
-        
+
         const orderType = event.target.value;
         console.log(orderType);
         if(orderType === "Delivered"){
@@ -71,7 +77,7 @@ class OrdersList extends  Component {
                     if(order.orderStatus === "Order Placed"){
                         cancelButton = <button className="btn btn-uber rounded-pill" onClick={() => this.onCancelOrder(order.orderId)}>Cancel Order</button>
                     }
-                    
+
                     return(
                     <div className="row" key={order.odId}>
                         <h5>{order.resName}</h5>
@@ -85,8 +91,8 @@ class OrdersList extends  Component {
                                 {cancelButton}
                             </div>
                         </div>
-                        
-                        
+
+
                         <OrderSummaryModal total={order.orderTotal} deliveryAddress={order.street +","+ order.city +","+ order.state +","+ order.zipcode} orderId={order.orderId} />
                         <hr />
                     </div>
@@ -96,38 +102,46 @@ class OrdersList extends  Component {
     render(){
         return (
             <div className="ordersList">
-                <CommonHeader toggleSidebar={this.handleViewSidebar} 
-                        />  
+                <CommonHeader toggleSidebar={this.handleViewSidebar}
+                        />
                 <div className="orders-header">
                         <h3>Past Orders</h3>
                         <div class="btn-group">
                                 <input type="radio" class="btn-check" name="ordersType" id="orderOn" autocomplete="off" value="Ongoing" onChange={this.onOrderTypeChange}/>
                                 <label class="btn btn-outline-uber rounded-pill" for="orderOn">Ongoing</label>
-                            
+
                                 <input type="radio" class="btn-check" name="ordersType" id="orderDelivered" autocomplete="off" value="Delivered" onChange={this.onOrderTypeChange} />
                                 <label class="btn btn-outline-uber rounded-pill" for="orderDelivered">Delivered</label>
 
                                 <input type="radio" class="btn-check" name="ordersType" id="orderCancelled" autocomplete="off" value="Cancelled" onChange={this.onOrderTypeChange} />
                                 <label class="btn btn-outline-uber rounded-pill" for="orderCancelled">Cancelled</label>
-                            
+
                         </div>
                         <br/><br/>
                     </div>
-                
+
                 <div className="container">
-                    
+
 
                 {this.state.ordersData.map(this.renderOrder)}
 
-                    
-                </div>
-                
 
-                
+                </div>
+
+
+
             </div>
         )
     }
-    
+
 }
 
-export default OrdersList
+const mapStateToProps = state => {
+    return {
+        orders : state.res_orders.ordersData,
+    }
+}
+
+export default connect(mapStateToProps, {getOrders})(OrdersList);
+
+// export default OrdersList

@@ -4,14 +4,15 @@ import cookie from 'react-cookies'
 import { SERVER_ENDPOINT } from '../constants/serverConfigs';
 
 class ResSidebar extends Component{
-    
+
     onSignout = async (event) => {
         event.preventDefault();
-        const url = SERVER_ENDPOINT+"/res/logout";
-        const response = await axios.post(url);
-        
-        //cookie.remove('cookie', { path: '/' })
-        this.props.navigateToLoginPage(); 
+
+        // const url = SERVER_ENDPOINT+"/res/logout";
+        // const response = await axios.post(url);
+
+        this.props.logout();
+        this.props.navigateToLoginPage();
     }
 
     render(){
@@ -21,7 +22,7 @@ class ResSidebar extends Component{
             <nav id="sidebar" className={this.props.isOpen? "" : "active"}>
                 <div className="sidebar-header">
                     <h3>Satish</h3>
-                </div> 
+                </div>
 
                 <ul className="list-unstyled components">
                     {/* <p>Dummy Heading</p> */}
@@ -74,7 +75,7 @@ class ResSidebar extends Component{
                     <li>
                         <a href="https://bootstrapious.com/p/bootstrap-sidebar" onClick={this.onSignout} className="article">Signout</a>
                     </li>
-                    
+
                 </ul>
             </nav>
 

@@ -9,7 +9,7 @@ import axios from 'axios';
 import CommonHeader from './CommonHeader';
 import Sidebar from './Sidebar';
 import cookie from 'react-cookies';
-
+import {custUpdate} from '../../redux/reduxActions/customer/custUpdateRedux';
 
  class CustProfile extends Component {
 
@@ -93,20 +93,22 @@ import cookie from 'react-cookies';
             const isValid = true;
 
             if(isValid){
-                const url = SERVER_ENDPOINT+"/customer/update";
-                axios.defaults.headers.common['authorization'] = localStorage.getItem('cust_token');
-                axios
-                    .put(url, formData)
-                    .then(response => {
-                        console.log(response);
-                        this.props.history.push("./home");
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    });
+
+                await this.props.custUpdate(formData);
+                this.props.history.push("./home");
+
+                // const url = SERVER_ENDPOINT+"/customer/update";
+                // axios.defaults.headers.common['authorization'] = localStorage.getItem('cust_token');
+                // axios
+                //     .put(url, formData)
+                //     .then(response => {
+                //         console.log(response);
+                //         this.props.history.push("./home");
+                //     })
+                //     .catch(err => {
+                //         console.log(err);
+                //     });
             }
-
-
 
 
         }
@@ -343,12 +345,12 @@ import cookie from 'react-cookies';
 }
 
 
-// const mapStateToProps = state => {
-//     return {
-//         registered : state.registered,
-//         user: state.user
-//     }
-// }
+const mapStateToProps = state => {
+    return {
+        profileUpdated : state.profileUpdated,
+        reponseMessage: state.message
+    }
+}
 
-// export default connect(mapStateToProps, {custSignup})(SignupCust)
-export default CustProfile
+export default connect(mapStateToProps, {custUpdate})(CustProfile)
+//export default CustProfile

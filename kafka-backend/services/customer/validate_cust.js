@@ -3,8 +3,17 @@ const Customer = require('../../models/CustomerModel');
 
 async function handle_request(msg, callback){
     console.log("Inside validate cust msg : "+msg.custId)
+    const custId = msg.custId;
+    const custUsername = msg.custEmail;
+
     try{
-        const customer = await Customer.findById(msg.custId);
+        let customer = await Customer.findById(custId);
+        // if(custId){
+        //     customer = await Customer.findById(msg.custId);
+        // } else if(custUsername){
+        //     customer = await Customer.findOne({custEmail: custUsername});
+        // }
+
         console.log("customer "+customer);
 
         if(customer){

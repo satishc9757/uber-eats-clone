@@ -5,18 +5,22 @@ import {Redirect} from 'react-router';
 import { SERVER_ENDPOINT } from '../constants/serverConfigs';
 
 class Sidebar extends Component{
-    
+
     onSignout = async (event) => {
         event.preventDefault();
-        //await this.props.logout();
-        const url = SERVER_ENDPOINT+"/customer/logout";
-        const response = await axios.post(url);
+        await this.props.logout();
+
+        //without redux
+        // const url = SERVER_ENDPOINT+"/customer/logout";
+        // const response = await axios.post(url);
+        /////
+
         //cookie.remove('cookie', { path: '/' })
         sessionStorage.clear();
-        this.props.navigateToLoginPage(); 
+        this.props.navigateToLoginPage();
     }
 
-    
+
     handleLogout = () => {
         console.log("Logout clicked");
         console.log("cookie data "+ cookie.load('cookie'));
@@ -33,12 +37,12 @@ class Sidebar extends Component{
             {/* <div className="wrapper"> */}
             <nav id="sidebar" className={this.props.isOpen? "" : "active"}>
                 <div className="sidebar-header text-center">
-                    <img src={custImageLink} 
+                    <img src={custImageLink}
                         width="120px"
                         className="rounded-circle float-right"/>
                     <br/>
                     <h3>{custFirstName}</h3>
-                </div> 
+                </div>
 
                 <ul className="list-unstyled components">
                     {/* <p>Dummy Heading</p> */}

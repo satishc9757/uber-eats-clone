@@ -4,6 +4,8 @@ import { SERVER_ENDPOINT } from '../constants/serverConfigs';
 import countryList from '../constants/countryList';
 import cookie from 'react-cookies'
 import ResHeader from './ResHeader';
+import {resUpdate} from '../../redux/reduxActions/restaurant/profileUpdateRedux';
+import { connect } from 'react-redux';
 
 class ResProfile extends Component {
     state = {
@@ -30,7 +32,7 @@ class ResProfile extends Component {
         this.setState({resImage: event.target.files[0]});
     }
 
-    onFormSubmit = (event) => {
+    onFormSubmit = async (event) => {
         event.preventDefault();
         let formData = new FormData();
         //formData.append("dishImage", this.state.dishImage);
@@ -55,17 +57,21 @@ class ResProfile extends Component {
         const isValid = true;
 
         if(isValid){
-            axios.defaults.headers.common['authorization'] = localStorage.getItem('res_token');
-            const url = SERVER_ENDPOINT+"/res/update";
-            axios
-                .put(url, formData)
-                .then(response => {
-                    console.log(response);
-                    this.props.history.push("./home");
-                })
-                .catch(err => {
-                    console.log(err);
-                });
+
+            await this.props.resUpdate(formData);
+            this.props.history.push("./home");
+
+            // axios.defaults.headers.common['authorization'] = localStorage.getItem('res_token');
+            // const url = SERVER_ENDPOINT+"/res/update";
+            // axios
+            //     .put(url, formData)
+            //     .then(response => {
+            //         console.log(response);
+            //         this.props.history.push("./home");
+            //     })
+            //     .catch(err => {
+            //         console.log(err);
+            //     });
         }
     }
 
@@ -226,4 +232,12 @@ class ResProfile extends Component {
 
 }
 
-export default ResProfile
+
+const mapStateToProps = state => {
+    return {
+        profileUpdated : state.profileUpdated,
+        reponseMessage: state.message
+    }
+}
+
+export default connect(mapStateToProps, {resUpdate})(ResProfile)

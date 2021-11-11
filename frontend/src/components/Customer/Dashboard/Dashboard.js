@@ -3,10 +3,10 @@ import React, { Component } from 'react'
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Header from '../Header';
-import Sidebar from '../Sidebar'; 
+import Sidebar from '../Sidebar';
 import Content from './Content';
 import { connect } from 'react-redux';
-import { custLogout } from '../../../redux/reduxActions/customer/loginRedux';
+import { custLogout } from '../../../redux/reduxActions/customer/logoutRedux';
 import axios from 'axios';
 import { SERVER_ENDPOINT } from '../../constants/serverConfigs';
 import cookie from 'react-cookies';
@@ -22,17 +22,17 @@ class Dashboard extends Component {
     navigateToLoginPage = () => {
         this.props.history.push("/login");
     }
-    
+
     handleViewSidebar = () => {
         console.log("I am here");
         this.setState({isSidebarOpen: !this.state.isSidebarOpen});
     }
 
     onResSearch = async (text) => {
-        
+
         const searchText = text;
         const url = SERVER_ENDPOINT + "/res/query?searchText="+searchText;
-        
+
         try{
             const response = await axios.get(url);
             const data = response.data;
@@ -41,7 +41,7 @@ class Dashboard extends Component {
             console.log(" res data fetched : "+data);
         } catch(err) {
             console.log("Error while fecthing resturants "+err);
-        }    
+        }
 
     }
 
@@ -64,10 +64,10 @@ class Dashboard extends Component {
 
     async componentDidMount(){
         const custLocation = cookie.load("custLocation");
-        
+
         if(custLocation){
             const url = SERVER_ENDPOINT + "/res/query?searchText="+custLocation;
-        
+
             try{
                 const response = await axios.get(url);
                 const data = response.data;
@@ -76,22 +76,22 @@ class Dashboard extends Component {
                 console.log(" res data fetched : "+data);
             } catch(err) {
                 console.log("Error while fecthing resturants "+err);
-            }  
+            }
         }
-        
+
     }
 
     render(){
         return (
             <div>
-                <Header toggleSidebar={this.handleViewSidebar} 
-                        onResSearch={this.onResSearch} 
+                <Header toggleSidebar={this.handleViewSidebar}
+                        onResSearch={this.onResSearch}
                         onDishTypeFilter={this.onDishTypeFilter}
-                        onDeliveryTypeFilter={this.onDeliveryTypeFilter} 
+                        onDeliveryTypeFilter={this.onDeliveryTypeFilter}
                         />
                 <div className="wrapper">
-                    <Sidebar isOpen={this.state.isSidebarOpen} 
-                             logout={this.props.custLogout} 
+                    <Sidebar isOpen={this.state.isSidebarOpen}
+                             logout={this.props.custLogout}
                              navigateToLoginPage={this.navigateToLoginPage}/>
                     <Content resData={this.state.resData}/>
                 </div>
@@ -99,7 +99,7 @@ class Dashboard extends Component {
         )
     }
 
-    
+
 }
 
 const mapStateToProps = state => {
@@ -113,9 +113,8 @@ const mapStateToProps = state => {
 // const custLogoutActions = dispatch => {
 //     return {
 //         custLogout : (data) => dispatch(custLogoutAction(data))
-//     } 
+//     }
 // }
 
 
 export default connect(mapStateToProps, {custLogout})(Dashboard)
-

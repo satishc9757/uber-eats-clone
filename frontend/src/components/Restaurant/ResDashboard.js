@@ -1,12 +1,13 @@
 import { Component } from 'react'
 import { connect } from 'react-redux'
-import { resLogout } from '../../redux/reduxActions/restaurant/loginRedux'
+import { resLogout } from '../../redux/reduxActions/restaurant/logoutRedux'
 import ResContent from './ResContent'
 import ResHeader from './ResHeader'
 import ResSidebar from './ResSidebar'
+import { getDishesData } from '../../redux/reduxActions/restaurant/dishesDataRedux';
 
 class ResDashboard extends Component {
-    
+
     state = {
         isSidebarOpen: false
     }
@@ -14,7 +15,7 @@ class ResDashboard extends Component {
     navigateToLoginPage = () => {
         this.props.history.push("./login");
     }
-    
+
     handleViewSidebar = () => {
         this.setState({isSidebarOpen: !this.state.isSidebarOpen});
     }
@@ -35,7 +36,8 @@ class ResDashboard extends Component {
 const mapStateToProps = state => {
     return {
         loggedIn : state.loggedIn,
-        user: state.user
+        user: state.user,
+
     }
 }
 
@@ -43,9 +45,8 @@ const mapStateToProps = state => {
 // const resLogoutActions = dispatch => {
 //     return {
 //         resLogout : (data) => dispatch(resLogoutAction(data))
-//     } 
+//     }
 // }
 
 
 export default connect(mapStateToProps, {resLogout})(ResDashboard)
-

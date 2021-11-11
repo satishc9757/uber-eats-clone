@@ -5,9 +5,11 @@ import axios from'axios';
 import OrderSummaryModal from './OrderSummaryModal';
 import UpdateStatusModal from './UpdateStatusModal';
 import ResHeader from '../ResHeader';
+import { connect } from 'react-redux';
+import { getOrders } from '../../../redux/reduxActions/restaurant/getOrdersRedux';
 
 class OrdersList extends  Component {
-    
+
     state = {
         ordersData : [],
         ordersMainData: [],
@@ -25,13 +27,15 @@ class OrdersList extends  Component {
      refreshOrders = async() => {
         try{
             const resId = cookie.load("resId");
-            
+
             const url = SERVER_ENDPOINT + "/res/orders?resId="+resId;
             const response = await axios.get(url);
             const data = await response.data;
             console.log("Res Orders data : "+JSON.stringify(data));
             this.setState({ordersData: data});
             this.setState({ordersMainData: data});
+
+
         } catch(err){
             console.log(err);
         }
@@ -40,7 +44,7 @@ class OrdersList extends  Component {
     async componentDidMount(){
         // try{
         //     const resId = cookie.load("resId");
-            
+
         //     const url = SERVER_ENDPOINT + "/res/orders?resId="+resId;
         //     const response = await axios.get(url);
         //     const data = await response.data;
@@ -50,11 +54,15 @@ class OrdersList extends  Component {
         // } catch(err){
         //     console.log(err);
         // }
+        const resId = cookie.load("resId");
+        await this.props.getOrders(resId);
+        this.setState({ordersData: this.props.orders});
+        this.setState({ordersMainData: this.props.orders});
         this.refreshOrders();
     }
 
     onOrderTypeChange = (event) => {
-        
+
         const orderType = event.target.value;
         console.log(orderType);
         if(orderType === "Delivered"){
@@ -84,7 +92,7 @@ class OrdersList extends  Component {
                             </div>
                             <OrderSummaryModal total={order.orderTotal} deliveryAddress={order.street +","+ order.city +","+ order.state +","+ order.zipcode} orderId={order.orderId} />
                             <UpdateStatusModal onSuccessfulUpdate={this.onSuccessfulUpdate}  orderId={order.orderId}/>
-                            
+
                             <hr />
                         </div>
                     )
@@ -100,26 +108,34 @@ class OrdersList extends  Component {
                         <div class="btn-group">
                                 <input type="radio" class="btn-check" name="ordersType" id="orderOn" autocomplete="off" value="Ongoing" onChange={this.onOrderTypeChange}/>
                                 <label class="btn btn-outline-uber rounded-pill" for="orderOn">Ongoing</label>
-                            
+
                                 <input type="radio" class="btn-check" name="ordersType" id="orderDelivered" autocomplete="off" value="Delivered" onChange={this.onOrderTypeChange} />
                                 <label class="btn btn-outline-uber rounded-pill" for="orderDelivered">Delivered</label>
-                            
+
                                 <input type="radio" class="btn-check" name="ordersType" id="orderCancelled" autocomplete="off" value="Cancelled" onChange={this.onOrderTypeChange} />
                                 <label class="btn btn-outline-uber rounded-pill" for="orderCancelled">Cancelled</label>
-                            
+
                         </div>
                         <br/><br/>
                     </div>
                 <div className="container">
-                    {this.state.ordersData.map(this.renderOrder)}
+                    {this.state.ordersData ? this.state.ordersData.map(this.renderOrder): "No Data"}
                 </div>
-                
 
-                
+
+
             </div>
         )
     }
-    
+
 }
 
-export default OrdersList
+const mapStateToProps = state => {
+    return {
+        orders : state.res_orders.ordersData,
+
+    }
+}
+
+export default connect(mapStateToProps, {getOrders})(OrdersList);
+//export default OrdersList

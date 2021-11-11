@@ -5,8 +5,8 @@ const Dish = require('../models/DishModel');
 var kafka = require('../kafka/client');
 const jwt = require('jsonwebtoken');
 const { secret } = require('../jwt/config');
-const { auth } = require("../jwt/res_passport");
-auth();
+// const { authRes } = require("../jwt/res_passport");
+// authRes();
 
 exports.registerRes = function (req, res) {
     const data = req.body;
@@ -164,7 +164,7 @@ exports.res_login = async function (req, res) {
 
         //console.log("req session : "+JSON.stringify(req.session.user));
         if (restaurant) {
-          const payload = { _id: restaurant._id, username: restaurant.resEmail};
+          const payload = { _id: restaurant._id, username: restaurant.resEmail, userType:"restaurant"};
           const token = jwt.sign(payload, secret, {
               expiresIn: 1008000
           });
@@ -329,20 +329,25 @@ exports.getDishByRes =  function(req, res){
 
 exports.getDish =  async function(req, res){
   const dishId = req.params.id;
-  //console.log("In am here in the get dish")
-  try{
-    let dish  = await Dish.findById(dishId);
-    if(dish){
-      res.send(dish);
-    } else {
-      res.send({});
-    }
-  } catch(err){
-    console.error("getDish : " + err);
-        res
-          .status(500)
-          .send(JSON.stringify({ message: "Something went wrong!", err }));
-  }
+
+    kafka.make_request('dish_data_by_id',{dishId: dishId}, function(err,results){
+        console.log('in result');
+        console.log(results);
+        if (err){
+            res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+
+        } else if(results.response_code == 200){
+
+            res.send(JSON.stringify(results.response_data));
+        } else {
+            res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+        }
+
+    });
 
 };
 

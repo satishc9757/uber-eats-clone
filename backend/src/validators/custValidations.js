@@ -1,7 +1,7 @@
 const {check, validationResult} = require('express-validator');
 var con = require('../database/mysqlConnection');
 const Customer = require('../models/CustomerModel');
-
+var kafka = require('../kafka/client');
 
 exports.validateCustLogin = [
   check('custUsername')
@@ -97,11 +97,22 @@ function isUsernamePresent(username){
 
 async function isUsernamePresentMongo(username){
   //console.log("isUsernamePresentMongo : ");
-  const customer = await Customer.findOne({custEmail: username});
-  if(customer){
-    //console.log("cusotmer : "+customer);
-    return true;
+  // const customer = await Customer.findOne({custEmail: username});
+  // if(customer){
+  //   //console.log("cusotmer : "+customer);
+  //   return true;
+  // }
+  // //console.log("cusotmer out: "+customer);
+  // return false;
+  try{
+    const response = kafka.make_request('validate_cust',{custEmail: username});
+    if(response.response_code == 200){
+      return true;
+    } else {
+      return false;
+    }
+  } catch(err){
+    return false;
   }
-  //console.log("cusotmer out: "+customer);
-  return false;
+
 }
