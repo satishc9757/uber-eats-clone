@@ -26,7 +26,7 @@ var ResOrders = require('./services/restaurant/res_oders');
 var OrderStatus = require('./services/restaurant/order_status');
 var ValidateRes = require('./services/restaurant/validate_res');
 var DishDataByID = require('./services/restaurant/dish_data_by_id');
-
+var ResSearch = require('./services/restaurant/res_search');
 const { mongoConnectionURL } = require('./database/mongoConnection');
 const mongoose = require('mongoose');
 
@@ -103,6 +103,7 @@ handleTopicRequest("order_status_update", OrderStatus);
 // handleTopicRequest("res_data", CustFavs);
 
 handleTopicRequest("res_orders", ResOrders);
+handleTopicRequest("res_search", ResSearch);
 handleTopicRequest("validate_res", ValidateRes);
 handleTopicRequest("dish_data_by_id", DishDataByID);
 

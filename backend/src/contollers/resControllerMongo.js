@@ -424,3 +424,25 @@ exports.updateOrderStatus = function (req, res) {
   });
 
 };
+
+exports.getRestaurantByQueryString = function(req, res){
+  const searchText = req.query.searchText;
+  kafka.make_request('res_search',{searchText: searchText}, function(err,results){
+    console.log('in result');
+    console.log(results);
+    if (err){
+        res
+        .status(500)
+        .send(JSON.stringify({ message: "Something went wrong!", err }));
+
+    } else if(results.response_code == 200){
+
+        res.send(JSON.stringify(results.response_data));
+    } else {
+        res
+        .status(500)
+        .send(JSON.stringify({ message: "Something went wrong!", err }));
+    }
+
+  });
+}
