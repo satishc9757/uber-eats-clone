@@ -26,7 +26,7 @@ class FavContent extends Component {
                             <img className="card-img-top" src={card.resImage} alt="Card image cap"/>
                             <div className="card-body">
                             <h5 className="card-title">{card.resName}</h5>
-                            <span className="btn-grey rounded-pill">4.5</span>
+                            {/* <span className="btn-grey rounded-pill">4.5</span> */}
                             <p className="card-text">{card.resDescription}</p>
                             </div>
                         </div>
@@ -40,16 +40,16 @@ class FavContent extends Component {
             <div className="dashboard-content">
                 <div className="container-fluid">
                     <div className="row text-center">
-                        <h2>Favorites</h2> 
+                        <h2>Favorites</h2>
                     </div>
                     <div className="row">
                         {this.props.resData.map(res => this.renderResCard(res))}
                     </div>
                 </div>
-            </div>   
+            </div>
         )
     }
-    
+
 }
 
 export default FavContent

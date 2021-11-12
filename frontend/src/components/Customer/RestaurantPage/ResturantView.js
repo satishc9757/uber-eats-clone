@@ -21,10 +21,10 @@ class ResturantView extends Component{
         resAddress: "",
         resDishes : [],
     }
-    
+
     handleViewSidebar = () => {
         this.setState({isSidebarOpen: !this.state.isSidebarOpen});
-       
+
     }
 
     navigateToLoginPage = () => {
@@ -45,7 +45,7 @@ class ResturantView extends Component{
             const data = response.data;
             this.setState({resDishes: data});
             console.log(" dishes data fetched : "+data);
-     
+
         } catch(err) {
             console.log("Error while fecthing resturants "+err);
         }
@@ -57,12 +57,13 @@ class ResturantView extends Component{
             const resId = this.props.match.params.resId;
             const resUrl = SERVER_ENDPOINT + "/customer/favorite/";
 
-            const response = await axios.post(resUrl, {custId: custId, resId: resId});
+            // const response = await axios.post(resUrl, {custId: custId, resId: resId});
+            const response = await axios.post(resUrl, {custId: custId, resData: this.state.resData});
             const data = response.data;
            // this.setState({resData: data});
             console.log("  response : "+data);
-     
-                
+
+
         }catch(err){
             console.log("Error while adding to favorites "+err);
         }
@@ -77,13 +78,13 @@ class ResturantView extends Component{
             const data = response.data;
             this.setState({resData: data});
             console.log(" res data fetched : "+data);
-     
+
         } catch(err) {
             console.log("Error while fecthing resturants "+err);
         }
     }
 
-    onAddToCart = (dish) => { 
+    onAddToCart = (dish) => {
         let currentCartState = sessionStorage.getItem("custCart");
         if(currentCartState){
             currentCartState = JSON.parse(currentCartState);
@@ -103,7 +104,7 @@ class ResturantView extends Component{
                 sessionStorage.setItem("custCart", JSON.stringify(currentCartState));
             }
         } else {
-            
+
             const cartData = {
                 cartResId: this.state.resData.resId,
                 cartResName: this.state.resData.resName,
@@ -113,7 +114,7 @@ class ResturantView extends Component{
             sessionStorage.setItem("custCart", JSON.stringify(cartData));
 
         }
-        
+
     }
     onNewOrder = () =>{
         sessionStorage.setItem("custCart", JSON.stringify(this.state.dataToBeAdded));
@@ -129,8 +130,8 @@ class ResturantView extends Component{
             <div className="res-view">
                 <Header toggleSidebar={this.handleViewSidebar} onResSearch={this.onResSearch}/>
                 <div className="wrapper">
-                    <Sidebar isOpen={this.state.isSidebarOpen} 
-                             logout={this.props.custLogout} 
+                    <Sidebar isOpen={this.state.isSidebarOpen}
+                             logout={this.props.custLogout}
                              navigateToLoginPage={this.navigateToLoginPage}/>
                     <div className="container-fluid">
                         <div className="row">
@@ -146,14 +147,14 @@ class ResturantView extends Component{
                             </div>
                         </div>
                         <Menu showPopup={this.state.showPopup} onAddToCart={this.onAddToCart} dishData={this.state.resDishes} onNewOrder={this.onNewOrder} onClosePopup={this.onClosePopup}/>
-                    </div> 
+                    </div>
 
-                    
+
                 </div>
             </div>
         )
     }
-    
+
 }
 
 export default ResturantView

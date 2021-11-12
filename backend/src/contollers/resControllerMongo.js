@@ -446,3 +446,26 @@ exports.getRestaurantByQueryString = function(req, res){
 
   });
 }
+
+exports.getFavRestaurantsByCustId = function(req, res){
+  const custId = req.query.custId;
+
+  kafka.make_request('cust_fav_res_data',{custId: custId}, function(err,results){
+    console.log('in result');
+    console.log(results);
+    if (err){
+        res
+        .status(500)
+        .send(JSON.stringify({ message: "Something went wrong!", err }));
+
+    } else if(results.response_code == 200){
+
+        res.send(JSON.stringify(results.response_data));
+    } else {
+        res
+        .status(500)
+        .send(JSON.stringify({ message: "Something went wrong!", err }));
+    }
+
+  });
+}

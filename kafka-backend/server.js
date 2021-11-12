@@ -13,6 +13,7 @@ var CancelOrder = require('./services/customer/cancel_order');
 var OrderDeliveryAddress = require('./services/customer/cust_delivery_address');
 var CustFavs = require('./services/customer/cust_favs');
 var ValidateCust = require('./services/customer/validate_cust');
+var CustFavResData = require('./services/customer/cust_fav_res_data');
 
 var ResRegistration = require('./services/restaurant/res_registration');
 var ResLogin = require('./services/restaurant/res_login');
@@ -27,6 +28,7 @@ var OrderStatus = require('./services/restaurant/order_status');
 var ValidateRes = require('./services/restaurant/validate_res');
 var DishDataByID = require('./services/restaurant/dish_data_by_id');
 var ResSearch = require('./services/restaurant/res_search');
+
 const { mongoConnectionURL } = require('./database/mongoConnection');
 const mongoose = require('mongoose');
 
@@ -89,6 +91,7 @@ handleTopicRequest("cust_delivery_address", OrderDeliveryAddress);
 handleTopicRequest("cust_delivery_address", OrderDeliveryAddress);
 handleTopicRequest("cust_favs", CustFavs);
 handleTopicRequest("validate_cust", ValidateCust);
+handleTopicRequest("cust_fav_res_data", CustFavResData);
 
 handleTopicRequest("res_registration", ResRegistration);
 handleTopicRequest("res_login", ResLogin);

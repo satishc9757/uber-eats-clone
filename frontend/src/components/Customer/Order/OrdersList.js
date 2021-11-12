@@ -47,7 +47,7 @@ class OrdersList extends  Component {
             const url = SERVER_ENDPOINT + "/customer/order/cancel";
             const response = await axios.post(url, {orderId: orderId});
 
-            console.log("Order cancelled  : "+JSON.stringify(response));
+            //console.log("Order cancelled  : "+JSON.stringify(response));
             this.refreshOrdersData();
         } catch(err){
             console.log(err);

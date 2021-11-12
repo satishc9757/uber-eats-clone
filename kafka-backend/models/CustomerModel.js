@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const AddressSchema = require('./AddressModel');
 const schema = mongoose.Schema;
 const bcrypt = require('bcrypt');
+const FavoritesSchema = require('./Favorites');
 const ObjectId = mongoose.Types.ObjectId;
 
 let customerSchema = new mongoose.Schema({
@@ -16,7 +17,7 @@ let customerSchema = new mongoose.Schema({
   custPhone: {type: String, required: false},
   custAbout: {type: String, required: false},
   custNickname: {type: String, required: false},
-  favRestaurants: [ObjectId]
+  favRestaurants: [FavoritesSchema]
 });
 
 customerSchema.pre('save', function(next){

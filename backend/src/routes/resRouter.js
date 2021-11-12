@@ -32,7 +32,7 @@ const dishUpload = multer({ storage: dishFileStorage });
 
 var router = express.Router();
 
-router.get("/favorites", resController.getFavRestaurantsByCustId);
+router.get("/favorites", resControllerMongo.getFavRestaurantsByCustId);
 router.get("/query", resControllerMongo.getRestaurantByQueryString);
 router.post("/register", resControllerMongo.registerRes);
 //router.post("/register", validateResRegistration, resControllerMongo.registerRes);
