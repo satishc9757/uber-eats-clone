@@ -10,25 +10,13 @@ class OrderSummaryModal extends Component {
 
     state = {
         showSummary: false,
-        orderDetailsData : [{
-            dishName: "Sandwich",
-            odQuantity: "2",
-            odPrice: "23.00"
-        }, {
-            dishName: "Burrito",
-            odQuantity: "3",
-            odPrice: "25.00"
-        }, {
-            dishName: "Chipotle",
-            odQuantity: "5",
-            odPrice: "27.00"
-        }]
+        orderDetailsData : []
     }
 
     handleClose = () => this.setState({
         showSummary: false,
     });
-    
+
     handleShow = () => this.setState({
         showSummary: true,
     });
@@ -36,12 +24,12 @@ class OrderSummaryModal extends Component {
     async componentDidMount(){
         try{
             const orderId = this.props.orderId;
-            
-            const url = SERVER_ENDPOINT + "/customer/orderdetails?orderId="+6; //hardcoded for now
+
+            const url = SERVER_ENDPOINT + "/customer/orderdetails?orderId="+orderId; //hardcoded for now
             const response = await axios.get(url);
             const data = await response.data;
             console.log("order details data : "+JSON.stringify(data));
-            //this.setState({orderDetailsData: data});
+            this.setState({orderDetailsData: data});
         } catch(err){
             console.log(err);
         }
@@ -55,8 +43,8 @@ class OrderSummaryModal extends Component {
                     <div class="col-md-8">{item.dishName}</div>
                     <div class="col-md-3">${item.odPrice}</div>
                 </div>
-            </li>  
-        ) 
+            </li>
+        )
     }
 
     render(){
@@ -64,16 +52,16 @@ class OrderSummaryModal extends Component {
             <div className="cart-modal">
                     <a  onClick={this.handleShow}>View Details</a>
                     {/* <button className="btn btn-uber rounded-pill" onClick={this.handleShow}>
-                        
+
                     </button> */}
-    
+
                     <Modal show={this.state.showSummary} onHide={this.handleClose}>
                         {/* <Modal.Header closeButton>
                         <Modal.Title></Modal.Title>
                         </Modal.Header> */}
                         <Modal.Body>
                         <div class="container-fluid">
-                            <h4>Total : ${this.props.total}</h4> 
+                            <h4>Total : ${this.props.total}</h4>
                             <div class="items">
                              <div class="card">
                                 <ul class="list-group list-group-flush">
@@ -90,7 +78,7 @@ class OrderSummaryModal extends Component {
                         {/* <Button variant="secondary" onClick={this.handleClose}>
                             Close
                         </Button> */}
-                        
+
                             <Button variant="uber" onClick={this.handleClose}>
                                 Close
                             </Button>
@@ -100,7 +88,7 @@ class OrderSummaryModal extends Component {
                 </div>
         )
     }
-    
+
 }
 
 export default OrderSummaryModal

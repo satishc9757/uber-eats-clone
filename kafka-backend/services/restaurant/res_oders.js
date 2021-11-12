@@ -24,9 +24,9 @@ async function handle_request(msg, callback){
 
             orders.forEach(order => ordersData.push({
                 orderId: order._id,
-                orderTotal: getFormatedAmount(order.cartTotal),
-                custFirstName: order.cust_info ? order.cust_info.custFirstName : null,
-                custLastName: order.cust_info ? order.cust_info.custLastName : null,
+                orderTotal: getFormatedAmount(order.orderTotal),
+                custFirstName: order.cust_info[0] ? order.cust_info[0].custFirstName : null,
+                custLastName: order.cust_info[0] ? order.cust_info[0].custLastName : null,
                 custId: order.cust_info ? order.cust_info._id : null,
                 street: order.orderAddress ? order.orderAddress.street : null,
                 city: order.orderAddress ? order.orderAddress.city : null,

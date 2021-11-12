@@ -6,14 +6,16 @@ import OrderSummaryModal from './OrderSummaryModal';
 import CommonHeader from '../CommonHeader';
 import { connect } from 'react-redux';
 import { getOrders } from '../../../redux/reduxActions/restaurant/getOrdersRedux';
+import Pagination from '../../Pagination';
 
 class OrdersList extends  Component {
 
     state = {
         isSidebarOpen: false,
         ordersData : [],
-        ordersMainData: []
-
+        ordersMainData: [],
+        currentPage: 1,
+        ordersPerPage: 5
     }
 
     async componentDidMount(){
@@ -71,6 +73,8 @@ class OrdersList extends  Component {
         }
     }
 
+    paginate = pageNumber => this.setState({currentPage: pageNumber});
+
     renderOrder = (order) => {
                     const order_status_class = "alert order-status rounded-pill "+ (order.orderStatus === "Delivered"?  "alert-success": "alert-warning");
                     let cancelButton = "";
@@ -100,6 +104,10 @@ class OrdersList extends  Component {
     }
 
     render(){
+        console.log("render called "+this.state.currentPage )
+        const indexOfLastPost = this.state.currentPage * this.state.ordersPerPage;
+        const indexOfFirstPost = indexOfLastPost - this.state.ordersPerPage;
+        const currentOrders = this.state.ordersData.slice(indexOfFirstPost, indexOfLastPost);
         return (
             <div className="ordersList">
                 <CommonHeader toggleSidebar={this.handleViewSidebar}
@@ -123,12 +131,14 @@ class OrdersList extends  Component {
                 <div className="container">
 
 
-                {this.state.ordersData.map(this.renderOrder)}
+                {currentOrders.map(this.renderOrder)}
 
 
                 </div>
 
-
+                <Pagination ordersPerPage={this.state.ordersPerPage}
+                            totalOrders={this.state.ordersData.length}
+                            paginate={this.paginate}/>
 
             </div>
         )

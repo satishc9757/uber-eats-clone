@@ -45,13 +45,13 @@
   color: #dc3545;
 }
 
-.invalid-input { 
+.invalid-input {
   border-color: #dc3545;
   padding-right: calc(1.5em + .75rem);
   background-repeat: no-repeat;
   background-position: right calc(.375em + .1875rem) center;
   background-size: calc(.75em + .375rem) calc(.75em + .375rem);
-} 
+}
 
 
 /* Restaurant SideBar CSS*/
@@ -203,8 +203,8 @@ ul li a {
   color: #000;
 }
 
-.btn-uber, .btn-uber:hover { 
-  border-color: #000; 
+.btn-uber, .btn-uber:hover {
+  border-color: #000;
   background-color: #000;
   color: #fff;
 }
@@ -283,8 +283,8 @@ button:focus {
 }
 
 
-.btn-grey, .btn-grey:hover { 
-  border-color: #d3d3d3; 
+.btn-grey, .btn-grey:hover {
+  border-color: #d3d3d3;
   background-color: #d3d3d3;
   color: black;
 }
@@ -302,7 +302,7 @@ a.res-card:hover {
 
 .order-side-panel{
   background-color: grey;
-  
+
 }
 
 .shopping-summary{
@@ -376,4 +376,13 @@ header.masthead {
 
 .text-white-color{
   color: white;
+}
+
+.pagination {
+  margin-left: 56px;
+}
+
+
+.pagination  .page-link{
+  color: black;
 }

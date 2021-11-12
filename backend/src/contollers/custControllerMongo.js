@@ -133,7 +133,7 @@ exports.loginCustomerKafka = async function (req, res) {
             res.cookie('custFirstName',customer.custFirstName,{maxAge: 900000, httpOnly: false, path : '/'});
             res.cookie('custLastName',customer.custLastName,{maxAge: 900000, httpOnly: false, path : '/'});
             res.cookie('custImageLink',customer.custImage,{maxAge: 900000, httpOnly: false, path : '/'});
-            res.cookie('custLocation',customer.custLocation,{maxAge: 900000, httpOnly: false, path : '/'});
+            res.cookie('custLocation',customer.custAddress.city,{maxAge: 900000, httpOnly: false, path : '/'});
             req.session.user = {
                 custId: customer._id,
                 custEmail: customer.custEmail,

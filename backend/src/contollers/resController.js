@@ -187,6 +187,7 @@ exports.getRestaurantByQueryString = function(req, res){
     });
 }
 
+
 exports.res_login = function (req, res) {
   const data = req.body;
 

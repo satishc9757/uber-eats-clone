@@ -7,13 +7,16 @@ import UpdateStatusModal from './UpdateStatusModal';
 import ResHeader from '../ResHeader';
 import { connect } from 'react-redux';
 import { getOrders } from '../../../redux/reduxActions/restaurant/getOrdersRedux';
+import Pagination from '../../Pagination';
 
 class OrdersList extends  Component {
 
     state = {
         ordersData : [],
         ordersMainData: [],
-        isSidebarOpen: false
+        isSidebarOpen: false,
+        currentPage: 1,
+        ordersPerPage: 3
     }
 
     handleViewSidebar = () => {
@@ -24,7 +27,9 @@ class OrdersList extends  Component {
         this.refreshOrders();
     }
 
-     refreshOrders = async() => {
+    paginate = pageNumber => this.setState({currentPage: pageNumber});
+
+    refreshOrders = async() => {
         try{
             const resId = cookie.load("resId");
 
@@ -99,6 +104,10 @@ class OrdersList extends  Component {
     }
 
     render(){
+        const indexOfLastPost = this.state.currentPage * this.state.ordersPerPage;
+        const indexOfFirstPost = indexOfLastPost - this.state.ordersPerPage;
+        const currentOrders = this.state.ordersData.slice(indexOfFirstPost, indexOfLastPost);
+
         return (
             <div className="ordersList">
                 <ResHeader/>
@@ -119,10 +128,12 @@ class OrdersList extends  Component {
                         <br/><br/>
                     </div>
                 <div className="container">
-                    {this.state.ordersData ? this.state.ordersData.map(this.renderOrder): "No Data"}
+                    {currentOrders ? currentOrders.map(this.renderOrder): "No Data"}
                 </div>
 
-
+                <Pagination ordersPerPage={this.state.ordersPerPage}
+                            totalOrders={this.state.ordersData.length}
+                            paginate={this.paginate}/>
 
             </div>
         )

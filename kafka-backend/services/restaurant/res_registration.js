@@ -18,6 +18,7 @@ async function handle_request(msg, callback){
                 zipcode: data.resZipcode,
                 country: data.resCountry,
             },
+            resDeliveryType: data.resDeliveryType
 
         });
 
