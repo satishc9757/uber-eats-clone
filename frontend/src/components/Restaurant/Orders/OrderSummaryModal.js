@@ -28,7 +28,7 @@ class OrderSummaryModal extends Component {
     handleClose = () => this.setState({
         showSummary: false,
     });
-    
+
     handleShow = () => this.setState({
         showSummary: true,
     });
@@ -36,7 +36,7 @@ class OrderSummaryModal extends Component {
     async componentDidMount(){
         try{
             const orderId = this.props.orderId;
-            
+
             const url = SERVER_ENDPOINT + "/res/orderdetails?orderId="+6; //hardcoded for now
             const response = await axios.get(url);
             const data = await response.data;
@@ -55,8 +55,8 @@ class OrderSummaryModal extends Component {
                     <div class="col-md-8">{item.dishName}</div>
                     <div class="col-md-3">${item.odPrice}</div>
                 </div>
-            </li>  
-        ) 
+            </li>
+        )
     }
 
     render(){
@@ -64,16 +64,16 @@ class OrderSummaryModal extends Component {
             <div className="cart-modal">
                     <a  onClick={this.handleShow}>View Details</a>
                     {/* <button className="btn btn-uber rounded-pill" onClick={this.handleShow}>
-                        
+
                     </button> */}
-    
+
                     <Modal show={this.state.showSummary} onHide={this.handleClose}>
                         {/* <Modal.Header closeButton>
                         <Modal.Title></Modal.Title>
                         </Modal.Header> */}
                         <Modal.Body>
                         <div class="container-fluid">
-                            <h4>Total : ${this.props.total}</h4> 
+                            <h4>Total : ${this.props.total}</h4>
                             <div class="items">
                              <div class="card">
                                 <ul class="list-group list-group-flush">
@@ -84,13 +84,16 @@ class OrderSummaryModal extends Component {
 
                              <h5>Delivery Address</h5>
                              <p>{this.props.deliveryAddress}</p>
+
+                             <h5>Special Instructions</h5>
+                             <p>{this.props.specialInstructions ? this.props.specialInstructions : "None"}</p>
                         </div>
                         </Modal.Body>
                         <Modal.Footer>
                         {/* <Button variant="secondary" onClick={this.handleClose}>
                             Close
                         </Button> */}
-                        
+
                             <Button variant="uber" onClick={this.handleClose}>
                                 Close
                             </Button>
@@ -100,7 +103,7 @@ class OrderSummaryModal extends Component {
                 </div>
         )
     }
-    
+
 }
 
 export default OrderSummaryModal

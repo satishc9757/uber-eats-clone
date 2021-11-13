@@ -72,6 +72,9 @@ class OrderSummaryModal extends Component {
 
                              <h5>Delivery Address</h5>
                              <p>{this.props.deliveryAddress}</p>
+
+                             <h5>Special Instructions</h5>
+                             <p>{this.props.specialInstructions ? this.props.specialInstructions : "None"}</p>
                         </div>
                         </Modal.Body>
                         <Modal.Footer>

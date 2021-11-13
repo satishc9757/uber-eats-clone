@@ -97,7 +97,7 @@ class OrdersList extends  Component {
                         </div>
 
 
-                        <OrderSummaryModal total={order.orderTotal} deliveryAddress={order.street +","+ order.city +","+ order.state +","+ order.zipcode} orderId={order.orderId} />
+                        <OrderSummaryModal specialInstructions={order.specialInstructions} total={order.orderTotal} deliveryAddress={order.street +","+ order.city +","+ order.state +","+ order.zipcode} orderId={order.orderId} />
                         <hr />
                     </div>
                     )

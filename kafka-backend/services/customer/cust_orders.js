@@ -34,6 +34,7 @@ async function handle_request(msg, callback){
                 orderStatus: order.orderStatus,
                 orderDeliveryFee: getFormatedAmount(order.orderDeliveryFee),
                 orderServiceFee: getFormatedAmount(order.orderServiceFee),
+                specialInstructions: order.specialInstructions
             }));
 
             callback(null, { response_code: 200, response_data: ordersData});

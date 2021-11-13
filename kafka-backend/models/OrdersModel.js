@@ -12,7 +12,8 @@ let ordersSchema = new mongoose.Schema({
     orderStatus: {type: String, required: false},
     orderDeliveryFee: {type: Number, required: false},
     orderServiceFee: {type: Number, required: false},
-    orderTotal: {type: Number, required: false}
+    orderTotal: {type: Number, required: false},
+    specialInstructions: {type: String, required: false},
 });
 
 const orderModel = mongoose.model('order', ordersSchema);

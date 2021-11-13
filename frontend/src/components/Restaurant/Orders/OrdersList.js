@@ -95,7 +95,7 @@ class OrdersList extends  Component {
                             <div class={order_status_class} role="alert">
                                 Order Status: {order.orderStatus}
                             </div>
-                            <OrderSummaryModal total={order.orderTotal} deliveryAddress={order.street +","+ order.city +","+ order.state +","+ order.zipcode} orderId={order.orderId} />
+                            <OrderSummaryModal specialInstructions={order.specialInstructions} total={order.orderTotal} deliveryAddress={order.street +","+ order.city +","+ order.state +","+ order.zipcode} orderId={order.orderId} />
                             <UpdateStatusModal onSuccessfulUpdate={this.onSuccessfulUpdate}  orderId={order.orderId}/>
 
                             <hr />

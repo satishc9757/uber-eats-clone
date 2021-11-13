@@ -26,7 +26,8 @@ async function handle_request(msg, callback){
         orderStatus: "Order Placed",
         orderDeliveryFee: data.deliveryFee,
         orderServiceFee: data.serviceFee,
-        orderTotal: data.cartTotal
+        orderTotal: data.cartTotal,
+        specialInstructions: data.specialInstructions
     });
 
     order.save((err, result) => {

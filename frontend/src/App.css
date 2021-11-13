@@ -403,3 +403,7 @@ header.masthead {
   padding-right: 1px
 ;
 }
+
+.full-width {
+  width:100%;
+}

@@ -7,6 +7,7 @@ import cookie  from 'react-cookies';
 import CommonHeader from '../CommonHeader';
 import { connect } from 'react-redux';
 import { placeOrder } from '../../../redux/reduxActions/customer/placeOrders'
+import { width } from 'dom-helpers';
  //redux/reduxActions/restaurant/getOrdersRedux';
 
 class CheckoutPage extends Component{
@@ -42,7 +43,8 @@ class CheckoutPage extends Component{
         //     country: "US"
         // }],
         selectedDeliveryAddressIndex : 0,
-        custId: ""
+        custId: "",
+        specialInstructions:""
     }
 
     navigateToLoginPage = () => {
@@ -54,6 +56,9 @@ class CheckoutPage extends Component{
         this.setState({isSidebarOpen: !this.state.isSidebarOpen});
     }
 
+    onChangeField = (event) => {
+        this.setState({[event.target.name]: event.target.value});
+    }
 
     async componentDidMount(){
         const custId = cookie.load('custId');
@@ -151,7 +156,8 @@ class CheckoutPage extends Component{
                 serviceFee: this.state.serviceFee,
                 custId: this.state.custId,
                 resId: this.state.cartInfo.cartResId,
-                cartTotal: this.decimalFormat(this.totalAmount())
+                cartTotal: this.decimalFormat(this.totalAmount()),
+                specialInstructions: this.state.specialInstructions
             }
             console.log("payload : "+JSON.stringify(payload));
 
@@ -190,9 +196,12 @@ class CheckoutPage extends Component{
                                 <ul class="list-group list-group-flush">
                                     {this.state.cartInfo.cartItems.map(this.renderCartItem)}
                                 </ul>
-                                </div>
-				 			</div>
+                            </div>
+                            <input className="full-width" placeholder="Add a note for the store" name="specialInstructions" id="specialInstructions" type="text" value={this.state.specialInstructions} onChange={this.onChangeField}/>
+				 		</div>
 
+
+                             <br/><br/>
                              <h4>Delivery address</h4>
                              {this.state.deliveryAddresses.map(this.renderDeliveryAddress)}
                              <DeliveryAddressModal onAddDeliveryAddress = {this.onAddDeliveryAddress}/>
