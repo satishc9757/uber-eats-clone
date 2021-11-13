@@ -386,3 +386,20 @@ header.masthead {
 .pagination  .page-link{
   color: black;
 }
+
+.remove-icon {
+  color: black;
+
+}
+
+.remove-icon :hover{
+  color: red;
+
+}
+
+.quantity-input {
+  padding-bottom: 0px;
+  padding-top: 0px;
+  padding-right: 1px
+;
+}
