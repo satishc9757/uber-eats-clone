@@ -10,6 +10,8 @@ import { custLogout } from '../../../redux/reduxActions/customer/logoutRedux';
 import axios from 'axios';
 import { SERVER_ENDPOINT } from '../../constants/serverConfigs';
 import cookie from 'react-cookies';
+import { getCustToken } from '../../utils/ControllerUtils';
+axios.defaults.headers.common['authorization'] = getCustToken();
 
 class Dashboard extends Component {
 
@@ -66,7 +68,7 @@ class Dashboard extends Component {
         const custLocation = cookie.load("custLocation");
 
         if(custLocation){
-            const url = SERVER_ENDPOINT + "/res/query?searchText="+custLocation;
+            const url = SERVER_ENDPOINT + "/customer/query?searchText="+custLocation;
 
             try{
                 const response = await axios.get(url);

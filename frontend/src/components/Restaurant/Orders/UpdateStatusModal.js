@@ -17,7 +17,7 @@ class UpdateStatusModal  extends Component {
     handleClose = () => this.setState({
         showUpdate: false,
     });
-    
+
     handleShow = () => this.setState({
         showUpdate: true,
     });
@@ -55,7 +55,7 @@ class UpdateStatusModal  extends Component {
                     <button className="btn btn-uber rounded-pill" onClick={this.handleShow}>
                         Update Status
                     </button>
-    
+
                     <Modal show={this.state.showUpdate} onHide={this.handleClose}>
                         <Modal.Header>
                         <Modal.Title>Update Order Status</Modal.Title>
@@ -64,7 +64,7 @@ class UpdateStatusModal  extends Component {
                         <div class="container-fluid">
                             <form onSubmit={this.handleSubmit}>
                             <div className="form-floating">
-                                                <select 
+                                                <select
                                                     name="resStatus"
                                                     value = {this.state.resStatus}
                                                     onChange = {this.onChangeField}>
@@ -73,9 +73,11 @@ class UpdateStatusModal  extends Component {
                                                     <option value="Preparing">Preparing</option>
                                                     <option value="On the way">On the way</option>
                                                     <option value="Delivered">Delivered</option>
+                                                    <option value="Pick up Ready">Pick up Ready</option>
+                                                    <option value="Picked up">Picked up</option>
                                                     <option value="Cancelled">Cancel</option>
                                                 </select>
-                                                    
+
                                                     {/* <div className="invalid">{this.state.custLastNameError}</div> */}
                                                 </div>
                                                 <input type="submit" className="btn btn-uber"/>
@@ -86,7 +88,7 @@ class UpdateStatusModal  extends Component {
                         {/* <Button variant="secondary" onClick={this.handleClose}>
                             Close
                         </Button> */}
-                        
+
                             <Button variant="uber" onClick={this.handleClose}>
                                 Close
                             </Button>
@@ -96,7 +98,7 @@ class UpdateStatusModal  extends Component {
                 </div>
         )
     }
-    
+
 }
 
 export default UpdateStatusModal

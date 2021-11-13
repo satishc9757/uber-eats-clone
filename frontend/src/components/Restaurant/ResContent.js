@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom';
 import cookie from 'react-cookies';
 import { connect } from 'react-redux';
 import { getDishesData } from '../../redux/reduxActions/restaurant/dishesDataRedux';
+import { getResToken } from '../utils/ControllerUtils';
+axios.defaults.headers.common['authorization'] = getResToken();
 
 class ResContent extends Component {
     state = {
@@ -18,6 +20,7 @@ class ResContent extends Component {
     }
 
     refreshData = async ()=> {
+        // axios.defaults.headers.common['authorization'] = getResToken();
         const resId = cookie.load("resId");
         const response = await axios.get(SERVER_ENDPOINT + "/res/getDishByRes/"+resId);
         const data = await response.data;
@@ -29,6 +32,7 @@ class ResContent extends Component {
         try {
             //restaurant
             const resId = cookie.load("resId");
+            // axios.defaults.headers.common['authorization'] = getResToken();
             const resResponse = await axios.get(SERVER_ENDPOINT + "/res/id/"+resId);
             const resData = await resResponse.data;
             console.log("Res data : "+JSON.stringify(resData))

@@ -8,6 +8,7 @@ import CommonHeader from '../CommonHeader';
 import { connect } from 'react-redux';
 import { placeOrder } from '../../../redux/reduxActions/customer/placeOrders'
 import { width } from 'dom-helpers';
+import { getCustToken } from '../../utils/ControllerUtils';
  //redux/reduxActions/restaurant/getOrdersRedux';
 
 class CheckoutPage extends Component{
@@ -62,7 +63,8 @@ class CheckoutPage extends Component{
 
     async componentDidMount(){
         const custId = cookie.load('custId');
-        try {
+
+        try {axios.defaults.headers.common['authorization'] = getCustToken();
             const url = SERVER_ENDPOINT + "/customer/order/address?custId="+custId;
             const response = await axios.get(url);
             const data = await response.data;
@@ -147,7 +149,7 @@ class CheckoutPage extends Component{
 
 
     onPlaceOrder = async (event) => {
-        const url = SERVER_ENDPOINT+"/customer/order/create";
+        // const url = SERVER_ENDPOINT+"/customer/order/create";
         try{
             const payload = {
                 cartItems: this.state.cartInfo.cartItems,

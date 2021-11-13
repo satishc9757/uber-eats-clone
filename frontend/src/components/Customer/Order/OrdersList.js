@@ -73,6 +73,10 @@ class OrdersList extends  Component {
         }
     }
 
+    onChangeField = (event) => {
+        this.setState({[event.target.name]: event.target.value});
+    }
+
     paginate = pageNumber => this.setState({currentPage: pageNumber});
 
     renderOrder = (order) => {
@@ -113,7 +117,25 @@ class OrdersList extends  Component {
                 <CommonHeader toggleSidebar={this.handleViewSidebar}
                         />
                 <div className="orders-header">
-                        <h3>Past Orders</h3>
+                        <div class="row">
+                            <div className="col-md-2">
+                                <h3>Past Orders</h3>
+                            </div>
+                            <div className="col-md-2">
+                                                <select
+                                                    name="ordersPerPage"
+                                                    value = {this.state.ordersPerPage}
+                                                    onChange = {this.onChangeField}>
+                                                    <option value="2">2</option>
+                                                    <option value="5" selected="true">5</option>
+                                                    <option value="10">10</option>
+                                                </select>
+                            </div>
+                            <div className="col-md-8">
+
+                            </div>
+                        </div>
+
                         <div class="btn-group">
                                 <input type="radio" class="btn-check" name="ordersType" id="orderOn" autocomplete="off" value="Ongoing" onChange={this.onOrderTypeChange}/>
                                 <label class="btn btn-outline-uber rounded-pill" for="orderOn">Ongoing</label>

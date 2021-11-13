@@ -10,6 +10,7 @@ import CommonHeader from './CommonHeader';
 import Sidebar from './Sidebar';
 import cookie from 'react-cookies';
 import {custUpdate} from '../../redux/reduxActions/customer/custUpdateRedux';
+import { getCustToken } from '../utils/ControllerUtils';
 
  class CustProfile extends Component {
 
@@ -61,6 +62,7 @@ import {custUpdate} from '../../redux/reduxActions/customer/custUpdateRedux';
 
     async componentDidMount(){
         try {
+            axios.defaults.headers.common['authorization'] = getCustToken();
             const custId = cookie.load('custId');
             const response = await axios.get(SERVER_ENDPOINT + "/customer/id/"+custId);
             const data = await response.data;

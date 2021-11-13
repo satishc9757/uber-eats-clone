@@ -8,7 +8,6 @@ async function handle_request(msg, callback){
 
     try{
         let orders  = await Order.find({orderCustId : ObjectId(custId)});
-            // data = result;
         let deliveryAddress = [];
 
         if(orders){
@@ -24,6 +23,15 @@ async function handle_request(msg, callback){
             })
 
         });
+            let deliveryAddressSet = new Set();
+
+            deliveryAddress.forEach(add => {
+                deliveryAddressSet.add(JSON.stringify(add));
+            });
+
+            deliveryAddress = [];
+            deliveryAddressSet.forEach(address => deliveryAddress.push(JSON.parse(address)));
+
             callback(null, { response_code: 200, response_data: deliveryAddress});
         } else{
             callback(null, { response_code: 200, response_data: {}});

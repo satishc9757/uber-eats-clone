@@ -32,8 +32,8 @@ const dishUpload = multer({ storage: dishFileStorage });
 
 var router = express.Router();
 
-router.get("/favorites", resControllerMongo.getFavRestaurantsByCustId);
-router.get("/query", resControllerMongo.getRestaurantByQueryString);
+router.get("/favorites", checkAuth, resControllerMongo.getFavRestaurantsByCustId);
+router.get("/query", checkAuth, resControllerMongo.getRestaurantByQueryString);
 router.post("/register", resControllerMongo.registerRes);
 //router.post("/register", validateResRegistration, resControllerMongo.registerRes);
 router.get("/id/:id", resControllerMongo.getRestaurantById);
@@ -44,18 +44,18 @@ router.post("/login", resControllerMongo.res_login);
 router.post("/logout", resController.logout);
 
 
-router.get("/getDishByRes/:resId", resControllerMongo.getDishByRes);
-router.get("/dish", resController.getAllDishes);
+router.get("/getDishByRes/:resId", checkAuth, resControllerMongo.getDishByRes);
+router.get("/dish", checkAuth, resController.getAllDishes);
 
 router.post("/dish", dishUpload.single('dishImage'), resControllerMongo.addDishKafka);
-router.get("/dish/:id", resControllerMongo.getDish);
-router.put("/dish", resControllerMongo.updateDish);
-router.delete("/dish", resController.deleteDish);
+router.get("/dish/:id", checkAuth, resControllerMongo.getDish);
+router.put("/dish", checkAuth, resControllerMongo.updateDish);
+router.delete("/dish", checkAuth, resController.deleteDish);
 
-router.get("/orders", resControllerMongo.getOrdersByRes);
-router.get("/orderdetails", resController.getOrderDetailsByOrderId);
+router.get("/orders", checkAuth, resControllerMongo.getOrdersByRes);
+router.get("/orderdetails", checkAuth, resController.getOrderDetailsByOrderId);
 
-router.put("/order/status", resControllerMongo.updateOrderStatus);
+router.put("/order/status", checkAuth, resControllerMongo.updateOrderStatus);
 
 
 
