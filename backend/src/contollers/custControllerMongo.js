@@ -186,7 +186,7 @@ exports.loginCustomerKafka = async function (req, res) {
     console.log("file uploaed to s3 " +JSON.stringify(fileUploadRes));
 
     kafka.make_request('cust_update',{...data, custImage: fileUploadRes.Location}, function(err,results){
-        console.log('in result');
+        console.log('after cust_update');
         console.log(results);
         if (err){
             res
@@ -196,7 +196,11 @@ exports.loginCustomerKafka = async function (req, res) {
         } else if(results.response_code == 200){
             unlinkSync(file.path);
             console.log('successfully deleted after upload');
-            res.send(JSON.stringify(results.response_data));
+            console.log('just before updating cookie '+data.custCity)
+            res.cookie('custLocation', data.custCity,{maxAge: 900000, httpOnly: false, path : '/'});
+
+            res.status(200).end(JSON.stringify(results.response_data));
+           // res.send(JSON.stringify(results.response_data));
         } else {
             res
             .status(500)

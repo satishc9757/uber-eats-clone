@@ -14,7 +14,8 @@ async function handle_request(msg, callback){
                     foreignField: "_id",
                     as: "res_info"
                 }
-            }
+            },
+            { $sort : { "orderTimestamp" : -1 } }
         ]);
             // data = result;
         console.log("orders output: "+JSON.stringify(orders[0]));

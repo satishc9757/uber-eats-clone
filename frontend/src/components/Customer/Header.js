@@ -7,13 +7,17 @@ import {faShoppingCart} from "@fortawesome/free-solid-svg-icons";
 import CartModal from './Cart/CartModal';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
+import { getCustToken } from '../utils/ControllerUtils';
+import axios from 'axios';
+import { SERVER_ENDPOINT } from '../constants/serverConfigs';
 
 class Header extends Component{
-    
+
     state = {
         dishType: "Veg",
         searchText:"",
-        deliveryType: "Delivery"
+        deliveryType: "Delivery",
+        custLocation:""
     }
 
     onChangeField =  (event) => {
@@ -33,22 +37,40 @@ class Header extends Component{
         this.props.onDeliveryTypeFilter(this.state.deliveryType);
     }
 
+    async componentDidMount(){
+        try {
+            axios.defaults.headers.common['authorization'] = getCustToken();
+            const custId = cookie.load('custId');
+            const response = await axios.get(SERVER_ENDPOINT + "/customer/id/"+custId);
+            const customer = await response.data;
+            if(customer){
+                this.setState({custLocation: customer.custCity});
+            }
+
+        } catch(err){
+            console.log(err);
+        }
+    }
+
     render(){
-        
+
         let redirectVar = null;
         // console.log("cookie : "+cookie.load('cookie'));
         // console.log("load cookie "+!cookie.load('cookie'));
         // if(!cookie.load('cookie')){
         //     redirectVar = <Redirect to="/login"/>
         // }
+        console.log("load cookie ");
         let custLocation = cookie.load("custLocation");
+
+
         return (
-            
+
             <div>
                 {redirectVar}
                 {/* <nav class="navbar navbar-inverse">
                 <div class="container-fluid">
-                    
+
                     <div class="navbar-header">
                     <button className="btn btn-light" onClick={this.props.toggleSidebar}> <FontAwesomeIcon icon={faBars} /></button>
                     <a className=" navbar-brand ps-3" href="./home"><img src={uberLogo} alt="Uber Eats logo"/></a>
@@ -63,16 +85,16 @@ class Header extends Component{
                     <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
                     </ul>
                 </div> */}
-            
+
 
                  <nav className="sb-topnav navbar navbar-expand-lg">
                 <div className="container-fluid">
                     <div className="navbar-header">
                         <button className="btn btn-light" onClick={this.props.toggleSidebar}> <FontAwesomeIcon icon={faBars} /></button>
                         <a className=" navbar-brand ps-3" href="/home"><img src="https://uber-eats-store-0144.s3.us-east-2.amazonaws.com/Uber_Eats_2020_logo.png" alt="Uber Eats logo"/></a>
-                        
+
                     </div>
-                    
+
                     <div class="switch-button">
                             <input class="switch-button-checkbox" type="checkbox" onChange={this.onDeliveryTypeChange}></input>
                             <label class="switch-button-label" for=""><span class="switch-button-label-span">Pickup</span></label>
@@ -90,15 +112,15 @@ class Header extends Component{
                     <div class="btn-group">
                         <input type="radio" class="btn-check" name="distType" id="resVeg" autocomplete="off" value="Veg" onChange={this.onDishTypChange}/>
                         <label class="btn btn-outline-uber rounded-pill" for="resVeg">Veg</label>
-                    
+
                         <input type="radio" class="btn-check" name="distType" id="resNonVeg" autocomplete="off" value="Non-Veg" onChange={this.onDishTypChange} />
                         <label class="btn btn-outline-uber rounded-pill" for="resNonVeg">Non-Veg</label>
-                    
+
                         <input type="radio" class="btn-check" name="distType" id="resVegan" autocomplete="off" value="Vegan" onChange={this.onDishTypChange} />
                         <label class="btn btn-outline-uber rounded-pill" for="resVegan">Vegan</label>
                     </div>
                     {/* <ul class="nav navbar-nav navbar-right">
-                        {/* <li><span className="left-pan"><FontAwesomeIcon icon={faSearch} /></span></li> 
+                        {/* <li><span className="left-pan"><FontAwesomeIcon icon={faSearch} /></span></li>
                         <li><button className="btn btn-grey rounded-pill"><FontAwesomeIcon icon={faSearch} />Veg</button></li>
                         <li><button className="btn btn-uber"><FontAwesomeIcon icon={faSearch} /></button></li>
                         <li><span></span></li>
@@ -107,18 +129,18 @@ class Header extends Component{
 
                     <ul class="nav navbar-nav navbar-right">
                         {/* <li><span className="left-pan"><FontAwesomeIcon icon={faSearch} /></span></li> */}
-                        <li><input type="text" name="searchText" className="form-control form-input" 
+                        <li><input type="text" name="searchText" className="form-control form-input"
                                     placeholder=" What are you craving?"
                                     onChange={this.onChangeField}/> </li>
                         <li><button className="btn btn-uber" onClick={(event) => {this.props.onResSearch(this.state.searchText)}}><FontAwesomeIcon icon={faSearch} /></button></li>
-                        
+
                     </ul>
                     <CartModal cartValue={this.props.cartValue}/>
 
                     {/* <div className="col-md-6">
                         <div className="form"> <span className="left-pan"><FontAwesomeIcon icon={faSearch} /></span> <input type="text" className="form-control form-input" placeholder="What are you craving?"/>  </div>
                     </div>   */}
-                </div> 
+                </div>
 
                 {/* <ul className="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
                     <li className="nav-item dropdown">

@@ -88,7 +88,6 @@ handleTopicRequest("cust_orders", CustOrders);
 handleTopicRequest("order_details", OrderDetails);
 handleTopicRequest("cancel_order", CancelOrder);
 handleTopicRequest("cust_delivery_address", OrderDeliveryAddress);
-handleTopicRequest("cust_delivery_address", OrderDeliveryAddress);
 handleTopicRequest("cust_favs", CustFavs);
 handleTopicRequest("validate_cust", ValidateCust);
 handleTopicRequest("cust_fav_res_data", CustFavResData);

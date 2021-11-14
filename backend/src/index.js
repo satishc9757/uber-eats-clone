@@ -9,8 +9,8 @@ const resRouter = require('./routes/resRouter');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const { connect } = require('mongoose');
-const FRONTEND_URL = "http://localhost:3000"
-//const FRONTEND_URL = "http://18.119.29.239:3000"
+//const FRONTEND_URL = "http://localhost:3000"
+const FRONTEND_URL = "http://3.15.147.196:3000"
 const {auth, passport} = require('./jwt/passport');
 // const {passport_res} = require('./jwt/res_passport');
 

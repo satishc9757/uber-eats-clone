@@ -97,7 +97,8 @@ import { getCustToken } from '../utils/ControllerUtils';
             if(isValid){
 
                 await this.props.custUpdate(formData);
-                this.props.history.push("./home");
+                setTimeout(() => this.props.history.push("./home"), 6000);
+
 
                 // const url = SERVER_ENDPOINT+"/customer/update";
                 // axios.defaults.headers.common['authorization'] = localStorage.getItem('cust_token');

@@ -12,9 +12,9 @@ async function handle_request(msg, callback){
                 from: "customers",
                 localField: "orderCustId",
                 foreignField: "_id",
-                as: "cust_info"
-            }
-        }
+                as: "cust_info"},
+            },
+            { $sort : { "orderTimestamp" : -1 } }
         ]);
             // data = result;
         console.log("orders output: "+JSON.stringify(orders[0]));

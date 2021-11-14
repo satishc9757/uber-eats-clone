@@ -6,6 +6,7 @@ import { getCustToken } from "../../../components/utils/ControllerUtils";
 export const custUpdate = (data) => async dispatch => {
     axios.defaults.headers.common['authorization'] = getCustToken();
     //console.log("Token : "+getCustToken());
+    axios.defaults.withCredentials = true;
     console.log("Update Data "+JSON.stringify(data));
     axios.put(SERVER_ENDPOINT+"/customer/update", data)
         .then(response => {
