@@ -133,7 +133,7 @@ exports.loginCustomerKafka = async function (req, res) {
             res.cookie('custFirstName',customer.custFirstName,{maxAge: 900000, httpOnly: false, path : '/'});
             res.cookie('custLastName',customer.custLastName,{maxAge: 900000, httpOnly: false, path : '/'});
             res.cookie('custImageLink',customer.custImage,{maxAge: 900000, httpOnly: false, path : '/'});
-            res.cookie('custLocation',customer.custAddress.city,{maxAge: 900000, httpOnly: false, path : '/'});
+            res.cookie('custLocation', customer.custAddress ? customer.custAddress.city: "", {maxAge: 900000, httpOnly: false, path : '/'});
             req.session.user = {
                 custId: customer._id,
                 custEmail: customer.custEmail,
@@ -196,6 +196,39 @@ exports.loginCustomerKafka = async function (req, res) {
         } else if(results.response_code == 200){
             unlinkSync(file.path);
             console.log('successfully deleted after upload');
+            console.log('just before updating cookie '+data.custCity)
+            res.cookie('custLocation', data.custCity,{maxAge: 900000, httpOnly: false, path : '/'});
+
+            res.status(200).end(JSON.stringify(results.response_data));
+           // res.send(JSON.stringify(results.response_data));
+        } else {
+            res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+        }
+
+    });
+
+};
+
+exports.customerUpdateKafkaNoImage = async function (req, res) {
+    const data = req.body;
+
+
+
+    console.log("data "+ JSON.stringify(data));
+
+
+    console.log("cust update input "+JSON.stringify(data))
+    kafka.make_request('cust_update', data, function(err,results){
+        console.log('after cust_update');
+        console.log(results);
+        if (err){
+            res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!", err }));
+
+        } else if(results.response_code == 200){
             console.log('just before updating cookie '+data.custCity)
             res.cookie('custLocation', data.custCity,{maxAge: 900000, httpOnly: false, path : '/'});
 

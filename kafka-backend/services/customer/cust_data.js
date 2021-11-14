@@ -19,10 +19,12 @@ async function handle_request(msg, callback){
                 custStreet: customer.custAddress ? customer.custAddress.street : null,
                 custState: customer.custAddress ? customer.custAddress.state : null,
                 custZipcode: customer.custAddress ? customer.custAddress.zipcode : null,
+                custCountry: customer.custAddress ? customer.custAddress.country : null,
                 custImage: customer.custImage,
                 custPhone: customer.custPhone,
                 custAbout: customer.custAbout,
                 custNickname: customer.custNickname,
+                custDob: customer.custDob
             }});
         } else{
             callback(null, { response_code: 200, response_data: {}});

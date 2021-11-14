@@ -96,7 +96,7 @@ import { getCustToken } from '../utils/ControllerUtils';
 
             if(isValid){
 
-                await this.props.custUpdate(formData);
+                await this.props.custUpdate(this.state);
                 setTimeout(() => this.props.history.push("./home"), 6000);
 
 
@@ -217,9 +217,10 @@ import { getCustToken } from '../utils/ControllerUtils';
                                     <div className="row mb-3">
                                         <div className="col-md-6">
                                             <div className="form-floating mb-3 mb-md-0">
-                                                <input className="form-control" id="custDob" type="date"
+                                                <input className="form-control" id="custDob" type="text"
                                                     value = {this.state.custDob}
                                                     onChange = {this.onChangeField}
+                                                    name="custDob"
                                                     placeholder="Create a password" />
                                                 <label htmlFor="custDob">Date of birth</label>
 
@@ -238,14 +239,14 @@ import { getCustToken } from '../utils/ControllerUtils';
                                         </div>
 
                                     </div>
-                                    <div className="form-floating mb-3">
+                                    {/* <div className="form-floating mb-3">
                                         <input className="form-control" id="custImage" type="file"
                                             name="custImage"
                                             onChange = {this.handleImageFile}
                                             />
                                         <label htmlFor="resImages">Profile picture</label>
-                                        {/* <div className="invalid">{this.state.custEmailError}</div> */}
-                                    </div>
+
+                                    </div> */}
 
                                     <div className="form-floating mb-3">
                                         <textarea class="form-control"
@@ -325,7 +326,7 @@ import { getCustToken } from '../utils/ControllerUtils';
                                                 onChange = {this.onChangeField}>
                                                 <option selected></option>
                                                 {countryList.map((c) => {
-                                                    return (<option value={c}>{c}</option>)})}
+                                                    return (<option value={c} selected={this.state.custCountry == c ? "true":"false"}>{c}</option>)})}
                                             </select>
                                                 <label htmlFor="custCountry">Country</label>
                                                 {/* <div className="invalid">{this.state.custLastNameError}</div> */}

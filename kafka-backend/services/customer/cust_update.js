@@ -24,8 +24,8 @@ async function handle_request(msg, callback){
                       state: data.custState,
                       zipcode: data.custZipcode,
                       country: data.custCountry,
-                  },
-                  custImage: data.custImage
+                  }
+                //   custImage: data.custImage
                 }
             },
             (err, result) => {
