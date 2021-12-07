@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { useHistory } from "react-router-dom";
 import {custSignup} from '../../redux/reduxActions/customer/signupRedux';
 import errorAction from '../../redux/reduxActions/errorRedux';
-import { SERVER_ENDPOINT } from '../constants/serverConfigs';
+import { GRAPHQL_SERVER_ENDPOINT, SERVER_ENDPOINT } from '../constants/serverConfigs';
 import countryList from '../constants/countryList';
 import axios from 'axios';
 import CommonHeader from './CommonHeader';
@@ -11,6 +11,8 @@ import Sidebar from './Sidebar';
 import cookie from 'react-cookies';
 import {custUpdate} from '../../redux/reduxActions/customer/custUpdateRedux';
 import { getCustToken } from '../utils/ControllerUtils';
+import { GET_CUSTOMER } from '../../graphql/queries';
+import {  CUST_UPDATE } from '../../graphql/mutations';
 
  class CustProfile extends Component {
 
@@ -64,8 +66,18 @@ import { getCustToken } from '../utils/ControllerUtils';
         try {
             axios.defaults.headers.common['authorization'] = getCustToken();
             const custId = cookie.load('custId');
-            const response = await axios.get(SERVER_ENDPOINT + "/customer/id/"+custId);
-            const data = await response.data;
+            //const response = await axios.get(SERVER_ENDPOINT + "/customer/id/"+custId);
+            const query = GET_CUSTOMER;
+            const response = await axios
+                                        .post(GRAPHQL_SERVER_ENDPOINT + "/getCustomer/",{
+                                            query,
+                                            variables: {
+                                                custId,
+                                            },
+                                          });
+            console.log("Cust data response : "+response)
+            //const data = await response.data;
+            const data = response.data.data.getCustomer;
             console.log("Cust data : "+JSON.stringify(data))
             this.setState(data);
         } catch(err){
@@ -96,7 +108,20 @@ import { getCustToken } from '../utils/ControllerUtils';
 
             if(isValid){
 
-                await this.props.custUpdate(this.state);
+                // await this.props.custUpdate(this.state);
+
+                /*graphql*/
+                const query = CUST_UPDATE;
+                const custInput = this.state;
+                const response = await axios
+                                            .post(GRAPHQL_SERVER_ENDPOINT + "/custUpdate",{
+                                                query,
+                                                variables: {
+                                                    custInput,
+                                                },
+                                              });
+
+                console.log("Reponse from cust update : "+response);
                 setTimeout(() => this.props.history.push("./home"), 6000);
 
 

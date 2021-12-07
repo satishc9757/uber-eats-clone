@@ -89,14 +89,14 @@ exports.validateResRegistration = [
     .withMessage('Invalid email address!')
     .bail()
     .normalizeEmail()
-    .custom(async username => {
-        const isUsernameInUse = await isUsernamePresentMongo(username);
-        console.log("isUsernameInUse : "+isUsernameInUse);
-        if(isUsernameInUse){
-          throw new Error('Email already exists.');
-        }
-    })
-    .withMessage('Email already exists.')
+    // .custom(async username => {
+    //     const isUsernameInUse = await isUsernamePresentMongo(username);
+    //     console.log("isUsernameInUse : "+isUsernameInUse);
+    //     if(isUsernameInUse){
+    //       throw new Error('Email already exists.');
+    //     }
+    // })
+    // .withMessage('Email already exists.')
     .bail(),
   check('resPassword')
     .not()

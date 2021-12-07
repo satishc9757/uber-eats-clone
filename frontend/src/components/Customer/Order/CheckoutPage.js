@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Card, FormControl, InputGroup, ListGroup, Radio } from 'react-bootstrap'
 import DeliveryAddressModal from './DeliveryAddressModal';
 import axios from'axios';
-import {SERVER_ENDPOINT} from '../../constants/serverConfigs'
+import {SERVER_ENDPOINT, GRAPHQL_SERVER_ENDPOINT} from '../../constants/serverConfigs'
 import cookie  from 'react-cookies';
 import CommonHeader from '../CommonHeader';
 import { connect } from 'react-redux';
@@ -10,6 +10,7 @@ import { placeOrder } from '../../../redux/reduxActions/customer/placeOrders'
 import { width } from 'dom-helpers';
 import { getCustToken } from '../../utils/ControllerUtils';
  //redux/reduxActions/restaurant/getOrdersRedux';
+import {CREATE_ORDER} from '../../../graphql/mutations'
 
 class CheckoutPage extends Component{
 
@@ -65,11 +66,11 @@ class CheckoutPage extends Component{
         const custId = cookie.load('custId');
 
         try {axios.defaults.headers.common['authorization'] = getCustToken();
-            const url = SERVER_ENDPOINT + "/customer/order/address?custId="+custId;
-            const response = await axios.get(url);
-            const data = await response.data;
-            console.log("Addresses data : "+JSON.stringify(data));
-            this.setState({deliveryAddresses: data});
+            // const url = SERVER_ENDPOINT + "/customer/order/address?custId="+custId;
+            // const response = await axios.get(url);
+            // const data = await response.data;
+            // console.log("Addresses data : "+JSON.stringify(data));
+            // this.setState({deliveryAddresses: data});
 
             //Cart data
             const custCart = sessionStorage.getItem("custCart");
@@ -151,25 +152,43 @@ class CheckoutPage extends Component{
     onPlaceOrder = async (event) => {
         // const url = SERVER_ENDPOINT+"/customer/order/create";
         try{
-            const payload = {
-                cartItems: this.state.cartInfo.cartItems,
+            console.log("cart info cart : "+JSON.stringify(this.state.cartInfo))
+            let cartItems = [];
+            this.state.cartInfo.cartItems.forEach(item => cartItems.push({
+                dishName: item.dishName,
+                dishPrice: item.dishPrice,
+                dishQuantity: item.dishQuantity
+            }));
+            const custOrder = {
+                cartItems: cartItems,
                 deliveryAddress: this.state.deliveryAddresses[this.state.selectedDeliveryAddressIndex],
                 deliveryFee: this.state.deliveryFee,
                 serviceFee: this.state.serviceFee,
                 custId: this.state.custId,
                 resId: this.state.cartInfo.cartResId,
-                cartTotal: this.decimalFormat(this.totalAmount()),
-                specialInstructions: this.state.specialInstructions
+                cartTotal: parseFloat(this.decimalFormat(this.totalAmount())),
+                // specialInstructions: this.state.specialInstructions
             }
-            console.log("payload : "+JSON.stringify(payload));
+            console.log("custOrder: "+JSON.stringify(custOrder));
+            // console.log("payload : "+JSON.stringify(custOrder));
 
-            //const response = await axios.post(url, payload);
+            /*graphql*/
+            const query = CREATE_ORDER;
+            const response = await axios.post(GRAPHQL_SERVER_ENDPOINT, {
+                                            query,
+                                            variables: {
+                                                custOrder: custOrder
+                                            },
+                                        });
+            if(response.status === 200){
+                this.props.history.push("/orders");
+            }
+           // await this.props.placeOrder(payload);
 
-            await this.props.placeOrder(payload);
 
             sessionStorage.clear();
             //console.log("Response from order create : "+response.data);
-            this.props.history.push("/orders");
+
         } catch(err){
             console.log("Error from order create : "+err);
         }

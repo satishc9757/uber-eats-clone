@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import cookie  from 'react-cookies';
-import {SERVER_ENDPOINT} from '../../constants/serverConfigs'
+import {GRAPHQL_SERVER_ENDPOINT, SERVER_ENDPOINT} from '../../constants/serverConfigs'
 import axios from'axios';
 import OrderSummaryModal from './OrderSummaryModal';
 import UpdateStatusModal from './UpdateStatusModal';
@@ -8,6 +8,7 @@ import ResHeader from '../ResHeader';
 import { connect } from 'react-redux';
 import { getOrders } from '../../../redux/reduxActions/restaurant/getOrdersRedux';
 import Pagination from '../../Pagination';
+import { GET_CUSTOMER_ORDERS, GET_RES_ORDERS } from '../../../graphql/queries';
 
 class OrdersList extends  Component {
 
@@ -33,10 +34,19 @@ class OrdersList extends  Component {
         try{
             const resId = cookie.load("resId");
 
-            const url = SERVER_ENDPOINT + "/res/orders?resId="+resId;
-            const response = await axios.get(url);
-            const data = await response.data;
-            console.log("Res Orders data : "+JSON.stringify(data));
+            // const url = SERVER_ENDPOINT + "/res/orders?resId="+resId;
+            // axios.defaults.headers.common['authorization'] = localStorage.getItem("res_token");
+            const url = GRAPHQL_SERVER_ENDPOINT + "/getResOrders";
+            // const response = await axios.get(url);
+            const query = GET_RES_ORDERS;
+            const response = await axios.post(url, {
+                query,
+                variables: {
+                    resId
+                },
+            });
+            const data = await response.data.data.getResOrders;
+           // console.log("Res Orders data : "+JSON.stringify(data));
             this.setState({ordersData: data});
             this.setState({ordersMainData: data});
 

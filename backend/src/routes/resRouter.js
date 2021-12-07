@@ -34,7 +34,7 @@ var router = express.Router();
 
 router.get("/favorites", checkAuth, resControllerMongo.getFavRestaurantsByCustId);
 router.get("/query", checkAuth, resControllerMongo.getRestaurantByQueryString);
-router.post("/register", resControllerMongo.registerRes);
+router.post("/register", validateResRegistration, resControllerMongo.registerRes);
 //router.post("/register", validateResRegistration, resControllerMongo.registerRes);
 router.get("/id/:id", resControllerMongo.getRestaurantById);
 

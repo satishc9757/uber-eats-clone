@@ -1,6 +1,10 @@
 const {uploadFile} = require('../aws/s3/FileUpload')
 const { unlinkSync } = require('fs');
 const Customer = require('../models/CustomerModel');
+const Orders = require('../models/OrdersModel');
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
+
 var kafka = require('../kafka/client');
 const jwt = require('jsonwebtoken');
 const { secret } = require('../jwt/config');
@@ -33,12 +37,20 @@ exports.registerCustomer = function (req, res) {
     });
 };
 
+function getFormatedDate(date){
+    return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " +  date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+}
+
+
+function getFormatedAmount(num){
+    return (Math.round(num * 100) / 100).toFixed(2);
+}
 
 exports.registerCustomerKafka = function (req, res) {
     const data = req.body;
 
     kafka.make_request('cust_registration',req.body, function(err,results){
-        console.log('in result');
+        //console.log('in result');
         console.log(results);
         if (err){
             res
@@ -113,7 +125,7 @@ exports.loginCustomerKafka = async function (req, res) {
     console.log(data);
 
     kafka.make_request('cust_login',req.body, function(err,results){
-        console.log('in result');
+        //console.log('in result');
         console.log(results);
         if (err){
             console.log("Inside err");
@@ -195,7 +207,7 @@ exports.loginCustomerKafka = async function (req, res) {
 
         } else if(results.response_code == 200){
             unlinkSync(file.path);
-            console.log('successfully deleted after upload');
+            // console.log('successfully deleted after upload');
             console.log('just before updating cookie '+data.custCity)
             res.cookie('custLocation', data.custCity,{maxAge: 900000, httpOnly: false, path : '/'});
 
@@ -249,7 +261,7 @@ exports.getCustomerById = async function(req, res){
     const custId = req.params.id;
 
     kafka.make_request('cust_data',{custId: custId}, function(err,results){
-        console.log('in result');
+        //console.log('in result');
         console.log(results);
         if (err){
             res
@@ -258,7 +270,7 @@ exports.getCustomerById = async function(req, res){
 
         } else if(results.response_code == 200){
 
-            console.log('successfully deleted after upload');
+            // console.log('successfully deleted after upload');
             res.send(JSON.stringify(results.response_data));
         } else {
             res
@@ -294,12 +306,63 @@ exports.getCustomerById = async function(req, res){
  }
 
 
- exports.getOrdersByCustomer = function(req, res){
+ exports.getOrdersByCustomer = async function(req, res){
+
+    const custId = req.query.custId;
+console.log("custId: "+custId);
+    try{
+        let orders  = await Orders.aggregate([
+            { $match: { "orderCustId": ObjectId(custId) } },
+            { $lookup:{
+                    from: "restaurants",
+                    localField: "orderRestaurantId",
+                    foreignField: "_id",
+                    as: "res_info"
+                }
+            },
+            { $sort : { "orderTimestamp" : -1 } }
+        ]);
+            // data = result;
+        console.log("orders output: "+JSON.stringify(orders[0]));
+        // console.log("orders output: "+orders[1]);
+        let ordersData = [];
+        if(orders){
+
+            orders.forEach(order => ordersData.push({
+                orderId: order._id,
+                orderTotal: getFormatedAmount(order.orderTotal),
+                resName: order.res_info[0] ? order.res_info[0].resName : null,
+                street: order.orderAddress ? order.orderAddress.street : null,
+                city: order.orderAddress ? order.orderAddress.city : null,
+                state: order.orderAddress ? order.orderAddress.state : null,
+                zipcode: order.orderAddress ? order.orderAddress.zipcode : null,
+                orderTimestamp: getFormatedDate(new Date(order.orderTimestamp)),
+                orderStatus: order.orderStatus,
+                orderDeliveryFee: getFormatedAmount(order.orderDeliveryFee),
+                orderServiceFee: getFormatedAmount(order.orderServiceFee),
+                specialInstructions: order.specialInstructions
+            }));
+            res.send(JSON.stringify(ordersData));
+            // callback(null, { response_code: 200, response_data: ordersData});
+        } else{
+            res.send(JSON.stringify([]));
+        }
+
+    } catch(err){
+        res
+            .status(500)
+            .send(JSON.stringify({ message: "Something went wrong!" + err }));
+    }
+
+ };
+
+
+ exports.getOrdersByCustomerKafka = function(req, res){
 
     const custId = req.query.custId;
 
     kafka.make_request('cust_orders',{custId: custId}, function(err,results){
-        console.log('in result');
+        //console.log('in result');
         console.log(results);
         if (err){
             res
@@ -417,7 +480,7 @@ exports.getDeliveryAddressesForUser = function(req, res){
   exports.getRestaurantByQueryString = function(req, res){
     const searchText = req.query.searchText;
     kafka.make_request('res_search',{searchText: searchText}, function(err,results){
-      console.log('in result');
+      //console.log('in result');
       console.log(results);
       if (err){
           res

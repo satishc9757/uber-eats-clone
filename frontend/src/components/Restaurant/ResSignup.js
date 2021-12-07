@@ -4,10 +4,11 @@ import { useHistory } from "react-router-dom";
 import errorAction from '../../redux/reduxActions/errorRedux';
 import {resSignup} from '../../redux/reduxActions/restaurant/signupRedux';
 import countryList from '../constants/countryList';
-import { SERVER_ENDPOINT } from '../constants/serverConfigs';
+import { GRAPHQL_SERVER_ENDPOINT, SERVER_ENDPOINT } from '../constants/serverConfigs';
 import ShortFooter from '../ShortFooter';
 import ShortHeader from '../ShortHeader';
 import axios from 'axios';
+import { RES_SIGNUP } from '../../graphql/mutations';
 
 
  class ResSignup extends Component {
@@ -39,7 +40,7 @@ import axios from 'axios';
         resCountryError: "",
         resDeliveryTypeError:"",
         signupErrorMessage: ""
-    
+
     }
 
     redirectToSuccesPage(){
@@ -57,27 +58,57 @@ import axios from 'axios';
         //const isValid = this.validateInputs(); --validation disabled for now
         const isValid = this.validateInputs();
         console.log("isValid : "+ isValid);
-        
+
         if(isValid){
-           
-        
-            const url = SERVER_ENDPOINT+"/res/register";
-            axios
-                .post(url, this.state)
-                .then(response => {
-                    console.log(response);
-                    this.props.history.push("./login");
-                })
-                .catch(err => {
-                    if(err.response && err.response.status === 400){
-                        this.setState({
-                            signupErrorMessage: "Email id already exists!"
-                        })
-                    }
-                    console.log(err);
-                });
-                
+
+
+            // const url = SERVER_ENDPOINT+"/res/register";
+            // axios
+            //     .post(url, this.state)
+            //     .then(response => {
+            //         console.log(response);
+            //         this.props.history.push("./login");
+            //     })
+            //     .catch(err => {
+            //         if(err.response && err.response.status === 400){
+            //             this.setState({
+            //                 signupErrorMessage: "Email id already exists!"
+            //             })
+            //         }
+            //         console.log(err);
+            //     });
+
+            //graphql
+            const query = RES_SIGNUP;
+            const resInput = {
+                resName: this.state.resName,
+                resEmail: this.state.resEmail,
+                resPassword: this.state.resPassword,
+                resStreet: this.state.resStreet,
+                resCity: this.state.resCity,
+                resState: this.state.resState,
+                resZipcode: this.state.resZipcode,
+                resCountry: this.state.resCountry,
+              };
+            //console.log("payload "+ JSON.stringify(this.state));
+
+            const response = await axios
+                                        .post(GRAPHQL_SERVER_ENDPOINT + "/restaurantSignup",{
+                                            query,
+                                            variables: {
+                                                resInput: resInput
+                                            },
+                                          });
+            // if(this.props.errorMessage){
+            if(response.status === 200){
+                this.props.history.push("./login");
+                //this.setState({signupErrorMessage: this.props.errorMessage});
+            } else {
+                console.log("response from signup: "+response);
+            }
+
         }
+
     }
 
 
@@ -167,18 +198,18 @@ import axios from 'axios';
         //         console.log( this.state.resZipcodeError )
         //         console.log( this.state.resCountryError )
         //         console.log( this.state.resDeliveryTypeError );
-        
-        // return this.state.resNameError == "" 
-        //         && this.state.resEmailError === "" 
-        //         && this.state.resPasswordError === "" 
-        //         && this.state.resPasswordConfirmError === "" 
+
+        // return this.state.resNameError == ""
+        //         && this.state.resEmailError === ""
+        //         && this.state.resPasswordError === ""
+        //         && this.state.resPasswordConfirmError === ""
         //         && this.state.resStreetError === ""
         //         && this.state.resCityError === ""
         //         && this.state.resStateError === ""
         //         && this.state.resZipcodeError == ""
         //         && this.state.resCountryError === ""
         //         && this.state.resDeliveryTypeError === ""
-        
+
         return isValid;
 
     }
@@ -201,18 +232,18 @@ import axios from 'axios';
                                     {signupError}
                                     <div className="mb-3">
                                         <div className="form-floating mb-3 mb-md-0">
-                                                <input className={"form-control" + (this.state.custFirstNameError ? " invalid-input": "")} id="resName" type="text" 
+                                                <input className={"form-control" + (this.state.custFirstNameError ? " invalid-input": "")} id="resName" type="text"
                                                     name="resName"
                                                     value = {this.state.resName}
                                                     onChange = {this.onChangeField}
-                                                    placeholder="Enter your restaurant name" 
-                                                    required/>  
+                                                    placeholder="Enter your restaurant name"
+                                                    required/>
                                                 <label htmlFor="resName">Restaurant Name</label>
                                                 <div className="invalid">{this.state.resNameError}</div>
                                             </div>
-                                    </div>    
+                                    </div>
                                    <div className="form-floating mb-3">
-                                        <input className="form-control" id="resEmail" type="email" 
+                                        <input className="form-control" id="resEmail" type="email"
                                             name="resEmail"
                                             value = {this.state.resEmail}
                                             onChange = {this.onChangeField}
@@ -223,7 +254,7 @@ import axios from 'axios';
                                     <div className="row mb-3">
                                         <div className="col-md-6">
                                             <div className="form-floating mb-3 mb-md-0">
-                                                <input className="form-control" id="resPassword" type="password" 
+                                                <input className="form-control" id="resPassword" type="password"
                                                     name="resPassword"
                                                     value = {this.state.resPassword}
                                                     onChange = {this.onChangeField}
@@ -234,7 +265,7 @@ import axios from 'axios';
                                         </div>
                                         <div className="col-md-6">
                                             <div className="form-floating mb-3 mb-md-0">
-                                                <input className="form-control" id="resPasswordConfirm" type="password" 
+                                                <input className="form-control" id="resPasswordConfirm" type="password"
                                                     name="resPasswordConfirm"
                                                     value = {this.state.resPasswordConfirm}
                                                     onChange = {this.onChangeField}
@@ -246,12 +277,12 @@ import axios from 'axios';
                                     </div>
                                     <div className="mb-3">
                                         <div className="form-floating mb-3 mb-md-0">
-                                                    <input className={"form-control" + (this.state.resStreetError ? " invalid-input": "")} id="resStreet" type="text" 
+                                                    <input className={"form-control" + (this.state.resStreetError ? " invalid-input": "")} id="resStreet" type="text"
                                                         name="resStreet"
                                                         value = {this.state.resStreet}
                                                         onChange = {this.onChangeField}
-                                                        placeholder="Street address" 
-                                                        required/>  
+                                                        placeholder="Street address"
+                                                        required/>
                                                     <label htmlFor="resStreet">Street address</label>
                                                     <div className="invalid">{this.state.resStreetError}</div>
                                         </div>
@@ -259,20 +290,20 @@ import axios from 'axios';
                                     <div className="row mb-3">
                                         <div className="col-md-6">
                                             <div className="form-floating mb-3 mb-md-0">
-                                                <input className={"form-control" + (this.state.resCityError ? " invalid-input": "")} id="resCity" type="text" 
+                                                <input className={"form-control" + (this.state.resCityError ? " invalid-input": "")} id="resCity" type="text"
                                                     name="resCity"
                                                     value = {this.state.resCity}
                                                     onChange = {this.onChangeField}
-                                                    placeholder="Enter City" 
-                                                    required/>  
+                                                    placeholder="Enter City"
+                                                    required/>
                                                 <label htmlFor="resCity">City</label>
                                                 <div className="invalid">{this.state.resCityError}</div>
                                             </div>
                                         </div>
-                                        
+
                                         <div className="col-md-6">
                                             <div className="form-floating">
-                                                <input className="form-control" id="resState" type="text" 
+                                                <input className="form-control" id="resState" type="text"
                                                     name="resState"
                                                     value = {this.state.resState}
                                                     onChange = {this.onChangeField}
@@ -285,7 +316,7 @@ import axios from 'axios';
                                     <div className="row mb-3">
                                         <div className="col-md-6">
                                             <div className="form-floating">
-                                                <input className="form-control" id="resZipcode" type="text" 
+                                                <input className="form-control" id="resZipcode" type="text"
                                                     name="resZipcode"
                                                     value = {this.state.resZipcode}
                                                     onChange = {this.onChangeField}
@@ -297,7 +328,7 @@ import axios from 'axios';
 
                                         <div className="col-md-6">
                                             <div className="form-floating">
-                                            <select className="form-control form-select" 
+                                            <select className="form-control form-select"
                                                 name="resCountry"
                                                 value = {this.state.resCountry}
                                                 onChange = {this.onChangeField}>
@@ -310,16 +341,16 @@ import axios from 'axios';
                                             </div>
                                         </div>
 
-                                        
+
                                     </div>
-                                    
+
                                     <div className="col-md-6">
                                             <div className="form-floating">
-                                            <select className="form-control form-select" 
+                                            <select className="form-control form-select"
                                                 name="resDeliveryType"
                                                 value = {this.state.resDeliveryType}
                                                 onChange = {this.onChangeField}>
-                                                <option></option>    
+                                                <option></option>
                                                 <option >Delivery and Pickup</option>
                                                 <option>Delivery</option>
                                                 <option>Pickup</option>
@@ -358,4 +389,3 @@ import axios from 'axios';
 
 //export default connect(mapStateToProps, {resSignup})(ResSignup);
 export default ResSignup;
-

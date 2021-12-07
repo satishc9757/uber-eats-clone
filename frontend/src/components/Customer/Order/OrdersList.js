@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import cookie  from 'react-cookies';
-import {SERVER_ENDPOINT} from '../../constants/serverConfigs'
+import {SERVER_ENDPOINT, GRAPHQL_SERVER_ENDPOINT} from '../../constants/serverConfigs'
 import axios from'axios';
 import OrderSummaryModal from './OrderSummaryModal';
 import CommonHeader from '../CommonHeader';
 import { connect } from 'react-redux';
 import { getOrders } from '../../../redux/reduxActions/restaurant/getOrdersRedux';
 import Pagination from '../../Pagination';
+import {GET_CUSTOMER_ORDERS} from '../../../graphql/queries'
 
 class OrdersList extends  Component {
 
@@ -20,19 +21,27 @@ class OrdersList extends  Component {
 
     async componentDidMount(){
         const custId = cookie.load("custId");
-        await this.props.getOrders(custId);
-        this.setState({ordersData: this.props.orders});
-        this.setState({ordersMainData: this.props.orders});
+        // await this.props.getOrders(custId);
+        // this.setState({ordersData: this.props.orders});
+        // this.setState({ordersMainData: this.props.orders});
         this.refreshOrdersData();
     }
 
     refreshOrdersData = async () => {
         try{
             const custId = cookie.load("custId");
-
-            const url = SERVER_ENDPOINT + "/customer/orders?custId="+custId;
-            const response = await axios.get(url);
-            const data = await response.data;
+            axios.defaults.headers.common['authorization'] = localStorage.getItem("cust_token");
+            // const url = SERVER_ENDPOINT + "/customer/orders?custId="+custId;
+            const url = GRAPHQL_SERVER_ENDPOINT + "/getCustOrder";
+            // const response = await axios.get(url);
+            const query = GET_CUSTOMER_ORDERS;
+            const response = await axios.post(url, {
+                query,
+                variables: {
+                    custId
+                },
+            });
+            const data = await response.data.data.getCustOrder;
             console.log("Orders data  : "+JSON.stringify(data));
             this.setState({ordersData: data});
             this.setState({ordersMainData: data});
@@ -44,6 +53,7 @@ class OrdersList extends  Component {
     onCancelOrder = async (orderId) => {
         try{
             console.log("order id is : "+orderId)
+            axios.defaults.headers.common['authorization'] = localStorage.getItem("cust_token");
             const url = SERVER_ENDPOINT + "/customer/order/cancel";
             const response = await axios.post(url, {orderId: orderId});
 

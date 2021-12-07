@@ -22,7 +22,7 @@ var router = express.Router();
 
 router.post("/register", custControllerMongo.registerCustomerKafka);
 
-router.get("/id/:id", checkAuth, custControllerMongo.getCustomerById);
+router.get("/id/:id",  checkAuth, custControllerMongo.getCustomerById);
 //router.post("/login", validateCustLogin, custControllerMongo.loginCustomer);
 router.post("/login", custControllerMongo.loginCustomerKafka);
 router.post("/logout", custController.logout);
@@ -35,7 +35,7 @@ router.post("/order/cancel", checkAuth, custControllerMongo.cancelOrder);
 
 router.get("/order/address", checkAuth, custControllerMongo.getDeliveryAddressesForUser);
 
-router.get("/orders", checkAuth, custControllerMongo.getOrdersByCustomer);
+router.get("/orders",  custControllerMongo.getOrdersByCustomerKafka);
 
 router.get("/orderdetails", checkAuth, custControllerMongo.getOrderDetailsByOrderId);
 

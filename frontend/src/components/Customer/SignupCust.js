@@ -3,10 +3,12 @@ import { connect } from 'react-redux';
 import { useHistory } from "react-router-dom";
 import {custSignup} from '../../redux/reduxActions/customer/signupRedux';
 import errorAction from '../../redux/reduxActions/errorRedux';
-import { SERVER_ENDPOINT } from '../constants/serverConfigs';
+import { SERVER_ENDPOINT, GRAPHQL_SERVER_ENDPOINT } from '../constants/serverConfigs';
 import ShortFooter from '../ShortFooter';
 import ShortHeader from '../ShortHeader';
+import countryList from '../constants/countryList';
 import axios from 'axios'
+import {CUST_SIGNUP} from '../../graphql/mutations';
 
 
  class SignupCust extends Component {
@@ -67,15 +69,37 @@ import axios from 'axios'
         if(isValid){
 
 
-            await this.props.custSignup(this.state);
-            if(this.props.errorMessage){
-                console.log("errorMessage : "+this.props.errorMessage);
+            // await this.props.custSignup(this.state);
+
+            //graphql
+            const query = CUST_SIGNUP;
+            const custInput = {
+                  custFirstName: this.state.custFirstName,
+                  custLastName: this.state.custLastName,
+                  custEmail: this.state.custEmail,
+                  custStreet: this.state.custStreet,
+                  custCity: this.state.custCity,
+                  custState: this.state.custState,
+                  custZipcode: this.state.custZipcode,
+                  custCountry: this.state.custCountry,
+                  custPassword: this.state.custPassword,
+              };
+            //console.log("payload "+ JSON.stringify(this.state));
+
+            const response = await axios
+                                        .post(GRAPHQL_SERVER_ENDPOINT + "/custSignup",{
+                                            query,
+                                            variables: {
+                                                custInput: custInput
+                                            },
+                                          });
+            // if(this.props.errorMessage){
+            if(response.status === 200){
+                this.props.history.push("./login");
                 //this.setState({signupErrorMessage: this.props.errorMessage});
             } else {
-                this.props.history.push("./login");
+                console.log("response from signup: "+response);
             }
-
-
 
 
             // try{
@@ -95,21 +119,21 @@ import axios from 'axios'
             const url = SERVER_ENDPOINT+"/customer/register";
             //axios.defaults.headers.common['authorization'] = localStorage.getItem('cust_token');
 
-            axios
-            .post(url, this.state)
-            .then(response => {
-                console.log(response);
-                this.props.history.push("/login");
+            // axios
+            // .post(url, this.state)
+            // .then(response => {
+            //     console.log(response);
+            //     this.props.history.push("/login");
 
-            })
-            .catch(err => {
-                if(err.response && err.response.status === 400){
-                    this.setState({
-                        signupErrorMessage: "Email id already exists!"
-                    })
-                }
-                console.log(err);
-            });
+            // })
+            // .catch(err => {
+            //     if(err.response && err.response.status === 400){
+            //         this.setState({
+            //             signupErrorMessage: "Email id already exists!"
+            //         })
+            //     }
+            //     console.log(err);
+            // });
 
             // const url = "http://localhost:8000/customer/register";
             // axios
@@ -126,6 +150,9 @@ import axios from 'axios'
         }
     }
 
+    onChangeField = (event) => {
+        this.setState({[event.target.name]: event.target.value});
+    }
 
     validateInputs(){
         let isValid = true;
@@ -247,6 +274,77 @@ import axios from 'axios'
                                             </div>
                                         </div>
                                     </div>
+
+                                    <div className="mb-3">
+                                        <div className="form-floating mb-3 mb-md-0">
+                                                    <input className={"form-control"} id="custStreet" type="text"
+                                                        name="custStreet"
+                                                        value = {this.state.custStreet}
+                                                        onChange = {this.onChangeField}
+                                                        placeholder="Street address"
+                                                        required/>
+                                                    <label htmlFor="resStreet">Street address</label>
+
+                                        </div>
+                                    </div>
+                                    <div className="row mb-3">
+                                        <div className="col-md-6">
+                                            <div className="form-floating mb-3 mb-md-0">
+                                                <input className={"form-control"} id="custCity" type="text"
+                                                    name="custCity"
+                                                    value = {this.state.custCity}
+                                                    onChange = {this.onChangeField}
+                                                    placeholder="Enter City"
+                                                    required/>
+                                                <label htmlFor="resCity">City</label>
+
+                                            </div>
+                                        </div>
+
+                                        <div className="col-md-6">
+                                            <div className="form-floating">
+                                                <input className="form-control" id="custState" type="text"
+                                                    name="custState"
+                                                    value = {this.state.custState}
+                                                    onChange = {this.onChangeField}
+                                                    placeholder="Select State" />
+                                                <label htmlFor="resState">State</label>
+                                                <div className="invalid">{this.state.resStateError}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="row mb-3">
+                                        <div className="col-md-6">
+                                            <div className="form-floating">
+                                                <input className="form-control" id="custZipcode" type="text"
+                                                    name="custZipcode"
+                                                    value = {this.state.custZipcode}
+                                                    onChange = {this.onChangeField}
+                                                    placeholder="Enter Zipcode" />
+                                                <label htmlFor="custZipcode">Zipcode</label>
+                                                <div className="invalid">{this.state.resZipcodeError}</div>
+                                            </div>
+                                        </div>
+
+                                        <div className="col-md-6">
+                                            <div className="form-floating">
+                                            <select className="form-control form-select"
+                                                name="custCountry"
+                                                value = {this.state.custCountry}
+                                                onChange = {this.onChangeField}>
+                                                <option selected></option>
+                                                {countryList.map((c) => {
+                                                    return (<option value={c}>{c}</option>)})}
+                                            </select>
+                                                <label htmlFor="custCountry">Country</label>
+
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+
                                     <div className="mt-4 mb-0">
                                         {/* <div className="d-grid"><a className="btn btn-primary btn-block">Create Account</a></div> */}
                                         <button className="d-grid btn btn-uber" type="submit">Create Account</button>

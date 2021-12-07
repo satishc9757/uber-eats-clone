@@ -3,8 +3,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { Component } from 'react'
 import {Modal, Button} from 'react-bootstrap'
 import { Link } from 'react-router-dom';
-import {SERVER_ENDPOINT} from '../../constants/serverConfigs'
+import {GRAPHQL_SERVER_ENDPOINT, SERVER_ENDPOINT} from '../../constants/serverConfigs'
 import axios from'axios';
+import { UPDATE_ORDER_STATUS } from '../../../graphql/mutations';
 
 class UpdateStatusModal  extends Component {
 
@@ -26,22 +27,39 @@ class UpdateStatusModal  extends Component {
         const orderId = this.props.orderId;
         this.setState({orderId: orderId});
     }
-    handleSubmit = (event) => {
+    handleSubmit = async (event) => {
         event.preventDefault();
         console.log("here is the prop : ",this.props.resId);
-        const url = SERVER_ENDPOINT+"/res/order/status";
-            axios
-                .put(url, {orderId: this.state.orderId, orderStatus: this.state.resStatus})
-                .then(response => {
-                    console.log(response);
-                    this.setState({
-                        showUpdate: false,
-                    });
-                    this.props.onSuccessfulUpdate();
-                })
-                .catch(err => {
-                    console.log(err);
-                });
+        // const url = SERVER_ENDPOINT+"/res/order/status";
+            // axios
+            //     .put(url, {orderId: this.state.orderId, orderStatus: this.state.resStatus})
+            //     .then(response => {
+            //         console.log(response);
+            //         this.setState({
+            //             showUpdate: false,
+            //         });
+            //         this.props.onSuccessfulUpdate();
+            //     })
+            //     .catch(err => {
+            //         console.log(err);
+            //     });
+
+            const url = GRAPHQL_SERVER_ENDPOINT + "/updateOrderStatus";
+            const query = UPDATE_ORDER_STATUS;
+
+            const response = await axios.post(url, {
+                query,
+                variables: {orderId: this.state.orderId, orderStatus: this.state.resStatus},
+            });
+            console.log("Response from order status update : "+JSON.stringify(response))
+            console.log("Response data : "+JSON.stringify(response.data))
+            const data = await response.data.data.updateOrderStatus;
+            if(data){
+                this.setState({
+                                showUpdate: false,
+                            });
+                this.props.onSuccessfulUpdate();
+            }
     }
 
     onChangeField = (event) => {

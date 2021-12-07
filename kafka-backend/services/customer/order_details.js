@@ -12,7 +12,6 @@ async function handle_request(msg, callback){
         console.log("orders output: "+orders[1]);
         let ordersDetailsData = [];
         if(orders){
-
             orders.orderItems.forEach(item => ordersDetailsData.push({
                 dishName: item.itemName,
                 odQuantity: item.itemQuantity,

@@ -1,11 +1,12 @@
 import axios from 'axios'
 import React, { Component } from 'react'
-import { SERVER_ENDPOINT } from '../../constants/serverConfigs'
+import { GRAPHQL_SERVER_ENDPOINT, SERVER_ENDPOINT } from '../../constants/serverConfigs'
 import Content from '../Dashboard/Content'
 import Header from '../Header'
 import Sidebar from '../Sidebar'
 import Menu from './Menu'
 import cookie from 'react-cookies'
+import { GET_DISHES_BY_RESID, GET_RESTAURANT } from '../../../graphql/queries'
 
 class ResturantView extends Component{
 
@@ -39,10 +40,16 @@ class ResturantView extends Component{
     setDishesData = async() => {
         try{
             const resId = this.props.match.params.resId;
-            const url = SERVER_ENDPOINT + "/res/getDishByRes/"+resId;
+            // const url = SERVER_ENDPOINT + "/res/getDishByRes/"+resId;
 
-            const response = await axios.get(url);
-            const data = response.data;
+            // const response = await axios.get(url);
+            const response = await axios.post(GRAPHQL_SERVER_ENDPOINT + "/getDishByResId", {
+                query: GET_DISHES_BY_RESID,
+                variables: {
+                    resId
+                }
+            });
+            const data = await response.data.data.getDishByResId;
             this.setState({resDishes: data});
             console.log(" dishes data fetched : "+data);
 
@@ -72,10 +79,18 @@ class ResturantView extends Component{
     setResData = async() => {
         try{
             const resId = this.props.match.params.resId;
-            const resUrl = SERVER_ENDPOINT + "/res/id/"+resId;
+            // const resUrl = SERVER_ENDPOINT + "/res/id/"+resId;
 
-            const response = await axios.get(resUrl);
-            const data = response.data;
+            // const response = await axios.get(resUrl);
+            const query = GET_RESTAURANT;
+            const resResponse = await axios.post(GRAPHQL_SERVER_ENDPOINT + "/getRestaurant", {
+                query,
+                variables: {
+                    resId
+                }
+            });
+            const data = await resResponse.data.data.getRestaurant;
+            // const data = response.data;
             this.setState({resData: data});
             console.log(" res data fetched : "+data);
 

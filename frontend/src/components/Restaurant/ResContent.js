@@ -2,12 +2,15 @@ import React, { Component } from 'react';
 import resImage from "../../images/restaurants/res1.jpg"
 import ResProfileCard from './Dashboard/ResProfileCard';
 import axios from 'axios';
-import { SERVER_ENDPOINT } from '../constants/serverConfigs';
+import { SERVER_ENDPOINT, GRAPHQL_SERVER_ENDPOINT } from '../constants/serverConfigs';
 import { Link } from 'react-router-dom';
 import cookie from 'react-cookies';
 import { connect } from 'react-redux';
 import { getDishesData } from '../../redux/reduxActions/restaurant/dishesDataRedux';
 import { getResToken } from '../utils/ControllerUtils';
+import {GET_RESTAURANT} from '../../graphql/queries'
+import {GET_DISHES_BY_RESID} from '../../graphql/queries'
+
 axios.defaults.headers.common['authorization'] = getResToken();
 
 class ResContent extends Component {
@@ -22,8 +25,14 @@ class ResContent extends Component {
     refreshData = async ()=> {
         // axios.defaults.headers.common['authorization'] = getResToken();
         const resId = cookie.load("resId");
-        const response = await axios.get(SERVER_ENDPOINT + "/res/getDishByRes/"+resId);
-        const data = await response.data;
+        //const response = await axios.get(SERVER_ENDPOINT + "/res/getDishByRes/"+resId);
+        const response = await axios.post(GRAPHQL_SERVER_ENDPOINT + "/getDishByResId", {
+            query: GET_DISHES_BY_RESID,
+            variables: {
+                resId
+            }
+        });
+        const data = await response.data.data.getDishByResId;
         console.log("Dishes data : "+JSON.stringify(data))
         this.setState({dishes: data});
 }
@@ -33,8 +42,15 @@ class ResContent extends Component {
             //restaurant
             const resId = cookie.load("resId");
             // axios.defaults.headers.common['authorization'] = getResToken();
-            const resResponse = await axios.get(SERVER_ENDPOINT + "/res/id/"+resId);
-            const resData = await resResponse.data;
+            // const resResponse = await axios.get(SERVER_ENDPOINT + "/res/id/"+resId);
+            const query = GET_RESTAURANT;
+            const resResponse = await axios.post(GRAPHQL_SERVER_ENDPOINT + "/getRestaurant", {
+                query,
+                variables: {
+                    resId
+                }
+            });
+            const resData = await resResponse.data.data.getRestaurant;
             console.log("Res data : "+JSON.stringify(resData))
             this.setState(resData);
 
@@ -44,9 +60,18 @@ class ResContent extends Component {
             // console.log("Dishes data : "+JSON.stringify(data))
             // this.setState({dishes: data});
             //console.log("Did Mount called!!!!!!");
-            await this.props.getDishesData(resId);
-            this.setState({dishes: this.props.dishesData});
-            this.refreshData()
+            // await this.props.getDishesData(resId);
+
+
+            const dishResponse = await axios.post(GRAPHQL_SERVER_ENDPOINT + "/getDishByResId", {
+                query: GET_DISHES_BY_RESID,
+                variables: {
+                    resId
+                }
+            });
+
+            this.setState({dishes: dishResponse.data.data.getDishByResId});
+           //this.refreshData()
         } catch(err){
             console.log(err);
         }

@@ -1,11 +1,12 @@
 import {Component} from 'react';
 import axios from 'axios';
-import { SERVER_ENDPOINT } from '../constants/serverConfigs';
+import { SERVER_ENDPOINT, GRAPHQL_SERVER_ENDPOINT } from '../constants/serverConfigs';
 import countryList from '../constants/countryList';
 import cookie from 'react-cookies'
 import ResHeader from './ResHeader';
 import {resUpdate} from '../../redux/reduxActions/restaurant/profileUpdateRedux';
 import { connect } from 'react-redux';
+import { GET_RESTAURANT } from '../../graphql/queries';
 
 class ResProfile extends Component {
     state = {
@@ -78,8 +79,15 @@ class ResProfile extends Component {
     async componentDidMount(){
         try {
             const resId = cookie.load('resId');
-            const response = await axios.get(SERVER_ENDPOINT + "/res/id/"+resId);
-            const data = await response.data;
+            const query = GET_RESTAURANT;
+            const response = await axios
+                                .post(GRAPHQL_SERVER_ENDPOINT + "/getRestaurant", {
+                                    query,
+                                    variables: {
+                                        resId
+                                    },
+                                });
+            const data = await response.data.data.getRestaurant;
             console.log("Res data : "+JSON.stringify(data))
             this.setState(data);
         } catch(err){

@@ -3,8 +3,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { Component } from 'react'
 import {Modal, Button} from 'react-bootstrap'
 import { Link } from 'react-router-dom';
-import {SERVER_ENDPOINT} from '../../constants/serverConfigs'
+import {GRAPHQL_SERVER_ENDPOINT, SERVER_ENDPOINT} from '../../constants/serverConfigs'
 import axios from'axios';
+import { GET_ORDERS_DETAILS } from '../../../graphql/queries';
 
 class OrderSummaryModal extends Component {
 
@@ -37,11 +38,22 @@ class OrderSummaryModal extends Component {
         try{
             const orderId = this.props.orderId;
 
-            const url = SERVER_ENDPOINT + "/res/orderdetails?orderId="+6; //hardcoded for now
-            const response = await axios.get(url);
-            const data = await response.data;
+            // const url = SERVER_ENDPOINT + "/res/orderdetails?orderId="+6; //hardcoded for now
+            // const response = await axios.get(url);
+            const url = GRAPHQL_SERVER_ENDPOINT + "/getOrderDetails";
+            // const response = await axios.get(url);
+            const query = GET_ORDERS_DETAILS;
+            const response = await axios.post(url, {
+                query,
+                variables: {
+                    orderId
+                },
+            });
+            const data = await response.data.data.getOrderDetails;
+
+            // const data = await response.data;
             console.log("order details data : "+JSON.stringify(data));
-            //this.setState({orderDetailsData: data});
+            this.setState({orderDetailsData: data});
         } catch(err){
             console.log(err);
         }

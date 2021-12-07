@@ -6,8 +6,9 @@ import {custLogin} from '../../redux/reduxActions/customer/loginRedux';
 import errorAction from '../../redux/reduxActions/errorRedux';
 import ShortHeader from '../ShortHeader';
 import ShortFooter from '../ShortFooter';
-import { SERVER_ENDPOINT } from '../constants/serverConfigs';
+import { SERVER_ENDPOINT,  GRAPHQL_SERVER_ENDPOINT} from '../constants/serverConfigs';
 import jwt_decode from 'jwt-decode';
+import { CUST_LOGIN } from '../../graphql/mutations';
 
 class CustLogin extends Component {
 
@@ -30,28 +31,40 @@ class CustLogin extends Component {
     login = async (event) => {
         event.preventDefault();
 
-        await this.props.custLogin(this.state);
-        this.setState({token: this.props.token});
+        // await this.props.custLogin(this.state);
+        // this.setState({token: this.props.token});
         // console.log("Props value: "+JSON.stringify(this.props))
         // console.log("Props token"+JSON.stringify(this.props.token));
         // console.log("State token "+JSON.stringify(this.state.token));
-        this.props.history.push("./home");
+        // this.props.history.push("./home");
 
         //set the with credentials to true
         // axios.defaults.withCredentials = true;
         // axios.defaults.headers.common['authorization'] = localStorage.getItem('cust_token');
-        // try{
+        try{
 
 
-        //     const url = "http://localhost:8000/customer/login";
-        //     const response = await axios.post(url, this.state);
-        //     this.props.history.push("./home");
+            const query = CUST_LOGIN;
+            const email = this.state.custUsername;
+            const password = this.state.password;
+            const response = await axios
+                                        .post(GRAPHQL_SERVER_ENDPOINT + "/custLogin",{
+                                            query,
+                                            variables: {
+                                                email,
+                                                password,
+                                            },
+                                          });
 
-        //     //this.props.custLogin(response.data);
-        // } catch(err){
-        //     this.props.errorAction(err);
-        //     console.log("Error : "+err)
-        // }
+            console.log("response : "+JSON.stringify(response.data.data.custLogin));
+
+            this.props.history.push("./home");
+
+            //this.props.custLogin(response.data);
+        } catch(err){
+            // this.props.errorAction(err);
+            console.log("Error : "+err)
+        }
 
         //custLogin(this.state);
 

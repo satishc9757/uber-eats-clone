@@ -8,9 +8,10 @@ import Content from './Content';
 import { connect } from 'react-redux';
 import { custLogout } from '../../../redux/reduxActions/customer/logoutRedux';
 import axios from 'axios';
-import { SERVER_ENDPOINT } from '../../constants/serverConfigs';
+import { SERVER_ENDPOINT, GRAPHQL_SERVER_ENDPOINT } from '../../constants/serverConfigs';
 import cookie from 'react-cookies';
 import { getCustToken } from '../../utils/ControllerUtils';
+import {RESTAURANT_SEARCH} from '../../../graphql/queries'
 axios.defaults.headers.common['authorization'] = getCustToken();
 
 class Dashboard extends Component {
@@ -68,11 +69,20 @@ class Dashboard extends Component {
         const custLocation = cookie.load("custLocation");
 
         if(custLocation){
-            const url = SERVER_ENDPOINT + "/customer/query?searchText="+custLocation;
-
+            //const url = SERVER_ENDPOINT + "/customer/query?searchText="+custLocation;
+            const url = GRAPHQL_SERVER_ENDPOINT + "/restaurantSearch";
+            const query = RESTAURANT_SEARCH;
+            const searchText = custLocation;
             try{
-                const response = await axios.get(url);
-                const data = response.data;
+                // const response = await axios.get(url);
+                //graphql
+                const response = await axios.post(url, {
+                    query,
+                    variables: {
+                        searchText
+                    },
+                });
+                const data = response.data.data.restaurantSearch;
                 this.setState({resData: data});
                 this.setState({resMainData: data});
                 console.log(" res data fetched : "+data);
